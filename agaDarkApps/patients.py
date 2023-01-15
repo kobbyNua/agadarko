@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User,auth,Group
 from django.db.models import Count ,F,Q,Sum
-from .models import Patient,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory
+from .models import Patient,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
 from .laboratory import view_patient_lab_details,patient_lab_test_status,patient_laboratory
-from .dietary import patient_dietary, view_patient_dietary_status
+from .dietary import patient_dietary, view_patient_dietary_status,view_patient_deietary_details
 from datetime import datetime
 
 '''
@@ -29,27 +29,27 @@ create patients
 def getRegion():
 	return Region.objects.all()
 def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_id,user_id):
-          check_patient_details=Patient.objects.filter(First_Name=first_name,Last_Name=last_name,Telephone=telephone,Date_Of_Birth=date_of_birth)
-          if check_patient_details.exists():
-          	return "patient details already  creeated"
-          else:
-          	total_number_of_patient=Patient.objects.all().count()
-          	count=0
-          	if total_number_of_patient == 0:
-          	 count+=1
-          	 patient_card_number=str(count)+'/'+str(datetime.now().year)
-          	else:
-          		patient_card_number=str(total_number_of_patient)+str(datetime.now().year)
-          		#return patient_card_number
-          		unit_number='A.G.D/'+patient_card_number
-          		registration_number=patient_card_number
-          		date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-          		register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,card_number=patient_card_number,unit_no=unit_number,registration_number=registration_number,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
-          		#print(register_patient.query
-          		register_patient.save()
-          		patient_id=Patient.objects.latest('id')
-          		create_patient_history=patient_history(patient_id.id,hospital_id,user_id)
-          		return create_patient_history
+	check_patient_details=Patient.objects.filter(First_Name=first_name,Last_Name=last_name,Telephone=telephone,Date_Of_Birth=date_of_birth)
+	if check_patient_details.exists():
+		return "patient details already  creeated"
+	else:
+		total_number_of_patient=Patient.objects.all().count()
+		count=0
+		if total_number_of_patient == 0:
+			count+=1
+			patient_card_number=str(count)+'/'+str(datetime.now().year)
+		else:
+			patient_card_number=str(total_number_of_patient)+str(datetime.now().year)
+			#return patient_card_number
+			unit_number='A.G.D/'+patient_card_number
+			registration_number=patient_card_number
+			date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+			register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,card_number=patient_card_number,unit_no=unit_number,registration_number=registration_number,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
+			#print(register_patient.query
+			register_patient.save()
+			patient_id=Patient.objects.latest('id')
+			create_patient_history=patient_history(patient_id.id,hospital_id,user_id)
+			return create_patient_history
 
 def  patient_history(patient_id,hospital_id,user_id):
 	
@@ -76,8 +76,8 @@ def opd_vitals():
 	return OPD_Vitals.objects.all()
 def  create_opd_vitals(opd):
 	for items in range(len(opd)):
-	       vitals=OPD_Vitals.objects.create(vital_type=opd[items])
-	       vitals.save()
+		vitals=OPD_Vitals.objects.create(vital_type=opd[items])
+		vitals.save()
 	return True
 def edit_opd_vitals(vital_id,vitals):
 	vital=OPD_Vitals.objects.get(pk=vital_id)
@@ -164,7 +164,7 @@ def send_dietary_request(patient_diagnosis_id,user_id,dietary_list):
 	patient_diagonsis_history.save()
 	dietary_request=patient_dietary(patient_diagonsis_history.patient_history.id,patient_diagnosis_id,user_id,dietary_list)
 	return dietary_request
-def patient_dietary_report_result(patinet_diagonsis_id):
+def patient_dietary_report_result(patient_diagonsis_id):
 	patient_view_status_report=Patient_Dietary.objects.get(patient_diagonsis_history_details__id=patient_diagonsis_id)
 	patient_view_status_report.viewed_status=True
 	patient_view_status_report.save()

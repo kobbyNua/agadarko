@@ -20,38 +20,28 @@ def create_lab_test_details_cost(test_type,notes,cost):
 			return True
 	else:
 		  return False
-	'''
-	for items in range(len(test_type)):
-		check_lab_test=Lab_Test_Cost_Details.objects.filter(test_type=test_type[items])
-		if not check_lab_test.exists():
-			create_lab_test_list=Lab_Test_Cost_Details.objects.create(test_type=test_type[items],notes=notes[items],cost=cost[items])
-			create_lab_test_list.save()
-	else:
-		 return False
 
-	return True
-  '''
 def edit_lab_test_list_details(test_type,notes,cost,test_id):
-	   get_lab_test=Lab_Test_Cost_Details.objects.get(pk=test_id)
-	   get_lab_test.test_type=test_type
-	   get_lab_test.notes=notes
-	   get_lab_test.cost=cost
-	   get_lab_test.save()
-	   return True
+	get_lab_test=Lab_Test_Cost_Details.objects.get(pk=test_id)
+	get_lab_test.test_type=test_type
+	get_lab_test.notes=notes
+	get_lab_test.cost=cost
+	get_lab_test.save()
+	return True
 
 def patient_laboratory(patient_history_id,patinet_diagonsis_id,user_id,test_type):
-	        date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-	        patient_laboratory_history=Patient_Laboratory.objects.create(patient_history=Patient_History.objects.get(pk=patient_history_id),patient_diagonsis_history_details=Patient_Diagosis_History.objects.get(pk=patinet_diagonsis_id),date_reported=date_format)
-	        patient_laboratory_history.save()
-	        patient_laboratory_id=Patient_Laboratory.objects.latest('id')
-	        status_state=""
-	        technician_who_handle_laboratory=laboratory_test_techician.objects.create(patient_laboratory=Patient_Laboratory.objects.get(pk=patient_laboratory_id.id),techinician=User.objects.get(pk=user_id))
-	        for lab_test in range(len(test_type)):
-	        	print(test_type[lab_test])
-	        	patient_lab_test_type_details=Patient_Laboratory_Details.objects.create(patient_laboratory=Patient_Laboratory.objects.get(pk=patient_laboratory_id.id),lab_test_type=Lab_Test_Cost_Details.objects.get(pk=test_type[lab_test]))
-	        	patient_lab_test_type_details.save()
-	        	patient_lab_test_cost_details(patient_laboratory_id.id,test_type)
-	        return True
+	date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+	patient_laboratory_history=Patient_Laboratory.objects.create(patient_history=Patient_History.objects.get(pk=patient_history_id),patient_diagonsis_history_details=Patient_Diagosis_History.objects.get(pk=patinet_diagonsis_id),date_reported=date_format)
+	patient_laboratory_history.save()
+	patient_laboratory_id=Patient_Laboratory.objects.latest('id')
+	status_state=""
+	technician_who_handle_laboratory=laboratory_test_techician.objects.create(patient_laboratory=Patient_Laboratory.objects.get(pk=patient_laboratory_id.id),techinician=User.objects.get(pk=user_id))
+	for lab_test in range(len(test_type)):
+		print(test_type[lab_test])
+		patient_lab_test_type_details=Patient_Laboratory_Details.objects.create(patient_laboratory=Patient_Laboratory.objects.get(pk=patient_laboratory_id.id),lab_test_type=Lab_Test_Cost_Details.objects.get(pk=test_type[lab_test]))
+		patient_lab_test_type_details.save()
+		patient_lab_test_cost_details(patient_laboratory_id.id,test_type)
+		return True
 def patient_lab_test_status(patient_history_id):
 	
 	return Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)

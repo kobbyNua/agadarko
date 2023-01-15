@@ -24,9 +24,9 @@ def getHospital_details(user_id):
 def view_group():
 	    return Group.objects.all()
 def create_groups(group_name):
-	   for groups in range(len(group_name)):
-	       group=Group.objects.create(name=groups[group_name])
-	       group.save()
+	for groups in range(len(group_name)):
+		group=Group.objects.create(name=groups[group_name])
+		group.save()
 def edit_groups(new_group_name,group_id):
            group=Group.objects.get(pk=group_id)
            group.name=new_group_name
@@ -56,29 +56,26 @@ def edit_group_permissions(group_id,permission_id,group_permission_id):
 '''
 
 def create_staff(first_name,last_name,email,username,telephone,group_id,user_id):
-	   	   
-	   check_user=User.objects.filter(email=email)
+	check_user=User.objects.filter(email=email)
+	if not check_user.exists():
+		default_password='Password@1'
+		hospital_info=Hospital.objects.filter(adminstrator__id=user_id)
+		hospital_id=""
+		users=User.objects.create_user(username=username,password=default_password,first_name=first_name,last_name=last_name,email=email)
+		users.save()
+		user_id=User.objects.latest('id')
+		for hospitals in hospital_info:
+			pass
+		hospital_staffs(user_id.id,telephone,hospitals.id)
+		for groups in range(len(group_id)):
+			get_group=Group.objects.get(pk=group_id[groups])
+			get_group.user_set.add(user_id.id)
+		return True
+	else:
+		return False
 
-	   if not check_user.exists():
-	   	default_password='Password@1'
-	   	hospital_info=Hospital.objects.filter(adminstrator__id=user_id)
-
-	   	hospital_id=""
-	   	for hospitals in hospital_info:
-	   		pass
-
-	   	users=User.objects.create_user(username=username,password=default_password,first_name=first_name,last_name=last_name,email=email)
-	   	users.save()
-	   	user_id=User.objects.latest('id')
 
 
-	   	hospital_staffs(user_id.id,telephone,hospitals.id)
-	   	for groups in range(len(group_id)):
-	   		get_group=Group.objects.get(pk=group_id[groups])
-	   		get_group.user_set.add(user_id.id)
-	   	return True
-	   else:
-	   	return False
 
 def view_all_staffs():
 	admin_id=1
@@ -105,13 +102,13 @@ def edit_staff(email,first_name,last_name,username,telephone,user_id,hostpital_s
     get_hospital_staff_id.save()
     return True
 def change_staff_password(password,new_password,user_id):
-	      if password == new_password:
-	      	staff_detail=User.objects.get(pk=user_id)
-	      	staff_detail.set_password(new_password)
-	      	staff_detail.save()
-	      	return True
-	      else:
-	      	return False
+	if password == new_password:
+		staff_detail=User.objects.get(pk=user_id)
+		staff_detail.set_password(new_password)
+		staff_detail.save()
+		return True
+	else:
+	    return False
 def reset_password(user_id):
 	user=User.objects.get(pk=user_id)
 	user.set_password('Password@1')

@@ -16,16 +16,16 @@ from .models import Patient_History,Patient_Diagosis_History,Patient_Dietary,Pat
 '''
 
 def patient_dietary(patient_history_id,patinet_diagonsis_id,user_id,dietary_list):
-	        patient_dietary_history=Patient_Dietary.objects.create(patient_history=Patient_History.objects.get(pk=patient_history_id),patient_diagonsis_history_details=Patient_Diagosis_History.objects.get(pk=patinet_diagonsis_id))
-	        patient_dietary_history.save()
-	        patient_dietary_id=Patient_Dietary.objects.latest('id')
-	        pharmicst_who_handle_dietary=Dietary_Dispenser_Techician.objects.create(patient_dietary=Patient_Dietary.objects.get(pk=patient_dietary_id.id),techinician=User.objects.get(pk=user_id))
-	        pharmicst_who_handle_dietary.save()
-	        for dietary in range(len(dietary_list)):
-	        	patient_dietary_list_details=Patient_Dietary_Details.objects.create(patient_dietary=Patient_Dietary.objects.get(pk=patient_dietary_id.id),dietary=Dietary_Supplementary.objects.get(pk=dietary_list[dietary]))
-	        	patient_dietary_list_details.save()
-	        patient_dietary_cost=patient_dietary_cost_details(patient_dietary_id.id,dietary_list)
-	        return patient_dietary_cost
+	patient_dietary_history=Patient_Dietary.objects.create(patient_history=Patient_History.objects.get(pk=patient_history_id),patient_diagonsis_history_details=Patient_Diagosis_History.objects.get(pk=patinet_diagonsis_id))
+	patient_dietary_history.save()
+	patient_dietary_id=Patient_Dietary.objects.latest('id')
+	pharmicst_who_handle_dietary=Dietary_Dispenser_Techician.objects.create(patient_dietary=Patient_Dietary.objects.get(pk=patient_dietary_id.id),techinician=User.objects.get(pk=user_id))
+	pharmicst_who_handle_dietary.save()
+	for dietary in range(len(dietary_list)):
+		patient_dietary_list_details=Patient_Dietary_Details.objects.create(patient_dietary=Patient_Dietary.objects.get(pk=patient_dietary_id.id),dietary=Dietary_Supplementary.objects.get(pk=dietary_list[dietary]))
+		patient_dietary_list_details.save()
+		patient_dietary_cost=patient_dietary_cost_details(patient_dietary_id.id,dietary_list)
+		return patient_dietary_cost
 
 
 def patient_dietary_cost_details(patient_dietary_id,dietary_list):
@@ -91,11 +91,11 @@ def create_dietary_supplementary_cost(dietary,notes,cost,quantity_stocked,photo,
 	else:
 		return "quantity is zero"
 def edit_dietary_list_details(dietary,notes,cost,dietary_id):
-	   get_dietary_details=Dietary_Supplementary.objects.get(pk=dietary_id)
-	   get_dietary_details.dietary=dietary
-	   get_dietary_details.notes=notes
-	   get_dietary_details.save()
-	   return True
+	get_dietary_details=Dietary_Supplementary.objects.get(pk=dietary_id)
+	get_dietary_details.dietary=dietary
+	get_dietary_details.notes=notes
+	get_dietary_details.save()
+	return True
 
 def dietary_supplement_stocking():
 	return Dietary_Supplmentary_Details.objects.all()
@@ -145,21 +145,18 @@ def deitary_stock_info(dietary_id):
 	return  Dietary_Supplmentary_Stock_Details.objects.filter(dietary_details__dietary__id=dietary_id).order_by('-id')[0]
 
 def update_dietary_details_stock(dietary_id,quantity,price,user_id):
-	 get_dietary=Dietary_Supplementary.objects.get(pk=dietary_id)
-	 quantity_stock_history=Dietary_Supplmentary_Details.objects.filter(dietary__id=dietary_id).order_by('-id')[0]
-	 print('tested ',quantity_stock_history.quantity_stocked)
-	 print(type(get_dietary.quantity), type(quantity))
-	 #for stock_history in quantity_stock_history:
-	 	#pass
-
-	 total_quantity_stocked=int(get_dietary.quantity)+int(quantity)
-	 old_quantity_stocked=quantity_stock_history.quantity_stocked
-	 quantity_at_time_of_stocking=get_dietary.quantity
-	 stocking_history=update_dietary_stock_quantity_history(dietary_id,total_quantity_stocked,quantity,old_quantity_stocked,quantity_at_time_of_stocking,price,get_dietary.price,user_id)
-	 if stocking_history == True:
-	 	price_quantity_update=update_dietary_cost_price(dietary_id,quantity,price)
-	 	return price_quantity_update
-	 else:
+	get_dietary=Dietary_Supplementary.objects.get(pk=dietary_id)
+	quantity_stock_history=Dietary_Supplmentary_Details.objects.filter(dietary__id=dietary_id).order_by('-id')[0]
+	print('tested ',quantity_stock_history.quantity_stocked)
+	print(type(get_dietary.quantity), type(quantity))
+	total_quantity_stocked=int(get_dietary.quantity)+int(quantity)
+	old_quantity_stocked=quantity_stock_history.quantity_stocked
+	quantity_at_time_of_stocking=get_dietary.quantity
+	stocking_history=update_dietary_stock_quantity_history(dietary_id,total_quantity_stocked,quantity,old_quantity_stocked,quantity_at_time_of_stocking,price,get_dietary.price,user_id)
+	if stocking_history == True:
+		price_quantity_update=update_dietary_cost_price(dietary_id,quantity,price)
+		return price_quantity_update
+	else:
 	 	return False
 
 
