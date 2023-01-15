@@ -48,8 +48,10 @@ def create_patient(request):
 	town=request.POST['town']
 	hospital_id=request.POST['hospital_id']
 	user_id=request.POST['user_id']
+	print('am here ',first_name,last_name,date_of_birth,telephone,region,town)
 	create_patients=patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_id,user_id)
-	#print(create_patients)
+	print(create_patients)
+	
 	status_type=""
 	msg=""
 	if create_patients == True:
@@ -57,7 +59,7 @@ def create_patient(request):
 		msg+="patient details created successfully"
 	else:
 		status_type+="error"
-		msg+=create_patients
+		msg+="couldn't patient details"
 	return JsonResponse({'status':status_type,status_type:msg})
 
 def view_patient_detail(request,patient_card_id):

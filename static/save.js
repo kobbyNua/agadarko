@@ -74,6 +74,7 @@ $(document).ready(function(){
 
    }) 
    $('#patientRegistration').submit(function(e){
+        $('#responseBox').modal('show')
         e.preventDefault()
         submitForms(this,'/create-patient')
    })

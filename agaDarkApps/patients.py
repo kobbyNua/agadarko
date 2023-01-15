@@ -29,27 +29,32 @@ create patients
 def getRegion():
 	return Region.objects.all()
 def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_id,user_id):
+	
 	check_patient_details=Patient.objects.filter(First_Name=first_name,Last_Name=last_name,Telephone=telephone,Date_Of_Birth=date_of_birth)
-	if check_patient_details.exists():
-		return "patient details already  creeated"
-	else:
+	if not check_patient_details.exists():
 		total_number_of_patient=Patient.objects.all().count()
-		count=0
+		#count=0
+		print(total_number_of_patient)
 		if total_number_of_patient == 0:
-			count+=1
-			patient_card_number=str(count)+'/'+str(datetime.now().year)
+			total_number_of_patient+=1
+			patient_card_number=str(total_number_of_patient)+'-'+str(datetime.now().year)
+			print(patient_card_number)
 		else:
-			patient_card_number=str(total_number_of_patient)+str(datetime.now().year)
+			patient_card_number=str(total_number_of_patient)+'-'+str(datetime.now().year)
 			#return patient_card_number
-			unit_number='A.G.D/'+patient_card_number
-			registration_number=patient_card_number
-			date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-			register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,card_number=patient_card_number,unit_no=unit_number,registration_number=registration_number,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
-			#print(register_patient.query
-			register_patient.save()
-			patient_id=Patient.objects.latest('id')
-			create_patient_history=patient_history(patient_id.id,hospital_id,user_id)
-			return create_patient_history
+		unit_number='A.G.D-'+patient_card_number
+		registration_number=patient_card_number
+		print(registration_number)
+		date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,card_number=patient_card_number,unit_no=unit_number,registration_number=registration_number,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
+		register_patient.save()
+		patient_id=Patient.objects.latest('id')
+		create_patient_history=patient_history(patient_id.id,hospital_id,user_id)
+		print(create_patient_history)
+		return create_patient_history		
+	else:
+		return False
+
 
 def  patient_history(patient_id,hospital_id,user_id):
 	
