@@ -1,0 +1,50 @@
+{{lab_test}}
+
+
+<div class="container">
+	  <div class="create-lab-details">
+	  	     <form method="post" action="/">
+	  	     	   <input type="text" name="test"><br/>
+	  	     	   <input type="text" cost="cost"><br/>
+	  	     	   <textarea name="notes"></textarea><br/>
+	  	     	   <input type="submit" vlaue="create lab test details" onsubmit="mySubmit()">
+	  	     </form>
+	  </div>
+	  <div class="view-lab-test">
+	  	<table>
+	  		<tr>
+	  			<td>Lab Test</td>
+	  			<td>Cost</td>
+	  			<td>Notes</td>
+	  			<td>Edit</td>
+	  		</tr>
+	  	    {% for tests in lab_test %}
+                   <tr>
+                   	   <td>{{tests.test_type}}</td>
+                   	   <td>GHS {{tests.cost}}</td>
+                   	   <td><a href="" id="{{tests.id}}">view notes</a></td>
+                   	   <td><a href="" id="{{tests.id}}">edit</a></td>
+                   </tr>
+
+                 
+	  	    {% endfor %}
+	  	</table>
+	  </div>
+</div>
+
+
+<div class="modal" id="edit">
+		  	     <form method="post" action="/">
+	  	     	   <input type="text" name="test"><br/>
+	  	     	   <input type="text" cost="cost"><br/>
+	  	     	   <textarea name="notes"></textarea><br/>
+	  	     	   <input type="text" name="id"><br/>
+	  	     	   <input type="submit" vlaue="create lab test details" onsubmit="mySubmit()">
+	  	     </form>
+</div>
+
+
+<div class="modal" id="notes">
+	   <div class="note-details"></div>
+	   <!--left with lab test notes to complete-->
+</div>

@@ -1,0 +1,115 @@
+
+
+
+{% extends '../base.html' %}
+
+{% block content %}
+
+
+                                      <div class="col-md-3">
+                                         
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                        <div class="text-center">
+                                                             <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
+                                                        </div>
+                                                      
+                                                        {% for patients in view_patient_details %}
+                                                          
+                                                        <h3 class="profile-username text-center">{{ patients.patients__First_Name }}</h3>
+
+                                                        <!--<p class="text-muted text-center">Software Engineer</p>-->
+
+                                                        <ul class="list-group list-group-unbordered mb-3">
+
+                                                            <li class="list-group-item">
+                                                                  <b>Date Of Birth</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Telephone</b> <a class="float-right">1,322</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                     <b>Region</b> <a class="float-right">543</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>City</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>No. of Times</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Balance</b> <a class="float-right">0.00</a>
+                                                            </li>
+
+                                                            <a href="#" class="btn btn-primary btn-block"><b>Start Sessions</b></a>
+                                                            <!--<li class="list-group-item">
+                                                                  <b>Current Quantity Stocked</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Quantity left</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Friends</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Current Price</b> <a class="float-right">13,287</a>
+                                                            </li>-->
+                                                       </ul>
+
+                                                       {% endfor %}
+                                                 </div>
+                                           </div>
+                                           
+
+                                      </div>
+
+
+                                      <div class="col-md-9">
+                                                <div class="card">
+                                                       <div class="card-header p-2">
+                                                                  <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+
+
+                                                                      <li class="pt-2 px-3"><h3 class="card-title">Patients Records</h3></li>
+                                                                      <li class="nav-item">
+                                                                           <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Patient History Details</a>
+                                                                     </li>
+
+                                                                  </ul>
+
+                                                                 <div class="tab-custom-content">
+                                                          
+
+                                                                       <div class="tab-content" id="custom-content-below-tabContent">
+                                                               
+
+                                                                             <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                                                 
+                                                                              <table id="example2" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Date Visited</th>
+                                                                                               
+                                                                                               <th>Opd Nurse</th>
+                                                                                               <th>Doctor</th>
+                                                                                               <td>Lab Report Status</td>
+                                                                                               <td>Dietary Status</td>
+                                                                                           </tr>
+                                                                                     </thead>
+
+                                                                              </table>
+<!--{{view_patient_details}}-->
+                                                                             </div>
+                                                                       </div>
+
+                                                                 </div>
+                                                           
+                                                         </div>
+                                                </div>
+
+                                      </div>
+
+
+
+{% endblock %}

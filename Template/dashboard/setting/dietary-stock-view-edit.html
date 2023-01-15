@@ -1,0 +1,218 @@
+{% extends '../base.html' %}
+
+
+
+{% block content %}
+
+
+                    
+                                    <div class="col-md-3">                                     
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                        <div class="text-center">
+                                                             <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
+                                                        </div>
+                                                        <h3 class="profile-username text-center">{{dietary_details.dietary_details.dietary.dietary_name}}</h3>
+
+                                                        <!--<p class="text-muted text-center">Software Engineer</p>-->
+
+                                                        <ul class="list-group list-group-unbordered mb-3">
+                                                            <li class="list-group-item">
+                                                                  <b>Dietary Name</b> <a class="float-right">1,322</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                     <b>No. of Times Stocked</b> <a class="float-right">543</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Last  Stocked</b> <a class="float-right">{{dietary_details.dietary_details.date_stocked}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Quantity Stocked</b> <a class="float-right">{{dietary_details.new_quantity}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Quantity left</b> <a class="float-right">{{dietary_details.dietary_details.dietary.quantity}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Current Price</b> <a class="float-right">GHS {{dietary_details.dietary_details.dietary.price}}7</a>
+                                                            </li>
+                                                       </ul>
+                                                 </div>
+                                           </div>
+                                           
+
+                                    </div>
+
+
+
+                                    <div class="col-md-9">
+                                            <div class="card">
+                                                    <div class="card-header p-2">
+
+
+
+                                                            <ul class="nav nav-pills">
+                                                                    <li class="nav-item"><a class="nav-link active" href="#dietary_stock_history" data-toggle="tab">Dietary Stocked History</a></li>
+                                                                    <li class="nav-item"><a class="nav-link" href="#update_dietary_details" data-toggle="tab">Update Dietary Stock Details</a></li>
+                                                                   <li class="nav-item"><a class="nav-link" href="#restock_dietary" data-toggle="tab">Restock Dietary</a></li>
+                                                                   
+                                                                   <li class="nav-item"><a class="nav-link" href="#graph_report_chart" data-toggle="tab">Graph Report Charts</a></li>
+
+
+                                                            </ul>
+
+
+
+
+                                                      <div class="card-body">
+                                                             <div class="tab-content"> 
+
+
+                                                                       <div class="active tab-pane" id="dietary_stock_history">
+                                                                          
+
+                                                                                 <table id="example2" class="table table-bordered table-hover">
+                                                                                    
+
+                                                                                          <thead>
+                                                                                             <th>Date Stocked</th>
+                                                                                             <th>New Quantity Stocked</th>
+                                                                                             <th>Old Quantity Stocked</th>
+                                                                                             <th>Quantity Before Stocked</th>
+                                                                                             <th>Current Price</th>
+                                                                                             <th>Old Price</th>
+                                                                                             <th>Stocked By</th>
+                                                                                          </thead>
+                                                                                          <tbody>
+                                                                                                {% for stock in dietary_stock %}
+                                                                                                      <tr>
+                                                                                                           <td>{{stock.dietary_details.date_stocked}}</td>
+                                                                                                           <td>{{stock.new_quantity}}</td>
+                                                                                                           <td>{{stock.old_quantity}}</td>
+                                                                                                           <td>{{stock.quantity_at_time_of_stocking}}</td>
+                                                                                                           <td>{{stock.dietary_recent_cost}}</td>
+                                                                                                           <td>{{stock.dietary_old_cost}}</td>
+                                                                                                           <td>{{stock.stocked_by.i}}</td>
+                                                                                                      </tr>
+                                                                                                 {% endfor %}
+                                                                                          </tbody>
+                                                                                          
+
+                                                                                 </table>
+                    
+
+                                                                        </div> 
+
+
+
+                                                                       <div class="tab-pane" id="update_dietary_details">
+                                                                            <form method="post" id="updateDieataryDetails">
+                                                                                {% csrf_token %}
+                                                                                  <div class="input-group mb-3">
+                                                                                          <div class="input-group-prepend">
+                                                                                               <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                                         </div>
+                                                                                         <input type="text" value="{{dietary_details.dietary_details.dietary.dietary_name}}" class="form-control" placeholder="Dietary Name" name="dietary">
+                                                                                  </div>
+                                                                                  <!--<div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                               <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" placeholder="Cost">
+                                                                                  </div>-->
+                                                                                  <!--<div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                           <span class="input-group-text"><i class="fas fa-sort-numeric-down"></i></span>
+                                                                                       </div>
+                                                                                        <input type="number" class="form-control" placeholder="Quantity Stocked">
+                                                                                  </div>
+                                                                                  <div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                                                                                        </div>
+                                                                                         <input type="file" class="form-control" placeholder="Upload File Image">
+                                                                                  </div>-->
+                                                                                   <div class="input-group mb-3">
+                                                                                     
+                                                                                      <textarea class="form-control" rows="12" name="notes" placeholder="Enter Notes ...">
+                                                                                          {{dietary_details.dietary_details.dietary.notes}}
+                                                                                      </textarea>
+                                                                                 </div>
+                                                                                 <input type="hidden" class="form-control" value="{{dietary_details.dietary_details.dietary.id}}" name="dietary_id">
+                                                                                 <div class="input-group mb-3">
+                                                                                    <button class="btn btn-info"><i class="fas fa-paper-plane"></i> submit</button>
+                                                                                 </div>
+                                                                                 
+                                                                            </form>
+                                                                       </div>
+
+
+                                                                       <div class="tab-pane" id="restock_dietary">
+                                                                              <form method="post" id="update_dietary_stock">
+                                                                                   {% csrf_token %}
+                                                                                   <div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                               <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" name="price" placeholder="Cost per unit" required>
+                                                                                    </div>
+                                                                                    <div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                           <span class="input-group-text"><i class="fas fa-sort-numeric-down"></i></span>
+                                                                                       </div>
+                                                                                        <input type="number" class="form-control" name="quantity" placeholder="Quantity Stocked" required>
+                                                                                    </div>
+                                                                                    <div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                              <input type="hidden" class="form-control" value="{{dietary_id}}" name="dietary_id">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    
+                                                                                    <div class="input-group mb-3">
+                                                                                        <div class="input-group-prepend">
+                                                                                              <input type="hidden" class="form-control" value="1" name="user_id">
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div class="input-group mb-3">
+                                                                                         <button class="btn btn-info"><i class="fas fa-paper-plane"></i> submit</button>
+                                                                                    </div>
+
+                                                                              </form>
+                                                                       </div>
+                                                                      
+                                                                       <div class="tab-pane" id="graph_report_chart">
+                                                                          kjkjk
+                                                                       </div>
+
+
+
+
+
+
+
+                                                                       
+
+
+
+
+
+
+
+                                                          
+
+
+
+
+
+
+
+                                                    </div>
+
+                                              </div>
+                                   </div>
+
+
+
+
+{% endblock %}

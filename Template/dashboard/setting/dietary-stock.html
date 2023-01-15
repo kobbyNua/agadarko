@@ -1,0 +1,191 @@
+{% extends '../base.html' %}
+
+
+
+{% block content %}
+
+
+
+                                      <div class="col-md-12">
+                                         
+                                           <div class="card card-primary card-outline">
+                                                      <div class="card-body box-profile">
+                                                      	
+
+
+                                                          <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                            <li class="pt-2 px-3"><h3 class="card-title">Dietary Setting</h3></li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Dietary Stock LIst</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                   <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Create New Dietary Supplement</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                    <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Restock Dietary Supplement</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-settings" role="tab" aria-controls="custom-content-above-settings" aria-selected="false">Dietary Supplement Stocking Reports Reports</a>
+                                                             </li>
+                                                        </ul>
+
+
+
+                                                        <div class="tab-custom-content">
+                                                          
+
+                                                             <div class="tab-content" id="custom-content-below-tabContent">
+                                                               
+
+                                                                  <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+
+                                                                                                 <table id="example2" class="table table-bordered table-hover">
+                                                                                                          <thead>
+                                                                                                                    <tr>
+                                                                                                                     <th>Dietary</th>
+                                                                                                                     <th>Quantity In Stocked</th>
+                                                                                                                     
+                                                                                                                     <th>Price</th>
+                                                                                                                     <th>View & Edit Details</th>
+                                                                                                                     
+                                                                                                                    </tr>
+                                                                                                           </thead>
+                                                                                                           <tbody>
+                                                                                                           	     
+
+                                                                                                                 {% for dietary_supplement in dietary %}
+
+                                                                                                                       <tr>
+                                                                                                                           <td>{{dietary_supplement.dietary_name}}</td>
+                                                                                                                           <td>{{dietary_supplement.quantity}}</td>
+                                                                                                                         
+                                                                                                                           <td>{{dietary_supplement.price}}</td>
+                                                                                                                           <td><a href="/dietary-stocking-view/{{dietary_supplement.id}}" class="btn btn-info"> view stocking details</a></td>
+                                                                                                                       </tr>
+                                                                                                                 {% endfor %}
+
+
+                                                                                                           </tbody>
+                                                                                                  </table>
+
+
+                                                                 </div>
+
+
+                                                                 <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                                                                           
+                                                                      <form method="post" id="createDietarySupplement" enctype="multipart/form-data">
+                                                                              {% csrf_token %}
+                                                                              <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                                   </div>
+                                                                                    <input type="text" class="form-control" name="dietary" placeholder="Dietary Name" required>
+                                                                              </div>
+                                                                              <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                                                                                   </div>
+                                                                                    <input type="text" class="form-control" name="price" placeholder="Cost" required>
+                                                                              </div>
+                                                                              <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-sort-numeric-down"></i></span>
+                                                                                   </div>
+                                                                                    <input type="number" class="form-control" name="quantity" placeholder="Quantity Stocked" required>
+                                                                              </div>
+                                                                              <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                                                                                   </div>
+                                                                                    <input type="file" class="form-control" name="photo" placeholder="Upload File Image" required>
+                                                                              </div>
+                                                                              <div class="input-group mb-3">
+                                                                                     
+                                                                                      <textarea class="form-control" rows="12" placeholder="Enter Notes ..." name="notes" required></textarea>
+                                                                              </div>
+                                                                              <div class="input-group mb-3">
+                                                                                <input type="hidden" class="form-control" name="user_id" value="1"/>
+                                                                              </div>
+                                                                              <div class="input-group mb-3">
+                                                                                    <input value="submit" class="btn btn-info" type="submit">
+                                                                              </div>
+                                                                      </form>
+                                                                 </div>
+
+
+
+                                                                 <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+                                                                                               <table id="example3" class="table table-bordered table-hover">
+                                                                                                         <thead>
+                                                                                                              <tr>
+                                                                                                                <th>Dietary</th>
+                                                                                                                
+                                                                                                                <th>Quantity left</th>
+                                                                                                                <th>View & Edit Details</th>
+                                                                                                                
+                                                                                                               </tr>
+                                                                                                         </thead>
+                                                                                                          <tbody>
+                                                                                                              
+                                                                                                                 {% for dietary_supplement in restock %}
+                                                                                                                       <tr>
+                                                                                                                           <td>{{dietary_supplement.dietary_details.dietary.dietary_name}}</td>
+                                                                                                                           <td>{{dietary_supplement.dietary_details.dietary.quantity}}</td>
+                                                                                                                         
+                                                                                                                           
+                                                                                                                           <td><a href="/dietary-stocking-view/{{dietary_supplement.dietary_details.dietary.id}}" class="btn btn-info"> view stocking details</a></td>
+                                                                                                                       </tr>
+                                                                                                                 {% endfor %}
+
+
+
+                                                                                                          </tbody>
+                                                                                               </table>
+                                                                  </div>
+
+
+
+                                                                  <div class="tab-pane fade" id="custom-content-above-settings" role="tabpanel" aria-labelledby="custom-content-above-settings-tab">
+          
+
+                                                                              <div class="form-group">
+                                                                                  <label>Date range:</label>
+
+                                                                                    <div class="input-group">
+                                                                                          <div class="input-group-prepend">
+                                                                                                 <span class="input-group-text">
+                                                                                                    <i class="far fa-calendar-alt"></i>
+                                                                                                 </span>
+                                                                                          </div>
+                                                                                          <input type="text" class="form-control float-right" id="reservation">
+                                                                                   </div>
+                                                                                 <!-- /.input group -->
+                                                                               </div>
+                                                                               <div class="input-group mb-3">
+                                                                                    <button class="btn btn-info"><i class="fas fa-paper-plane"></i> submit</button>
+                                                                              </div>
+
+                                                                  </div>
+
+
+
+
+                                                            </div>
+                                                        </div>
+
+
+
+
+
+
+
+
+
+
+                                                     </div>
+                                           </div>
+                                      </div>
+
+
+{% endblock %}

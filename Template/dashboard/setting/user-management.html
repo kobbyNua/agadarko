@@ -1,0 +1,398 @@
+{% extends '../base.html' %}
+
+
+{% block content %}
+
+                                      <div class="col-md-3">                                     
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                        <div class="text-center">
+                                                             <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
+                                                        </div>
+                                                        <h3 class="profile-username text-center">Nina Mcintire</h3>
+
+                                                        <p class="text-muted text-center">Software Engineer</p>
+
+                                                        <ul class="list-group list-group-unbordered mb-3">
+                                                            <li class="list-group-item">
+                                                                  <b>Telephone</b> <a class="float-right">1,322</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                     <b>Email</b> <a class="float-right">543</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Role</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            
+                                                            <li class="list-group-item">
+                                                                  <b>last login</b> <a class="float-right"> Oct. 20, 20222</a>
+                                                            </li>                                                            <!--<li class="list-group-item">
+                                                                  <b>Current Quantity Stocked</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Quantity left</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Friends</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Current Price</b> <a class="float-right">13,287</a>
+                                                            </li>-->
+                                                       </ul>
+
+
+                                                  </div>
+                                            </div>
+
+                                       </div>
+
+                                       <div class="col-md-9">
+                                            <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                 	
+
+                                                            <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                                <li class="pt-2 px-3"><h3 class="card-title">Staff Profile Management</h3></li>
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Update Profile</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Change Password</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                      <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">View Roles and Permission</a>
+                                                                </li>
+
+
+                                                            </ul>
+
+
+                                                       <div class="tab-custom-content">
+                                                                
+                                                            <div class="tab-content" id="custom-content-below-tabContent">
+                                       
+                                                                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+
+
+
+
+                                                    <form method="post" id="">
+                                                           <div class="row">
+                                                               
+                                                                 <div class="col-md-12">
+                                                                
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+                                                               
+
+                                                                 <div class="col-md-12">
+                                                                
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+
+
+                                                           
+                                                                 <div class="col-md-12">
+                                                                 
+
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+
+                                                                 <div class="col-md-12">
+                                                                 
+
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text">@</i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+
+
+
+                                                           </div>
+
+                                                           <!--<div class="row">
+                                                                  <div class="col-md-12">
+                                                                        
+                                                                         <div class="form-group">
+                                                                               <label>Role</label>
+                                                                               <select class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                     <option>Admin</option>
+                                                                                     <option>Nurse</option>
+                                                                                     <option>Doctor</option>
+                                                                                     <option>Accountant</option>
+                                                                                     <option>Lab Techinican</option>
+                                                                                     <option>Dietary</option>
+                                                                                     
+                                                                               </select>
+                                                                        </div>
+
+                                                                  </div>
+                                                           </div>-->
+                                                           <input type="hidden" class="form-control" name="id" placeholder="user_id">
+                                                           <div class="input-group mb-3">
+                                                                                    <button class="btn btn-info"><i class="fas fa-paper-plane"></i> submit</button>
+                                                           </div>
+                                                            <!-- 
+                                                                 <div class="col-md-6">
+                                                                
+                                                                        <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                                   </div>
+                                                                        <input type="text" class="form-control" placeholder="Lab Test Name">
+                                                                    </div>
+                                                                -->
+
+
+
+
+                                                    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                	
+                                                                </div>
+
+                                                                <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+                                                                	
+
+
+
+
+
+                                                       <form method="post" id="">
+                                                           <div class="row">
+                                                               
+                                                                 <div class="col-md-12">
+                                                                
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" disbaled placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+                                                               
+
+                                                                 <div class="col-md-12">
+                                                                
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" disabled placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+
+
+                                                           
+                                                                 <div class="col-md-12">
+                                                                 
+
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" disabled placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+
+
+                                                                 <div class="col-md-12">
+                                                                 
+
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text">@</i></span>
+                                                                                   </div>
+                                                                                   <input type="text" class="form-control input-lg" disabled placeholder="Lab Test Name">
+                                                                           </div>
+
+                                                                 </div>
+                                                                 <div class="col-md-12">
+                                                                 
+
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-lock"></i></i></span>
+                                                                                   </div>
+                                                                                   <input type="password" class="form-control input-lg"  placeholder="password">
+                                                                           </div>
+
+                                                                 </div>
+                                                                 <div class="col-md-12">
+                                                                 
+
+                                                                           <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-lock"></i></i></span>
+                                                                                   </div>
+                                                                                   <input type="password" class="form-control input-lg"  placeholder="confirm password">
+                                                                           </div>
+
+                                                                 </div>
+
+                                                           </div>
+
+                                                           <!--<div class="row">
+                                                                  <div class="col-md-12">
+                                                                        
+                                                                         <div class="form-group">
+                                                                               <label>Role</label>
+                                                                               <select class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                     <option>Admin</option>
+                                                                                     <option>Nurse</option>
+                                                                                     <option>Doctor</option>
+                                                                                     <option>Accountant</option>
+                                                                                     <option>Lab Techinican</option>
+                                                                                     <option>Dietary</option>
+                                                                                     
+                                                                               </select>
+                                                                        </div>
+
+                                                                  </div>
+                                                           </div>-->
+                                                           <input type="hidden" class="form-control" name="id" placeholder="user_id">
+                                                           <div class="input-group mb-3">
+                                                                                    <button class="btn btn-info"><i class="fas fa-paper-plane"></i> submit</button>
+                                                           </div>
+                                                            <!-- 
+                                                                 <div class="col-md-6">
+                                                                
+                                                                        <div class="input-group mb-3">
+                                                                                   <div class="input-group-prepend">
+                                                                                         <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                                   </div>
+                                                                        <input type="text" class="form-control" placeholder="Lab Test Name">
+                                                                    </div>
+                                                                -->
+
+
+
+
+                                                    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                </div>
+
+
+
+                                                                 <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                                                                 	
+
+                                                                     <table id="example2" class="table table-bordered table-hover">
+                                                                           <thead>
+                                                                               <tr>
+                                                                                  <th>Role</th>
+                                                                                  <th>Permission</th>
+                                                                 
+                                                                              </tr>
+                                                                           </thead> 
+                                                                           <tbody>
+
+                                                                                   <tr>
+                                                                                       <td>Administrators</td>
+                                                                                       <td>gjkjgf jkjfkjkjb fkjkfjkj</td>
+                                                                                   </tr>
+                                                                                          
+                                                                                    <tr>                                                                            
+                                                                                                                                                                       >
+                                                                                       <td>Administrators</td>
+                                                                                       <td>gjkjgf jkjfkjkjb fkjkfjkj</td>
+                                                                                   </tr>
+                                                                                   <tr>
+                                                                                       <td>Doctor</td>
+                                                                                       <td>gklkfl fklkflk</td>
+                                                                                   </tr>
+
+                                                                           </tbody>
+                                                                     </table>
+
+
+
+
+                                                                 	
+                                                                 </div>
+
+
+
+                                                            </div>
+                                                        </div>
+
+
+
+
+
+
+
+
+
+
+                                                 </div>
+                                             </div>
+                                       </div>
+
+
+
+
+{% endblock %}

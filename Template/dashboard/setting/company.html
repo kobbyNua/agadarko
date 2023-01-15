@@ -1,0 +1,91 @@
+{% extends '../base.html' %}
+
+
+
+{% block content %}
+
+
+
+                                      <div class="col-md-12">
+                                         
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                      <div class="card-body box-profile">
+                                                      	
+
+                                                      <form method="post" id="company">
+                                                            {% csrf_token %}
+                                                            <label>Company Name</label>
+                                                            <div class="input-group mb-3">
+
+                                                                   <div class="input-group-prepend">
+                                                                        <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                    </div>
+                                                                    <input type="text" class="form-control" name="company_name" placeholder="Company Name">
+                                                            </div>
+                                                            <label>Email</label>
+                                                            <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text">@</span>
+                                                                    </div>
+                                                                    <input type="email" class="form-control" name="email" placeholder="Email">
+                                                            </div>
+                                                            <label>Telephone</label>
+                                                            <div class="input-group mb-3">
+                                                                   <div class="input-group-prepend">
+                                                                        <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                    </div>
+                                                                    <input type="text" class="form-control" name="telephone" placeholder="Telephone">
+                                                            </div>
+
+                                                             <label>Town</label>
+                                                            <div class="input-group mb-3">
+                                                                   <div class="input-group-prepend">
+                                                                        <span class="input-group-text"><i class="fas fa-seedling"></i></span>
+                                                                    </div>
+                                                                    <input type="text" class="form-control" name="town" placeholder="Town">
+                                                            </div>
+                                                             <label>Region</label>
+                                                            <div class="input-group mb-3">
+                                                                   <div class="input-group-prepend">
+                                                                            <span class="input-group-text"><i class="fas fa-seedling"></i> Region</span>
+
+                                                                   </div>
+                                                                   <select name="region" class="form-control select2">
+                                                                   	
+                                                                   	      {% for regions in Region %}
+
+                                                                                 <option value="{{regions.id}}">{{regions.region}}</option>
+                                                                   	      {% endfor %}
+                                                                   </select>
+
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                 <input type="hidden" class="form-control" name="user" value="1" placeholder="id">
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <button class="btn btn-info"><i class="fas fa-paper-plane"></i> submit</button>
+
+                                                            </div>
+
+
+
+                                                      </form>
+
+
+
+
+
+
+
+
+                                                      </div>
+                                           </div>
+                                      </div>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+*a group can have one or more permission
+*two or more different group can have the same permission 
+* staff must belong to one or more group and also can have one or more permissions
+
+==============================
+Staff Account Creation
+==============================
+* all staff must have an account
+* staffs can belong to one or more group 
+* staff can have one or more permissions depending on the group they belong
+* staff must have a default password
+* staff must be directed to change password
+* staff must be long to the hospital
+* administrator must be able to add users
+* logout staffs if hostiptal details and staff details not found
+* always force  the admin to the hosiptal creation area if hosptial details not found
+* always force users to logout if hosptial details are not found

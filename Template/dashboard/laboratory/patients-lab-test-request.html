@@ -1,0 +1,137 @@
+
+{% extends '../base.html' %}
+
+{% block content %}
+
+
+             <div class="col-md-12">
+                                         
+            <!-- Profile Image -->
+                <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                                                        
+                             <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                     <li class="pt-2 px-3"><h3 class="card-title">Laboratory Rors Records</h3></li>
+                                     <li class="nav-item">
+                                            <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">In Patient List</a>
+                                     </li>
+                                     <li class="nav-item">
+                                            <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Search Patients</a>
+                                      </li>
+                                     <li class="nav-item">
+                                            <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Laboratary Test List</a>
+                                            </li>
+                                                              <!--<li class="nav-item">
+                                                                  <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-settings" role="tab" aria-controls="custom-content-above-settings" aria-selected="false">Dietary Supplement Stocking Reports Reports</a>
+                                                             </li>-->
+                              </ul>
+
+
+
+                              <div class="tab-custom-content">
+                                                          
+
+                                    <div class="tab-content" id="custom-content-below-tabContent">
+                                                               
+
+                                          <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                          	
+
+                                                                              <table id="example2" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Fullname</th>
+                                                                                               <th>Date Rport</th>
+                                                                                               
+                                                                                               <th>Attend to Patient</th>
+                                                                                           </tr>
+                                                                                     </thead>
+                                                                                     <tbody>
+                                                                                     	
+	  	   	                                                                             {% for lab_request in view_patient_lab_request %}
+                                                                                                   <tr>
+                     	                                                                                 <td>{{lab_request.patient_history.patient.First_Name}} {{lab_request.patient_history.patient.Last_Name}}</td>
+                     	                                                                                 <td>{{lab_request.date_reported}}</td>
+                     	                                                                                  <td><a href="./view-patient-required-lab-test/{{lab_request.patient_history.id}}">view & take requested test</a></td>
+                                                                                                   </tr>
+	  	   	                                                                              {% endfor %}
+
+
+
+
+                                                                                     </tbody>
+
+                                                                              </table>
+
+
+
+
+                                          </div>
+
+
+                                          <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                                          
+
+
+                                                                              <form>
+                                                                                     <div class="row">
+                                                                                            <div class="col-lg-12 col-12">
+                                                                                                  <div class="form-group">
+
+                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" placeholder="search patient record">
+                                                                                                  </div>
+                                                                                            </div>
+                                                                                     </div>
+                                                                              </form>
+
+
+                                                                              <table id="example3" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Fullname</th>
+                                                                                               
+                                                                                               <th>Number time visted</th>
+                                                                                               <th>Last Date Visited</th>
+                                                                                               <td>View Laboratory History</td>
+                                                                                               
+                                                                                           </tr>
+                                                                                     </thead>
+                                                                                     <tbody></tbody>
+
+                                                                              </table>
+
+
+
+                                          </div>
+                                                                          
+                                          <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+                                          	
+
+                                                                              <table id="example4" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Test Name</th>
+                                                                                               <th>Cost</th>
+                                                                                               <th>Status</th>
+                                                                                         
+                                                                                           </tr>
+                                                                                     </thead>
+                                                                                     <tbody></tbody>
+
+                                                                              </table>
+
+
+
+
+
+                                          	
+                                          </div>
+
+
+
+                                    </div>
+                              </div>
+
+                        </div>
+                </div>
+{% endblock %}

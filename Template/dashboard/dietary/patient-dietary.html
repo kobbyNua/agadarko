@@ -1,0 +1,243 @@
+
+{% extends '../base.html' %}
+
+
+{% block content %}
+
+                                      <div class="col-md-3">
+                                         
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                        <div class="text-center">
+                                                             <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
+                                                        </div>
+                                                        <h3 class="profile-username text-center">Nina Mcintire</h3>
+
+                                                        <!--<p class="text-muted text-center">Software Engineer</p>-->
+
+                                                        <ul class="list-group list-group-unbordered mb-3">
+
+                                                            <li class="list-group-item">
+                                                                  <b>Date Of Birth</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Telephone</b> <a class="float-right">1,322</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                     <b>Region</b> <a class="float-right">543</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>City</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>No. of Times</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <!--<li class="list-group-item">
+                                                                  <b>Balance</b> <a class="float-right">0.00</a>
+                                                            </li>
+
+                                                            <a href="#" class="btn btn-primary btn-block"><b>Start Sessions</b></a>-->
+                                                            <!--<li class="list-group-item">
+                                                                  <b>Current Quantity Stocked</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Quantity left</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Friends</b> <a class="float-right">13,287</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Current Price</b> <a class="float-right">13,287</a>
+                                                            </li>-->
+                                                       </ul>
+                                                 </div>
+                                           </div>
+                                           
+
+                                      </div>
+
+
+                                      <div class="col-md-9">
+                                            <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                     
+                                                        <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                            <li class="pt-2 px-3"><h3 class="card-title">Medical</h3></li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Patient ietary Supplement</a>
+                                                              </li>
+                                                              <!--<li class="nav-item">
+                                                                   <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Patient Dietary History</a>
+                                                              </li>-->
+                                                             <li class="nav-item">
+                                                                    <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Patient Dietary Supplement History</a>
+                                                              </li>
+                                                              <!--li class="nav-item">
+                                                                  <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-settings" role="tab" aria-controls="custom-content-above-settings" aria-selected="false">Dietary Supplement Stocking Reports Reports</a>
+                                                             </li>-->
+                                                        </ul>
+
+
+                                                        <div class="tab-custom-content">
+                                                          
+
+                                                                <div class="tab-content" id="custom-content-below-tabContent">
+                                                               
+
+                                                                      <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                                          
+                                                                              <div class="" style="width:100%">
+                                                                                      <div class="card card-info">
+                                                                                               <div class="card-header">
+                                                                                                       <h3 class="card-title">Dispense Dietary Supplement</h3>
+
+
+                                                                                                        <div class="card-tools">
+                                                                                                              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                                                                                 <i class="fas fa-minus"></i>
+                                                                                                              </button>
+                                                                                                             <!--<button type="button" class="btn btn-tool" data-card-widget="remove">
+                                                                                                                <i class="fas fa-times"></i>
+                                                                                                             </button>-->
+                                                                                                        </div>
+                                                                                               </div>
+
+                                                                                               <div class="card-body">
+                                                                                                    
+
+                                                                                                  {% if patient_dietry_details|length <= 0 %}
+                                                                                                              No Dietary Records deitary
+                                                                                                 {% else %}
+                                                                                                 <form method="post" action="/dispen-patient-dietary">
+                                                                                                         {% csrf_token %}
+                                                                                                         <table class="table table-bordered table-hover">
+                                                                                                              <tr>
+                                                                                                                   <td>Dietary </td>
+                                                                                                                   <td>Cost</td>
+                                                                                                                   <td>Quantity</td>
+                                                                                                              </tr>
+                                                                                                              {% for patient_dietary in patient_dietry_details %}
+                                  
+                                  
+                                                                                                               <tr>
+                                                                                                                <td>{{patient_dietary.dietary.dietary_name}}
+                                                                                                                <input type="hidden" name="patient_dietary_id" value="{{patient_dietary.id}}">
+                                                                                                               <input type="hidden" name="dietary_id" value="{{patient_dietary.dietary.id}}"></td>
+                                                                                                               <td>GHS {{patient_dietary.dietary.price}}</td>
+                                         
+                                                                                                                <td>
+                                                                                                                    {% if patient_dietary.quantity == 0 %}
+                                                                                                                     <input type="text" name="dietary_quantiy">
+                                                                                                                    {% else %}
+                                                                                                                         {{patient_dietary.quantity}}
+                                                        
+                                                                                                                   {% endif %}
+                                                
+                                                                                                                </td>
+
+                                                                                                              </tr>
+                                  
+                                      
+                                                                                                             {% endfor %}
+                                                                                                             <tr>
+                                                                                                              <td colspan="2"></td>
+                                                                                                             
+                                                                                                             <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
+                                                                                                            </tr>
+                           
+                           <tr>
+                                <td colspan="2"></td>
+                        
+                                <td><input type="submit" value="dispense dietary"/></td>
+                           </tr>
+                         </table>
+                     </form>
+                 {% endif %}
+
+
+
+
+                                                                                               </div>
+                                                                                               <div class="card-footer card-info"></div>
+                                                                                      </div>
+
+                                                                              </div>
+                                                                      </div>
+
+
+                                                                <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+vvlvlvl
+                                                                      
+                                                                </div>
+
+
+
+                                                                </div>
+
+                                                        </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+
+
+
+
+
+
+
+<!--<div class="container">
+
+       <div class="patient_lab_input_details">
+	  	       {% if patient_dietry_details|length <= 0 %}
+                      No Dietary Records deitary
+	  	       {% else %}
+                     <form method="post" action="/dispen-patient-dietary">
+                     	{% csrf_token %}
+                     	<table>
+                              <tr>
+                                   <td>Dietary </td>
+                                   <td>Cost</td>
+                                   <td>Quantity</td>
+                              </tr>
+                     	  {% for patient_dietary in patient_dietry_details %}
+                                  
+                                  
+                                  	  <tr>
+                                  	  	  <td>{{patient_dietary.dietary.dietary_name}}
+                                  	  	     <input type="hidden" name="patient_dietary_id" value="{{patient_dietary.id}}">
+                                  	  	    <input type="hidden" name="dietary_id" value="{{patient_dietary.dietary.id}}"></td>
+                                  	  	  <td>GHS {{patient_dietary.dietary.price}}</td>
+                                         
+                                          <td>
+                                               {% if patient_dietary.quantity == 0 %}
+                                                        <input type="text" name="dietary_quantiy">
+                                                {% else %}
+                                                       {{patient_dietary.quantity}}
+                                                        
+                                               {% endif %}
+                                                
+                                          </td>
+
+                                  	  </tr>
+                                  
+                                      
+                     	  {% endfor %}
+                     	  <tr>
+                     	  	 <td colspan="2"></td>
+                     	  	 <td></td>
+                     	  	 <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
+                     	  </tr>
+                     	  
+                     	  <tr>
+                     	  	  <td colspan="3"></td>
+                     	  	  <td></td>
+                     	  	  <td><input type="submit" value="dispense dietary"/></td>
+                     	  </tr>
+                     	</table>
+                     </form>
+	  	       {% endif %}
+	  </div>
+</div>-->
+
+{% endblock %}
