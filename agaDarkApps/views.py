@@ -164,19 +164,19 @@ def create_patient_complaints_diagonsis(request):
 
 
 def create_patient_opd_vitals(request):
-	  patient_history_id = request.POST.get('patient_history_id',False)
-	  vital_id=request.POST.getlist('vital_id')
-	  vital_details=request.POST.getlist('vital')	  
-	  patient_opd_history=patient_opd_history_vitals(patient_history_id,vital_id,vital_details)
-	  status_type=""
-	  msg=""
-	  if patient_opd_history == True:
-	  	status_type+="success"
-	  	msg+="patient opd vitals details created successfully"
-	  else:
-	  	status_type+="error"
-	  	msg+="couldn't create patient details"
-	  return JsonResponse({'status':status_type,status_type:msg})
+	patient_history_id = request.POST.get('patient_history_id',False)
+	vital_id=request.POST.getlist('vital_id')
+	vital_details=request.POST.getlist('vital')	  
+	patient_opd_history=patient_opd_history_vitals(patient_history_id,vital_id,vital_details)
+	status_type=""
+	msg=""
+	if patient_opd_history == True:
+		status_type+="success"
+		msg+="patient opd vitals details created successfully"
+	else:
+		status_type+="error"
+		msg+="couldn't create patient details"
+	return JsonResponse({'status':status_type,status_type:msg})
 	  
 
 
@@ -480,25 +480,23 @@ def update_dietary_supplement_details(request):
 	return JsonResponse({'status':status,status:msg})
 
 def set_hospital_details(request):
-     hospital_name=request.POST['company_name']
-     username=request.POST['username']
-     email=request.POST['email']
-     telephone=request.POST['telephone']
-     town=request.POST['town']
-     region=request.POST['region']
-     msg=""
-     status=""
-     create_hospital=create_hospital_details(hospital_name,user,email,telephone,town,region)
-     print(create_hospital)
-
-     if create_hospital == True:
-     	status+="success"
-     	msg+='hospital details created successfully'
-     else:
-     	status+="error"
-     	msg+="couldn't create hospital details. Hospital Details already exist"
-
-     return JsonResponse({'status':status,status:msg})
+	hospital_name=request.POST['company_name']
+	user=request.POST['user']
+	email=request.POST['email']
+	telephone=request.POST['telephone']
+	town=request.POST['town']
+	region=request.POST['region']
+	msg=""
+	status=""
+	create_hospital=create_hospital_details(hospital_name,user,email,telephone,town,region)
+	print(create_hospital)
+	if create_hospital == True:
+		status+="success"
+		msg+='hospital details created successfully'
+	else:
+		status+="error"
+		msg+="couldn't create hospital details. Hospital Details already exist"
+	return JsonResponse({'status':status,status:msg})
 def create_staff_details(request):
 	first_name=request.POST['fname']
 	last_name=request.POST['lname']
