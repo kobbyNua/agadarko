@@ -83,4 +83,14 @@ def patient_lab_test_cost_details(patient_lab_id,test_type):
 	update_patient_lab_test_cost.total_cost=total_cost
 	update_patient_lab_test_cost.save()
 	return True
+
+
+
+def multiple_lab_type_list(dietary_id):
+	data=list()
+	for items in dietary_id:
+		lab=Lab_Test_Cost_Details.objects.get(pk=items)
+		data.append({'items':lab.test_type,'amount':lab.cost})
+	return data
+
     	

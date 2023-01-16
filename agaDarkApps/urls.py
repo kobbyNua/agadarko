@@ -23,6 +23,7 @@ urlpatterns=[
    path('view-patient-dietary-lists',views.view_patient_dietary_lists,name="view_patient_dietary_lists"),
    path('view-patient-dietary-details/<int:patient_history_id>/',views.view_patient_dietary_details,name="view_patient_dietary_details"),
    path('dispen-patient-dietary',views.dispen_patient_dietary,name="dispen_patient_dietary"),
+   path('multiple-lab-test_list',views.multiple_lab_test_list,name="multiple_lab_test_list"),
    path('multiple-dietary-supplement-list',views.multiple_dietary_supplement_list,name="multiple_dietary_supplement_list"),
 
    path('view-lab-test-types',views.view_lab_test_types,name='view_lab_test_types'),

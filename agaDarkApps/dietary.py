@@ -75,11 +75,14 @@ dietary inventiry stock
 def view_dietary_list():
 	return Dietary_Supplementary.objects.all()
 def multiple_dietary_list(dietary_id):
-	lists=[]
-	for dietary in range(len(dietary_id)):
-		print(dietary_id[dietary])
+	data=list()
+	for items in dietary_id:
+		dietary=Dietary_Supplementary.objects.get(pk=items)
+		data.append({'items':dietary.dietary_name,'amount':dietary.price})
+	return data
+
 	'''
-	dietary_list=Dietary_Supplementary.objects.filter(pk=dietary_id)
+	
 	for dietary in dietary_list:
 		lists.append({'dietary':dietary.dietary_name,'amount':dietary.price})
 	return multiple_dietary_list

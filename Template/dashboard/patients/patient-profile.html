@@ -109,7 +109,7 @@
                                                                                                   <table class="table  table-striped">
                                                                                                         <tr>
                                                                                                               <th>OPD Vital</th>
-                                                                                                              <th></th>
+                                                                                                              <th>Details</th>
                                                                                                         </tr>
                                                                                                   {% for opd in patient_opd_vital %}
                                                                                   
@@ -121,7 +121,7 @@
                                                                                               </table>
                                                                                             {% else %}
                                                                                           
-                                                                                                <form method="POST" action="/create-patient-opd-vitals">
+                                                                                                <form method="POST" id="create_opd_details">
                                                                                                       {% csrf_token %}
                                                                                                   <table class="table  table-striped">
                                                                                                          <tr>
@@ -131,8 +131,8 @@
                                                                                                          {% for opd in opd_vital %}
                                                                                                            
                                                                                                       <tr>
-                                                                                                            <td>{{opd.vital_type}}<input type="hidden" name="vital_id" value="{{opd.id}}"</td>
-                                                                                                            <td><input type="text" class="form-control" name="vital" placeholder="inputs for {{opd.vital_type}}"></td>
+                                                                                                            <td>{{opd.vital_type}}<input type="hidden" name="vital_id" value="{{opd.id}}"></td>
+                                                                                                            <td><input type="text" class="form-control" name="vital" placeholder="inputs for {{opd.vital_type}}" required></td>
                                                                                                       </tr>
                                                                                                          {% endfor %}
                                                                                                       <tr>
@@ -161,41 +161,62 @@
                                                                                              </div>
                                                                                              <div class="card-body">
 
-                                                                                                {{patient_complaints|length}}
+                                                                                                
                                                                                                 {% if patient_complaints|length > 0 %}
-                                                                                                    <form method="post" action="/edit-doctor-diagonsis">
+                                                                                                    <form method="post" id="doctor-diagnosis_report">
                                                                                                           {% csrf_token %}
                                                                                                     {% for patients in patient_complaints %}
                                                                                 
-                                                                                                           Patient Complaient<br/>
-                                                                                                           <textarea name="complaints" class="form-control mb-3" disabled>
+                                                                                                           <table class="table table-striped">
+                                                                                                               <tr>
+                                                                                                                  <td></td>
+                                                                                                                  <td colspan="2">Patient Complains</td>
+                                                                                                               </tr>
+                                                                                                               <tr>
+                                                                                                                  <td>Complaints</td>
+                                                                                                                  <td>{{patients.patient_complaint}}</td>
+                                                                                                               </tr>
+                                                                                                           </table>
+                                                                                                           <!--<textarea name="complaints" class="form-control mb-3" disabled>
                                                                                                                    {{patients.patient_complaint}}
-                                                                                                           </textarea><br>
-                                                                                                           doctor Dignosis<br/>
-                                                                                                           {% if patients.doctor_dignosis_report != " " %}
-                                                                                                               <textarea name="doctor_diagonsis" disabled>{{patients.doctor_dignosis_report}}</textarea><br>
+                                                                                                           </textarea><br>-->
+                                                                                                           
+                                                                                                           {% if patients.doctor_dignosis_report|length > 0 %}
+                                                                                                           <table class="table table-striped">
+                                                                                                                     <tr>
+                                                                                                                         <td></td>
+                                                                                                                         <td colspan="2">Doctor Diagnosis</td>
+                                                                                                                     </tr>
+                                                                                                                     <tr>
+                                                                                                                         <td>diagonsis</td>
+                                                                                                                         <td>{{patients.doctor_dignosis_report}}</td>
+                                                                                                                     </tr>
+                                                                                                            </table>
+                                                                                                               <!--<textarea name="doctor_diagonsis" disabled>{{patients.doctor_dignosis_report}}</textarea>-->
                                                                                                            {% else %}
                                                                                                                <textarea name="doctor_diagonsis" class="form-control mb-3" rows="12"></textarea>
+                                                                                                               <input type="hidden" value="{{patients.id}}" name="diagnosis_id">
+                                                                                                               <input type="submit" value="submit" class="btn btn-info">
                                                                                                            {% endif %}
-                                                                                                           <input type="hidden" value="{{patients.id}}" name="diagnosis_id"><br>
+                                                                                                           
+                                                                                                           
                                                                                                            
                                                                                 
-                                                                                
                                                                                                     {% endfor %}
-                                                                                                     <input type="submit" value="submit">
+                                                                                                     
                                                                                                     </form> 
                                                                                 
                                                                                                 {% else %}edit-doctor-diagonsis
-                                                                                                <form method="POST" action="/create-patient-complaints-diagonsis">
+                                                                                                <form method="POST" id="patient_complaints_details">
                                                                                                           {% csrf_token %}
                                                                                                            <br>
-                                                                                                           Patient Complaient<br/>
+                                                                                                           Patient Complaient
                                                                                                            
                                                                                                            <input type="hidden" value="{{patient_history_id}}" name="patient_history_id">
                                                                                 
-                                                                                                           <textarea name="complaints"  class="form-control" rows="10">
+                                                                                                           <textarea name="complaints" placeholder="patinet's complaints" class="form-control" rows="10">
                                                                                                                  
-                                                                                                           </textarea><br>
+                                                                                                           </textarea>
                                                                                                           
                                                                                 
                                                                                                            <input type="hidden" value="1" name="user_id"><br>
@@ -237,7 +258,7 @@
                                                                               
                                                                                                {% endfor %}
                                                                                            {% else %}
-                                                                                                  <form method="post" id="select_lab_test" action="/create-patient-lab-request">
+                                                                                                  <form method="post" id="select_lab_test">
                                                                                                     {% csrf_token %}
                                                                               
                                                                                                    <select name="lab_test" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
@@ -249,15 +270,20 @@
                                                                                                    </select>
                                                                                                    <input type="hidden" value="1" name="user_id">
                                                                                                    <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"><br/>
-                                                                                                   <input type="submit" value="send lab request"/>
+                                                                                                   <input type="submit" value="send lab request" class="btn btn-info" style="border:none;border-radius: 0px;"/>
                                                                                                  </form>
 
-                                                                                                  <div class="table-responsive mt-1 mb-1">
-                                                                                                         <table class="table table-bordered">
+                                                                                                  <div class="table-responsive mt-1 mb-1" >
+                                                                                                         <table class="table table-bordered" id="selected_lab_test">
+                                                                                                               <thead>
                                                                                                                   <tr>
                                                                                                                         <th>Laboratary Test</th>
                                                                                                                         <th>Cost</th>
                                                                                                                   </tr>
+                                                                                                               </thead>
+                                                                                                               <tbody>
+
+                                                                                                               </tbody>
                                                                                                          </table>
                                                                                                   </div>
                                                                               
@@ -299,7 +325,7 @@
                                                                               
                                                                                                {% endfor %}
                                                                                            {% else %}
-                                                                                                  <form method="post" action="/create-patient-dietary-request">
+                                                                                                  <form method="post" id="select_dietary_supplement" action="/create-patient-dietary-request">
                                                                                                     {% csrf_token %}
                                                                               
                                                                                                    <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
@@ -317,7 +343,19 @@
                                                                                            {% endif %}
 
 
+                                                                                           <div class="table-responsive mt-1 mb-1" >
+                                                                                                <table class="table table-bordered" id="selected_dietary_supplement">
+                                                                                                      <thead>
+                                                                                                         <tr>
+                                                                                                               <th>Dietary Supplement</th>
+                                                                                                               <th>Cost</th>
+                                                                                                         </tr>
+                                                                                                      </thead>
+                                                                                                      <tbody>
 
+                                                                                                      </tbody>
+                                                                                                </table>
+                                                                                         </div>
                                                                                              </div>
                                                                                       </div>
 

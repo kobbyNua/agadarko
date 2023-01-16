@@ -79,10 +79,42 @@ $(document).ready(function(){
         submitForms(this,'/create-patient')
    })
 
+   $('#create_opd_details').submit(function(e){
+      e.preventDefault()
+      $('#responseBox').modal('show')
+      submitForms(this,"/create-patient-opd-vitals")
+  })
+
+  $('#patient_complaints_details').submit(function(e){
+      e.preventDefault()
+      $('#responseBox').modal('show')
+      submitForms(this,"/create-patient-complaints-diagonsis")
+  })  
+
+  $('#doctor-diagnosis_report').submit(function(e){
+      e.preventDefault()
+      $('#responseBox').modal('show')
+      submitForms(this,"/edit-doctor-diagonsis")
+  }) 
+
+  $('#select_lab_test').submit(function(e){
+      e.preventDefault()
+      $('#responseBox').modal('show')
+      submitForms(this,"/create-patient-lab-request")
+  }) 
+
    $('#select_lab_test select[name=lab_test]').change(function(e){
         e.preventDefault()
-        onselectChange(this,'/multiple-dietary-supplement-list')
+        onselectChange(this,'#selected_lab_test tbody','/multiple-lab-test_list')
+       
    })
+   $('#select_dietary_supplement select[name=dietary]').change(function(e){
+      e.preventDefault()
+      onselectChange(this,'#selected_dietary_supplement tbody','/multiple-dietary-supplement-list')
+     
+    })
+
+  
 })
 
 /*$(document).ready(function(){
@@ -265,18 +297,32 @@ getInfo=(id,url)=>{
 
 }
 
-onselectChange=(selector_id,url)=>{
+onselectChange=(selector_id,results,url)=>{
       options=$(selector_id).val()
-      console.log(options)
+
       $.ajax({
 
 
             url:url,
-            data:{'choose':JSON.stringify(options)},
+            data:{choose:JSON.stringify(options)},
             type:'get',
             dataType:'json',
             success:function(data){
-                    console.log(data)
+                  row=""
+                  console.log(data)
+                  total=0
+                  for(var index=0;index<data.status.length;index++){
+                        row+="<tr>"
+                        row+="<td>"+data.status[index].items+"</td>"
+                        row+="<td>GHS "+data.status[index].amount+"</td>"
+                        row+="</tr>"
+                        total+=data.status[index].amount
+                        
+                  }
+                  row+='<tr><td>Total </td><td>GHS '+total+'</td></tr>'
+                  
+                  //console.log(results)
+                  $(results).html(row)
             },
             error:function(){
                     console.log('network timeout')
@@ -284,6 +330,7 @@ onselectChange=(selector_id,url)=>{
       })    
 
 }
+
 
   
 
