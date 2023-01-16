@@ -74,6 +74,16 @@ dietary inventiry stock
 
 def view_dietary_list():
 	return Dietary_Supplementary.objects.all()
+def multiple_dietary_list(dietary_id):
+	lists=[]
+	for dietary in range(len(dietary_id)):
+		print(dietary_id[dietary])
+	'''
+	dietary_list=Dietary_Supplementary.objects.filter(pk=dietary_id)
+	for dietary in dietary_list:
+		lists.append({'dietary':dietary.dietary_name,'amount':dietary.price})
+	return multiple_dietary_list
+	'''
 def create_dietary_supplementary_cost(dietary,notes,cost,quantity_stocked,photo,user_id):
 	
 	if quantity_stocked > 0:

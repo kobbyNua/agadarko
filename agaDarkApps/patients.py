@@ -13,16 +13,19 @@ stage 2
   search for patient details
 '''
 def  patient_search(searchs,hospital_id):
-	return Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__id','patient__id').filter(Q(patient__First_Name=searchs)|Q(patient__Last_Name=searchs)|Q(patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient__id')).order_by()
+	return Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id').filter(Q(patient__First_Name=searchs)|Q(patient__Last_Name=searchs)|Q(patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient__id')).order_by()
 
 
 '''
 view patient details
 '''
 def view_patient_details(patient_card_id):
-	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__id','patient__id','patient__Town','patient__region__region').filter(patient__id=patient_card_id).annotate(total_visit=Count('patient__id'))
+	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
 	return patient_detail
 
+
+def paitient_opd_visiting_history(card_id):
+	return Patient_History.objects.filter(patient__card_number=card_id)
 '''
 create patients
 '''

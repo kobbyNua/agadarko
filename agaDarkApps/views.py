@@ -2,9 +2,9 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse,FileResponse
 from django.contrib.auth.models import User,auth,Group
 from .models import Hospital_Staff,Patient_Diagosis_History
-from .patients import patient_search,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
+from .patients import patient_search,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
 from .laboratory import view_lab_test_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
-from .dietary import view_patient_deietary_details,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_patient_deietary_details,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
+from .dietary import view_patient_deietary_details,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_patient_deietary_details,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,view_all_staffs,create_staff,edit_staff,change_staff_password
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import BooksSerializers,RegionSerializers
 '''
+import json
 from .models import Books,Region
 
 
@@ -34,9 +35,11 @@ def patient_searchs(request):
 	hospital_id=request.POST['hospital_id']   
 	search_result=patient_search(search,hospital_id)
 	data_list=[]
+	print(search_result)
 	for results in search_result:
+		print(results['patient__card_number'])
 		fullname=results['patient__First_Name']+" "+results['patient__Last_Name']
-		data_list.append({'fullname':fullname,'dob':results['patient__Date_Of_Birth'],'telephone':results['patient__Telephone'],'patient_id':results['patient__id'],'total_visit':results['total_visit'],'patient_history_id':results['patient__id']})
+		data_list.append({'fullname':fullname,'dob':results['patient__Date_Of_Birth'],'telephone':results['patient__Telephone'],'patient_id':results['patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient__id']})
 	return JsonResponse({'result':data_list})
 
 def create_patient(request):
@@ -64,11 +67,16 @@ def create_patient(request):
 
 def view_patient_detail(request,patient_card_id):
 	patients_details=view_patient_details(patient_card_id)
+	details=[]
+	for patients in patients_details:
+		fullname=patients['patient__First_Name']+" "+patients['patient__Last_Name']
+		details.append({'fullname':fullname,'dob':patients['patient__Date_Of_Birth'],'phone':patients['patient__Telephone'],'region':patients['patient__region__region'],'City':patients['patient__Town'],'visit':patients['total_visit']})
 
-	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','view_patient_details':patients_details}) 
+	patient_opd_history=paitient_opd_visiting_history(patient_card_id)
+	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','view_patient_details':details,'pateint_opd_history':patient_opd_history}) 
 
-def viewpatient_visitng_history(patient_id):
-	return Patient_Diagosis_History.objects.filter()
+def view_patient_visitng_history(patient_id):
+	pass
 
 def view_opd_vitals(request):
 	#this page is for only admin for viewing, creating and editing opd vitals
@@ -555,7 +563,12 @@ def change_pass(request):
 	return JsonResponse({'status':status,status:msg})		
 
 
-
+def multiple_dietary_supplement_list(request):
+	dietary_list=request.GET.getlist('choose')
+	print(list(dietary_list))
+	diet=multiple_dietary_list(dietary_list)
+	print(diet)
+	return JsonResponse({'status':dietary_list})
 
 
 

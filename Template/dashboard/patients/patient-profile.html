@@ -103,7 +103,50 @@
                                                                                                         </div>
                                                                                                </div>
 
-                                                                                               <div class="card-body"></div>
+                                                                                               <div class="card-body">
+                                                                                                <div class="table-responsive">
+                                                                                                {% if patient_opd_vital|length > 0 %}
+                                                                                                  <table class="table  table-striped">
+                                                                                                        <tr>
+                                                                                                              <th>OPD Vital</th>
+                                                                                                              <th></th>
+                                                                                                        </tr>
+                                                                                                  {% for opd in patient_opd_vital %}
+                                                                                  
+                                                                                                        <tr>
+                                                                                                                <td>{{opd.vitals.vital_type}}</td>
+                                                                                                                <td>{{opd.details}}</td>
+                                                                                                        </tr>
+                                                                                                  {% endfor %}
+                                                                                              </table>
+                                                                                            {% else %}
+                                                                                          
+                                                                                                <form method="POST" action="/create-patient-opd-vitals">
+                                                                                                      {% csrf_token %}
+                                                                                                  <table class="table  table-striped">
+                                                                                                         <tr>
+                                                                                                                <th>Vital Status</th>
+                                                                                                                <th>Details</th>
+                                                                                                         </tr>
+                                                                                                         {% for opd in opd_vital %}
+                                                                                                           
+                                                                                                      <tr>
+                                                                                                            <td>{{opd.vital_type}}<input type="hidden" name="vital_id" value="{{opd.id}}"</td>
+                                                                                                            <td><input type="text" class="form-control" name="vital" placeholder="inputs for {{opd.vital_type}}"></td>
+                                                                                                      </tr>
+                                                                                                         {% endfor %}
+                                                                                                      <tr>
+                                                                                                            <td><input type="hidden" name="patient_history_id" value="{{patient_history_id}}"></td>
+                                                                                                            <td><input type="submit" class="btn btn-info" value="save details"></td>
+                                                                                                      </tr>
+                                                                                                  </table>
+                                                                                                  
+                                                                                                  
+                                                                                                </form>
+                                                                                  
+                                                                                                {% endif %} 
+                                                                                               </div>
+                                                                                               </div>
                                                                                       </div>
                                                                                       <div class="card card-info">
                                                                                              <div class="card-header">
@@ -116,7 +159,53 @@
                                                                                                      
 
                                                                                              </div>
-                                                                                             <div class="card-body"></div>
+                                                                                             <div class="card-body">
+
+                                                                                                {{patient_complaints|length}}
+                                                                                                {% if patient_complaints|length > 0 %}
+                                                                                                    <form method="post" action="/edit-doctor-diagonsis">
+                                                                                                          {% csrf_token %}
+                                                                                                    {% for patients in patient_complaints %}
+                                                                                
+                                                                                                           Patient Complaient<br/>
+                                                                                                           <textarea name="complaints" class="form-control mb-3" disabled>
+                                                                                                                   {{patients.patient_complaint}}
+                                                                                                           </textarea><br>
+                                                                                                           doctor Dignosis<br/>
+                                                                                                           {% if patients.doctor_dignosis_report != " " %}
+                                                                                                               <textarea name="doctor_diagonsis" disabled>{{patients.doctor_dignosis_report}}</textarea><br>
+                                                                                                           {% else %}
+                                                                                                               <textarea name="doctor_diagonsis" class="form-control mb-3" rows="12"></textarea>
+                                                                                                           {% endif %}
+                                                                                                           <input type="hidden" value="{{patients.id}}" name="diagnosis_id"><br>
+                                                                                                           
+                                                                                
+                                                                                
+                                                                                                    {% endfor %}
+                                                                                                     <input type="submit" value="submit">
+                                                                                                    </form> 
+                                                                                
+                                                                                                {% else %}edit-doctor-diagonsis
+                                                                                                <form method="POST" action="/create-patient-complaints-diagonsis">
+                                                                                                          {% csrf_token %}
+                                                                                                           <br>
+                                                                                                           Patient Complaient<br/>
+                                                                                                           
+                                                                                                           <input type="hidden" value="{{patient_history_id}}" name="patient_history_id">
+                                                                                
+                                                                                                           <textarea name="complaints"  class="form-control" rows="10">
+                                                                                                                 
+                                                                                                           </textarea><br>
+                                                                                                          
+                                                                                
+                                                                                                           <input type="hidden" value="1" name="user_id"><br>
+                                                                                                           <input type="submit" class="btn btn-info" value="submit patient compliants">
+                                                                                                 </form>
+                                                                                                    
+                                                                                
+                                                                                
+                                                                                                {% endif %}
+                                                                                             </div>
                                                                                       </div>
                                                                                       <div class="card card-info">
                                                                                              <div class="card-header">
@@ -129,7 +218,55 @@
                                                                                                      
 
                                                                                              </div>
-                                                                                             <div class="card-body"></div>
+                                                                                             <div class="card-body">
+
+
+                                                                                                {% if patient_lab_test_status|length > 0 %}
+                                                                                                {% for patient_lab_test_info in patient_lab_test_status %}
+                                                                              
+                                                                                                  {% if patient_lab_test_info.released_status == True %}
+                                                                                                              
+                                                                                                              <h3>lab_report ready <a href="">view results</a></h3>
+                                                                              
+                                                                                                  {% elif patient_lab_test_info.released_status == False %}
+                                                                              
+                                                                                                          <div class="">
+                                                                                                              <h3>Lab test not ready</h3>
+                                                                                                          </div>
+                                                                                                  {% endif %}
+                                                                              
+                                                                                               {% endfor %}
+                                                                                           {% else %}
+                                                                                                  <form method="post" id="select_lab_test" action="/create-patient-lab-request">
+                                                                                                    {% csrf_token %}
+                                                                              
+                                                                                                   <select name="lab_test" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                                        {% for lab_test in lab_test_lists %}
+                                                                              
+                                                                                                           <option value="{{lab_test.id}}">{{lab_test.test_type}} - {{lab_test.cost}}</option>
+                                                                              
+                                                                                                        {% endfor %}
+                                                                                                   </select>
+                                                                                                   <input type="hidden" value="1" name="user_id">
+                                                                                                   <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"><br/>
+                                                                                                   <input type="submit" value="send lab request"/>
+                                                                                                 </form>
+
+                                                                                                  <div class="table-responsive mt-1 mb-1">
+                                                                                                         <table class="table table-bordered">
+                                                                                                                  <tr>
+                                                                                                                        <th>Laboratary Test</th>
+                                                                                                                        <th>Cost</th>
+                                                                                                                  </tr>
+                                                                                                         </table>
+                                                                                                  </div>
+                                                                              
+                                                                                           {% endif %}
+
+
+
+
+                                                                                             </div>
                                                                                       </div>
 
 
@@ -144,7 +281,44 @@
                                                                                                      
 
                                                                                              </div>
-                                                                                             <div class="card-body"></div>
+                                                                                             <div class="card-body">
+                                                                                                  
+                                                                                                {% if patient_dietary_status|length > 0 %}
+                                                                                                {% for patient_dietary_info in patient_dietary_status %}
+                                                                              
+                                                                                                  {% if patient_dietary_info.released_status == True %}
+                                                                                                              
+                                                                                                              <h3>view dietary info <a href="">view</a></h3>
+                                                                              
+                                                                                                  {% elif patient_dietary_info.released_status == False %}
+                                                                              
+                                                                                                          <div class="">
+                                                                                                              <h3>Patient Dietary not dispenser</h3>
+                                                                                                          </div>
+                                                                                                  {% endif %}
+                                                                              
+                                                                                               {% endfor %}
+                                                                                           {% else %}
+                                                                                                  <form method="post" action="/create-patient-dietary-request">
+                                                                                                    {% csrf_token %}
+                                                                              
+                                                                                                   <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                                        {% for dietary_info in dietary_lists %}
+                                                                                                            {% if dietary_info.quantity > 0 %}
+                                                                                                                <option value="{{dietary_info.id}}">{{dietary_info.dietary_name}} - GHS{{dietary_info.price}}</option>
+                                                                                                            {% endif %}
+                                                                                                        {% endfor %}
+                                                                                                   </select><br/>
+                                                                                                   <input type="hidden" value="1" name="user_id">
+                                                                                                   <input type="hidden" name="patient_history_id" value="{{patient_history_id}}">
+                                                                                                   <input type="submit" class="btn btn-info" value="send dietary request"/>
+                                                                                                 </form>
+                                                                              
+                                                                                           {% endif %}
+
+
+
+                                                                                             </div>
                                                                                       </div>
 
 

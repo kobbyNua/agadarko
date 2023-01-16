@@ -14,33 +14,33 @@
                                                         <div class="text-center">
                                                              <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
                                                         </div>
-                                                      
+                                                        
                                                         {% for patients in view_patient_details %}
-                                                          
-                                                        <h3 class="profile-username text-center">{{ patients.patients__First_Name }}</h3>
+                                                            
+                                                        <h3 class="profile-username text-center">{{ patients.fullname }}</h3>
 
                                                         <!--<p class="text-muted text-center">Software Engineer</p>-->
 
                                                         <ul class="list-group list-group-unbordered mb-3">
 
                                                             <li class="list-group-item">
-                                                                  <b>Date Of Birth</b> <a class="float-right">13,287</a>
+                                                                  <b>Date Of Birth</b> <a class="float-right">{{patients.dob}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>Telephone</b> <a class="float-right">1,322</a>
+                                                                  <b>Telephone</b> <a class="float-right">{{patients.phone}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                     <b>Region</b> <a class="float-right">543</a>
+                                                                     <b>Region</b> <a class="float-right">{{patients.region}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>City</b> <a class="float-right">13,287</a>
+                                                                  <b>City</b> <a class="float-right">{{patients.City}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>No. of Times</b> <a class="float-right">13,287</a>
+                                                                  <b>No. of Times</b> <a class="float-right">{{patients.visit}}</a>
                                                             </li>
-                                                            <li class="list-group-item">
+                                                            <!--<li class="list-group-item">
                                                                   <b>Balance</b> <a class="float-right">0.00</a>
-                                                            </li>
+                                                            </li>-->
 
                                                             <a href="#" class="btn btn-primary btn-block"><b>Start Sessions</b></a>
                                                             <!--<li class="list-group-item">
@@ -89,14 +89,36 @@
                                                                               <table id="example2" class="table table-bordered table-hover">
                                                                                      <thead>
                                                                                            <tr>
-                                                                                               <th>Date Visited</th>
+                                                                                               <th>Date Checked-in</th>
                                                                                                
-                                                                                               <th>Opd Nurse</th>
-                                                                                               <th>Doctor</th>
-                                                                                               <td>Lab Report Status</td>
-                                                                                               <td>Dietary Status</td>
+                                                                                               <th>Date Checkout</th>
+                                                                                               <th>Checked in status</th>
+                                                                                               <td>Attentant to by</td>
+                                                                                               <td>Amount</td>
                                                                                            </tr>
                                                                                      </thead>
+                                                                                     <tbody> 
+                                                                                          
+                                                                                                {% for patient in pateint_opd_history %}
+                                                                                                     <tr>
+                                                                                                         <td>{{patient.date_reported}}</td>
+                                                                                                         <td>
+                                                                                                            {% if patient.checked_out_date_time != '1982-01-02' %}
+                                                                                                                   {{patient.checked_out_date_time}}
+                                                                                                            {% endif %}
+                                                                                                         </td>
+                                                                                                         <td>
+                                                                                                             {% if patient.waiting_state == "waiting" %}
+                                                                                                                  checked in
+                                                                                                             {% else %}
+                                                                                                                   checked out
+                                                                                                             {% endif %}
+                                                                                                         </td>
+                                                                                                         <td>{{patient.nurse.username}}</td>
+                                                                                                     </tr>
+                                                                                                {% endfor %}
+                                                                                                                                                                      
+                                                                                     </tbody>
 
                                                                               </table>
 <!--{{view_patient_details}}-->

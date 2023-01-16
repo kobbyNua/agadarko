@@ -78,6 +78,11 @@ $(document).ready(function(){
         e.preventDefault()
         submitForms(this,'/create-patient')
    })
+
+   $('#select_lab_test select[name=lab_test]').change(function(e){
+        e.preventDefault()
+        onselectChange(this,'/multiple-dietary-supplement-list')
+   })
 })
 
 /*$(document).ready(function(){
@@ -260,6 +265,25 @@ getInfo=(id,url)=>{
 
 }
 
+onselectChange=(selector_id,url)=>{
+      options=$(selector_id).val()
+      console.log(options)
+      $.ajax({
+
+
+            url:url,
+            data:{'choose':JSON.stringify(options)},
+            type:'get',
+            dataType:'json',
+            success:function(data){
+                    console.log(data)
+            },
+            error:function(){
+                    console.log('network timeout')
+            }
+      })    
+
+}
 
   
 
