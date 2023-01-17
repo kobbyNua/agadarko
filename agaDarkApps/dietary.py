@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User,auth,Group
 from django.db.models import Count ,F,Q,Sum
 from .models import Patient_History,Patient_Diagosis_History,Patient_Dietary,Patient_Dietary_Details,Dietary_Dispenser_Techician,Patient_Dietary_Date_Released,Dietary_Supplementary,Dietary_Supplmentary_Details,Dietary_Supplmentary_Stock_Details
-
+from datetime import datetime
 
 
 
@@ -24,8 +24,8 @@ def patient_dietary(patient_history_id,patinet_diagonsis_id,user_id,dietary_list
 	for dietary in range(len(dietary_list)):
 		patient_dietary_list_details=Patient_Dietary_Details.objects.create(patient_dietary=Patient_Dietary.objects.get(pk=patient_dietary_id.id),dietary=Dietary_Supplementary.objects.get(pk=dietary_list[dietary]))
 		patient_dietary_list_details.save()
-		patient_dietary_cost=patient_dietary_cost_details(patient_dietary_id.id,dietary_list)
-		return patient_dietary_cost
+		patient_dietary_cost_details(patient_dietary_id.id,dietary_list)
+	return True
 
 
 def patient_dietary_cost_details(patient_dietary_id,dietary_list):
@@ -49,7 +49,8 @@ def view_patient_dietary_status(patient_history_id):
 def view_patient_deietary_details(patient_history_id):
 	return Patient_Dietary_Details.objects.filter(patient_dietary__patient_history__id=patient_history_id)
 
-def input_patient_dietry_request(patient_dietary_details_id,dietary_id,dietary_dispensed_status,quantity):
+def input_patient_dietry_request(patient_dietary_details_id,dietary_id,dietary_dispensed_status,quantity,patient_history_id):
+	get_laboratory_id=Patient_Dietary_Details.objects.filter(patient_dietary__patient_history=patient_history_id)[0]
 	for items in range(len(patient_dietary_details_id)):
 		input_patient_dietary_details=Patient_Dietary_Details.objects.get(pk=patient_dietary_details_id[items])
 		input_patient_dietary_details.status=True
@@ -59,6 +60,7 @@ def input_patient_dietry_request(patient_dietary_details_id,dietary_id,dietary_d
 
 	return True
 
+	patient_diagnosis.save()
 def view_dietary_history(patient_history_id):
     # return Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)
     pass

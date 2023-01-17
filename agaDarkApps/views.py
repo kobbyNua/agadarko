@@ -196,7 +196,7 @@ def edit_doctor_diagonsis(request):
 	diagnosis=request.POST['doctor_diagonsis'].strip()
 	diagnosis_test=doctor_diagonsis(patient_diagnosis_id,diagnosis)
 	msg=""
-	status=""
+	status_type=""
 	if diagnosis_test == True:
 		status_type+="success"
 		msg+="paitent diagnosis details submitted"
@@ -208,16 +208,23 @@ def patient_medical_history_records(request):
 	return render(request,'dashboard/patients/patient-diagnosis-medical-history.html',{'title':'patient medical history'.upper()})
 def create_patient_lab_request(request):
 	patient_id=request.POST['patient_history_id']
+
 	patient_history=getPatientDiagnosisId(patient_id)
 	patient_diagnosis_id=""
+	print('patient details',patient_history)
 	for patient in patient_history:
+		print('go id',patient.id)
 		patient_diagnosis_id+=str(patient.id)
 	#print(patient_diagnosis_id)
 	#return JsonResponse({'status':'hello'})
-	
+
 	
 	user_id=request.POST.get('user_id')
 	test_type=request.POST.getlist('lab_test')
+	
+	
+
+
 	lab_request=send_lab_request(patient_diagnosis_id,user_id,test_type)
 	msg=""
 	status_type=""
@@ -227,6 +234,7 @@ def create_patient_lab_request(request):
 	else:
 		status_type+="error"
 		msg+="couldn't send patient request lab"
+	
 	return JsonResponse({'status':status_type,status_type:msg})
 	
 
@@ -330,7 +338,10 @@ def input_lab_test_result_details(request):
 	lab_test_id=request.POST.getlist('lab_id')
 	patient_lab_test_id=request.POST.getlist('patient_lab_id')
 	lab_test_details=request.POST.getlist('lab_test_details')
-	input_result=input_patient_lab_request(patient_lab_test_id,lab_test_id,lab_test_details)
+	patient_history_id=request.POST['patient_history_id']
+	print('supt ',request.POST['patient_history_id'])
+	input_result=input_patient_lab_request(patient_lab_test_id,lab_test_id,lab_test_details,patient_history_id)
+	
 	msg=""
 	status_type=""
 	if input_result == True:
@@ -377,6 +388,7 @@ def view_patient_dietary_lists(request):
 	return render(request,"dashboard/dietary/patient-dietary-list.html",{'title':'Patient Dietary','patient_dietary_list':patient_dietary_list})
 
 def view_patient_dietary_details(request,patient_history_id):
+	print('hello ',patient_history_id)
 	patient_deitary_details=view_patient_deietary_details(patient_history_id)
 	return render(request,'dashboard/dietary/patient-dietary.html',{'title':'Patient Dietary Details','patient_dietry_details':patient_deitary_details,'patient_history_id':patient_history_id})
 

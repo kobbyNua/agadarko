@@ -163,7 +163,7 @@
 
                                                                                                 
                                                                                                 {% if patient_complaints|length > 0 %}
-                                                                                                    <form method="post" id="doctor-diagnosis_report">
+                                                                                                    <form method="post" id="doctor_diagnosis_report">
                                                                                                           {% csrf_token %}
                                                                                                     {% for patients in patient_complaints %}
                                                                                 
@@ -244,7 +244,7 @@
 
                                                                                                 {% if patient_lab_test_status|length > 0 %}
                                                                                                 {% for patient_lab_test_info in patient_lab_test_status %}
-                                                                              
+                                                                                                     {{patient_lab_test_info.released_status}}
                                                                                                   {% if patient_lab_test_info.released_status == True %}
                                                                                                               
                                                                                                               <h3>lab_report ready <a href="">view results</a></h3>
@@ -325,7 +325,7 @@
                                                                               
                                                                                                {% endfor %}
                                                                                            {% else %}
-                                                                                                  <form method="post" id="select_dietary_supplement" action="/create-patient-dietary-request">
+                                                                                                  <form method="post" id="select_dietary_supplement">
                                                                                                     {% csrf_token %}
                                                                               
                                                                                                    <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">

@@ -167,9 +167,14 @@
 	  	                                                                                       {% if lab_request|length <= 0 %}
                                                                                                     no record of lab details
 	  	                                                                                       {% else %}
-                                                                                                      <form method="post" action="/input-lab-test-result-details">
+                                                                                                      <form method="post" id="lab_results_entery">
                      	                                                                               {% csrf_token %}
-                     	                                                                       <table class="table table-bordered table-hover">
+                     	                                                                       <table class="table table-striped">
+                                                                                                   <tr>
+                                                                                                      <th>Lab Test</th>
+                                                                                                      <th>Amount</th>
+                                                                                                      <th>Lab Results</th>
+                                                                                                   </tr>
                      	                                                                       {% for test in lab_request %}
                                   
                                   
@@ -179,8 +184,8 @@
                                   	  	                                                        <td>GHS {{test.lab_test_type.cost}}</td>
                                   	  	                                                        <td>
                                   	  	  	                                                     {% if test.lab_test_status_report|length > 0%} 
-                                                   
-                                                                                                    <input type="text" name="lab_test_details" value="{{test.lab_test_status_report}}" disabled>
+                                                                                                             {{test.lab_test_status_report}}
+                                                                                                    <!--<input type="text" name="lab_test_details" value="{{test.lab_test_status_report}}" disabled>-->
                                   	  	  	                                                     {% else %}
                                   	  	  	                                                         <input type="text" name="lab_test_details" class="form-control" placeholder="enter results for {{test.lab_test_type.test_type}}" style="border-radius:0px;" required>
                                                    
@@ -196,7 +201,7 @@
                      	                                                                   <tr>
                      	  	                                                                   <td colspan="2"></td>
                      	  	
-                     	  	                                                                   <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
+                     	  	                                                                   <td><input type="text" value="{{patient_history_id}}" name="patient_history_id"></td>
                      	                                                                    </tr>
                      	  
                      	                                                                   <tr>

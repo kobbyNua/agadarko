@@ -37,11 +37,11 @@ def patient_laboratory(patient_history_id,patinet_diagonsis_id,user_id,test_type
 	status_state=""
 	technician_who_handle_laboratory=laboratory_test_techician.objects.create(patient_laboratory=Patient_Laboratory.objects.get(pk=patient_laboratory_id.id),techinician=User.objects.get(pk=user_id))
 	for lab_test in range(len(test_type)):
-		print(test_type[lab_test])
+		#print('tests',test_type[tests])
 		patient_lab_test_type_details=Patient_Laboratory_Details.objects.create(patient_laboratory=Patient_Laboratory.objects.get(pk=patient_laboratory_id.id),lab_test_type=Lab_Test_Cost_Details.objects.get(pk=test_type[lab_test]))
 		patient_lab_test_type_details.save()
 		patient_lab_test_cost_details(patient_laboratory_id.id,test_type)
-		return True
+	return True
 def patient_lab_test_status(patient_history_id):
 	
 	return Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)
@@ -52,14 +52,33 @@ def view_lab_test_request():
 def view_patient_lab_details(patient_history_id):
 	return Patient_Laboratory_Details.objects.filter(patient_laboratory__patient_history__id=patient_history_id)
 
-def input_patient_lab_request(patient_lab_details_id,lab_test_type_id,lab_test_details):
+def input_patient_lab_request(patient_lab_details_id,lab_test_type_id,lab_test_details,patient_history_id):
+	get_laboratory_id=Patient_Laboratory_Details.objects.filter(patient_laboratory__patient_history=patient_history_id)[0]
 	for items in range(len(patient_lab_details_id)):
 		input_patient_lab_details=Patient_Laboratory_Details.objects.get(pk=patient_lab_details_id[items],lab_test_type__id=lab_test_type_id[items])
 		input_patient_lab_details.lab_test_status_report=lab_test_details[items]
+		print('prints: ',input_patient_lab_details.patient_laboratory.id)
+		#patient_lab_details_id+=str(input_patient_lab_details.patient_laboratory.id)
+		input_patient_lab_details.patient_laboratory.patient_diagonsis_history_details.laboratory_report_recieved_status=True
 		input_patient_lab_details.save()
+		#patient_lab_details_id=Patient_Laboratory_Details.objects.get(pk=patient_lab_details_id[items],lab_test_type__id=lab_test_type_id[items])
+	#print('tracking ',patient_lab_details_id)
+	status_updates(get_laboratory_id.patient_laboratory.id)
+	patient_diagnosis_status(get_laboratory_id.patient_laboratory.patient_diagonsis_history_details.id)
+	#update_released_status=Patient_Laboratory.objects.get(pk)
 
 	return True
-
+def status_updates(patient_lab_id):
+	patient_lab=Patient_Laboratory.objects.get(pk=patient_lab_id)
+	patient_lab.released_status=True
+	patient_lab.lab_report_status_seen=True
+	#patient_diagnosis_status(patient_lab.patient_diagonsis_history_details.id)
+	patient_lab.save()
+def patient_diagnosis_status(patient_diagnosis_id):
+	patient_diagnosis=Patient_Diagosis_History.objects.get(pk=patient_diagnosis_id)
+	patient_diagnosis.laboratory_report_recieved_status=True
+	#patient_diagnosis=True
+	patient_diagnosis.save()
 def view_patint_lab_history(patient_history_id):
      return Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)
 

@@ -91,17 +91,31 @@ $(document).ready(function(){
       submitForms(this,"/create-patient-complaints-diagonsis")
   })  
 
-  $('#doctor-diagnosis_report').submit(function(e){
+  $('#doctor_diagnosis_report').submit(function(e){
       e.preventDefault()
       $('#responseBox').modal('show')
       submitForms(this,"/edit-doctor-diagonsis")
   }) 
-
+//request for patient laboratory by medical doctor
   $('#select_lab_test').submit(function(e){
       e.preventDefault()
       $('#responseBox').modal('show')
       submitForms(this,"/create-patient-lab-request")
   }) 
+  //lab test results entry
+
+   $("#lab_results_entery").submit(function(e){
+         e.preventDefault()
+         $('#responseBox').modal('show')
+         submitForms(this,"/input-lab-test-result-details")
+   })
+//Dietary request
+   $("#select_dietary_supplement").submit(function(e){
+      e.preventDefault()
+      $('#responseBox').modal('show')
+      submitForms(this,"/create-patient-dietary-request")
+  })
+
 
    $('#select_lab_test select[name=lab_test]').change(function(e){
         e.preventDefault()
@@ -170,13 +184,14 @@ submitForms=(form_id,urls)=>{
       	         data:$(form_id).serialize(),
       	         type:'post',
       	         dataType:'json',
-      	         beforSend:function(){
+      	         beforeSend:function(){
       	    	       $('#responseBox .modal-body .msg-box').html('ascending request')
       	         },
       	         success:function(data){
+                        console.log(data)
       	         	if(data.status === "success"){
       	          	      $('#responseBox .modal-body .msg-box').html(data.success)
-      	          	      window.location=""
+      	          	      //window.location=""
       	          	}
 
       	          	else if(data.status === "error"){

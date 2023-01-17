@@ -125,6 +125,7 @@ class Patient_Diagosis_History(models.Model):
 		laboratory_report_request_status=models.BooleanField(default=False)
 		laboratory_report_recieved_status=models.BooleanField(default=False)
 		dietary_report_reuqest_status=models.BooleanField(default=False)
+		dietary_report_recieved_status=models.BooleanField(default=False)
 		date_diagosed=models.DateField()
 		'''
 		def save(self,*args,**kwargs):

@@ -139,6 +139,7 @@ def send_lab_request(patinet_diagonsis_id,user_id,type_of_test):
 	patient_diagonsis_history=Patient_Diagosis_History.objects.get(pk=patinet_diagonsis_id)
 	patient_diagonsis_history.laboratory_report_request_status=True
 	patient_diagonsis_history.save()
+	
 	#print(patient_diagonsis_history.patient_history.id,patinet_diagonsis_id)
 	lab_request=patient_laboratory(patient_diagonsis_history.patient_history.id,patinet_diagonsis_id,user_id,type_of_test)
 	return lab_request
@@ -172,8 +173,12 @@ def send_dietary_request(patient_diagnosis_id,user_id,dietary_list):
 	patient_diagonsis_history.save()
 	dietary_request=patient_dietary(patient_diagonsis_history.patient_history.id,patient_diagnosis_id,user_id,dietary_list)
 	return dietary_request
-def patient_dietary_report_result(patient_diagonsis_id):
-	patient_view_status_report=Patient_Dietary.objects.get(patient_diagonsis_history_details__id=patient_diagonsis_id)
+def patient_dietary_report_result(patient_history_id):
+	patient_digonosis_report=getPatientDiagnosisId(patient_history_id)
+	patient_diagnosis_id=""
+	for patient_diagonsis in patient_digonosis_report:
+		patient_diagnosis_id+=str(patient_diagonsis.id)
+	patient_view_status_report=Patient_Dietary.objects.get(patient_diagonsis_history_details__id=patient_diagnosis_id)
 	patient_view_status_report.viewed_status=True
 	patient_view_status_report.save()
 
