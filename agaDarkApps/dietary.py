@@ -55,11 +55,26 @@ def input_patient_dietry_request(patient_dietary_details_id,dietary_id,dietary_d
 		input_patient_dietary_details=Patient_Dietary_Details.objects.get(pk=patient_dietary_details_id[items])
 		input_patient_dietary_details.status=True
 		input_patient_dietary_details.quantity=quantity[items]
+		input_patient_dietary_details.price=dietary_supplement_price(dietary_id[items])
 		input_patient_dietary_details.save()
 		update_supplement_dieary_quanity(dietary_id[items],quantity[items])
 
 	return True
 
+	patient_diagnosis.save()
+def dietary_supplement_price(dietary_id):
+	dietary_price=Dietary_Supplementary.objects.get(pk=dietary_id)
+	return dietary_price.price
+def status_updates(patient_lab_id):
+	patient_dietary=Patient_Dietary.objects.get(pk=patient_lab_id)
+	patient_dietary.released_status=True
+	patient_dietary.viewed_status=True
+	#patient_diagnosis_status(patient_lab.patient_diagonsis_history_details.id)
+	patient_dietary.save()
+def patient_diagnosis_status(patient_diagnosis_id):
+	patient_diagnosis=Patient_Diagosis_History.objects.get(pk=patient_diagnosis_id)
+	patient_diagnosis.dietary_report_recieved_status=True
+	#patient_diagnosis=True
 	patient_diagnosis.save()
 def view_dietary_history(patient_history_id):
     # return Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)

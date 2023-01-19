@@ -115,7 +115,12 @@ $(document).ready(function(){
       $('#responseBox').modal('show')
       submitForms(this,"/create-patient-dietary-request")
   })
-
+  //dispens dietary
+   $('#dispense_dietary').submit(function(e){
+        e.preventDefault()
+        $('#responseBox').modal('show')
+        submitForms(this,'/dispen-patient-dietary')
+   })
 
    $('#select_lab_test select[name=lab_test]').change(function(e){
         e.preventDefault()
@@ -127,7 +132,13 @@ $(document).ready(function(){
       onselectChange(this,'#selected_dietary_supplement tbody','/multiple-dietary-supplement-list')
      
     })
-
+     
+    $('#search_patient_medical_history input[name=]').keyup(function(e){
+         
+      
+      e.preventDefault()
+      serverData_1(this,'/patient-medical-history-search')
+    })
   
 })
 
@@ -255,7 +266,54 @@ serverData=(form_id,urls)=>{
              data:form_id.serialize(),
              type:'post',
              dataType:'json',
-             beforSend:function(){
+             beforeSend:function(){
+                  rows=""
+                  rows+='<tr><td colspan="5" align="center">wait. search for result may take few seconds</td></tr>'
+                  $("#search_results").html(rows)
+             },
+             success:function(data){
+                  rows=""
+                  console.log(data)
+                  if (data.result.length == ""){
+                    rows+='<tr><td colspan="5" align="center">no results found</td></tr>'
+                    //$("#search_results").html(rows)
+                        //$("#search_results").html('<tr><td>no results found</td></tr>')
+                  }
+                  else{
+                      for(index=0;index<data.result.length;index++){
+                        rows+="<tr>"
+                        rows+='<td>'+data.result[index].fullname+'</td>'
+                        rows+='<td>'+data.result[index].telephone+'</td>'
+                        rows+='<td>'+data.result[index].dob+'</td>'
+                         //rows+='<td>'+data.result[index].card+'</td>'
+                        rows+='<td>'+data.result[index].total_visit+'</td>'
+                        rows+='<td><a href="/view-patient-detail/'+data.result[index].patient_id+'" class="btn btn-info">view and check-in</a></td>'
+                        rows+='</tr>'
+                        console.log(rows)
+                      }
+                }
+                  $("#search_results").html(rows)
+                
+
+
+             },
+             error:function(){
+                  console.log('network timeout')
+             }
+      })
+
+
+}
+serverData_1=(form_id,urls)=>{
+
+
+
+      $.ajax({
+             url:urls,
+             data:form_id.serialize(),
+             type:'post',
+             dataType:'json',
+             beforeSend:function(){
                   rows=""
                   rows+='<tr><td colspan="5" align="center">wait. search for result may take few seconds</td></tr>'
                   $("#search_results").html(rows)

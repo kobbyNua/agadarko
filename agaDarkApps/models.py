@@ -197,6 +197,7 @@ class Patient_Dietary_Details(models.Model):
 	patient_dietary=models.ForeignKey(Patient_Dietary,on_delete=models.CASCADE)
 	dietary=models.ForeignKey(Dietary_Supplementary,on_delete=models.CASCADE)
 	quantity=models.IntegerField(default=0)
+	price=models.FloatField(default=0.00)
 	status=models.BooleanField(default=False)
 
 class Dietary_Dispenser_Techician(models.Model):

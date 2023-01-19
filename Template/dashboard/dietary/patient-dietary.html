@@ -109,8 +109,9 @@
                                                                                                   {% if patient_dietry_details|length <= 0 %}
                                                                                                               No Dietary Records deitary
                                                                                                  {% else %}
-                                                                                                 <form method="post" action="/dispen-patient-dietary">
+                                                                                                 <form method="post" id="dispense_dietary">
                                                                                                          {% csrf_token %}
+                                                                                                         {{patient_dietry_details}}
                                                                                                          <table class="table table-bordered table-hover">
                                                                                                               <tr>
                                                                                                                    <td>Dietary </td>
@@ -143,13 +144,13 @@
                                                                                                              <tr>
                                                                                                               <td colspan="2"></td>
                                                                                                              
-                                                                                                             <td><input type="text" value="{{patient_history_id}}" name="patient_history_id"></td>
+                                                                                                             <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
                                                                                                             </tr>
                            
                            <tr>
                                 <td colspan="2"></td>
                         
-                                <td><input type="submit" value="dispense dietary"/></td>
+                                <td><input type="submit" class="btn btn-info" style="border-radius:0px;border:none" value="dispense dietary"/></td>
                            </tr>
                          </table>
                      </form>

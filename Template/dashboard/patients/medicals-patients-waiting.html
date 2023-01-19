@@ -74,15 +74,17 @@
                                                                           
 
 
-                                                                              <form>
+                                                                              <form id="search_patient_medical_history" method="post">
+                                                                                    {% csrf_token %}
                                                                                      <div class="row">
                                                                                             <div class="col-lg-12 col-12">
                                                                                                   <div class="form-group">
 
-                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" placeholder="search patient record">
+                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" name="patient_medical_history" placeholder="search patient record">
                                                                                                   </div>
                                                                                             </div>
                                                                                      </div>
+                                                                                     <input type="hidden" value="1" name="hodptial_id">
                                                                               </form>
 
 
@@ -90,13 +92,16 @@
                                                                                      <thead>
                                                                                            <tr>
                                                                                                <th>Fullname</th>
-                                                                                               
+                                                                                               <td></td>
                                                                                                <th>Number time visted</th>
                                                                                                <th>Last Date Visited</th>
                                                                                                <td>View Medical History</td>
                                                                                                
                                                                                            </tr>
                                                                                      </thead>
+                                                                                     <tbody id="result">
+
+                                                                                     </tbody>
 
                                                                               </table>
 

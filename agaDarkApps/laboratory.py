@@ -57,9 +57,9 @@ def input_patient_lab_request(patient_lab_details_id,lab_test_type_id,lab_test_d
 	for items in range(len(patient_lab_details_id)):
 		input_patient_lab_details=Patient_Laboratory_Details.objects.get(pk=patient_lab_details_id[items],lab_test_type__id=lab_test_type_id[items])
 		input_patient_lab_details.lab_test_status_report=lab_test_details[items]
-		print('prints: ',input_patient_lab_details.patient_laboratory.id)
+		#print('prints: ',input_patient_lab_details.patient_laboratory.id)
 		#patient_lab_details_id+=str(input_patient_lab_details.patient_laboratory.id)
-		input_patient_lab_details.patient_laboratory.patient_diagonsis_history_details.laboratory_report_recieved_status=True
+		#input_patient_lab_details.patient_laboratory.patient_diagonsis_history_details.laboratory_report_recieved_status=True
 		input_patient_lab_details.save()
 		#patient_lab_details_id=Patient_Laboratory_Details.objects.get(pk=patient_lab_details_id[items],lab_test_type__id=lab_test_type_id[items])
 	#print('tracking ',patient_lab_details_id)

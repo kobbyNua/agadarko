@@ -195,13 +195,29 @@
                                                                                                <th>Fullname</th>
                                                                                                <th>Telephone</th>
                                                                                                <th>Date of Birth</th>
-                                                                                               <th>Town</th>
-                                                                                               <th>City</th>
+                                                                                               <th>Town/City</th>
+                                                                                              
                                                                                                <th>Region</th>
                                                                                                <th>Checked-in Status</th>
                                                                                            </tr>
                                                                                      </thead>
-                                                                                     <tbody></tbody>
+                                                                                     <tbody>
+                                                                                           {% for patient in in_patient_list%}
+                                                                                                   <tr>
+                                                                                                         <td>{{patient.patient.First_Name}} {{patient.patient.Last_Name}}</td>
+                                                                                                         <td>{{patient.patient.Telephone}}</td>
+                                                                                                         <td>{{patient.patient.Date_Of_Birth}}</td>
+                                                                                                         <td>{{patient.patient.Town}}</td>
+                                                                                                         <td>{{patient.patient.region.region}}</td>
+                                                                                                         <td>
+                                                                                                                {% if patient.checked_in == True %}
+                                                                                                                         <button class="btn btn-info" style="border:none;border-radius:0px">checked in</button>
+                                                                                                                {% endif %}
+                                                                                                         </td>
+                                                                                                   </tr>
+
+                                                                                           {% endfor %}
+                                                                                     </tbody>
                                                                               </table>
 
                                                                   </div>

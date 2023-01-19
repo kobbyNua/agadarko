@@ -11,6 +11,7 @@ urlpatterns=[
    path('create-opd-vital/',views.create_opd_vital,name="create_opd_vital"),
    path('edit-opd-details/',views.edit_opd_details,name="edit_opd_details"),
    path('waiting-patient-list',views.waiting_patient_list,name="waiting_patient_list"),
+   path('patient-medical-history-search',views.patient_medical_history_search,name='patient_medical_history_search'),
    path('patient-profile/<int:patient_history_id>',views.patient_profile,name="patient_profile"),
    path('create-patient-opd-vitals',views.create_patient_opd_vitals,name="create_patient_opd_vitals"),
    path('create-patient-complaints-diagonsis',views.create_patient_complaints_diagonsis,name="create_patient_complaints_diagonsis"),
