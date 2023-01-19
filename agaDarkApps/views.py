@@ -120,7 +120,7 @@ def waiting_patient_list(request):
 	waiting_patient=patinet_waiting_list()
 	return render(request,'dashboard/patients/medicals-patients-waiting.html',{'title':'waiting patient list','waiting_list':waiting_patient})
 def patient_medical_history_search(request):
-	search=request.POST['search']
+	search=request.POST['patient_medical_history']
 	hospital_id=request.POST['hospital_id']   
 	search_result=Check_in_patient_search(search,hospital_id)
 	data_list=[]
@@ -128,7 +128,7 @@ def patient_medical_history_search(request):
 	for results in search_result:
 		
 		fullname=results['patient_history__patient__First_Name']+" "+results['patient_history__patient__Last_Name']
-		data_list.append({'fullname':fullname,'dob':results['patient_history__patient__Date_Of_Birth'],'telephone':results['patient_history__patient__Telephone'],'patient_id':results['patient_history__patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient_history__patient__id']})
+		data_list.append({'fullname':fullname,'dob':results['patient_history__patient__Date_Of_Birth'],'telephone':results['patient_history__patient__Telephone'],'patient_id':results['patient_history__patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient_history__id']})
 	return JsonResponse({'result':data_list})
 
 def patient_profile(request,patient_history_id):
@@ -141,7 +141,11 @@ def patient_profile(request,patient_history_id):
      4. lab request
      5.pharmacy request
 	'''
+	#
+	#patient_record_details=P
 	#patient opd reports
+	
+	
 	patient_opd_vital=view_paitent_opd_reports(patient_history_id)
 	
 	#opd vital details

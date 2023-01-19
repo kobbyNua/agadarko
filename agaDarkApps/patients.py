@@ -208,6 +208,6 @@ def patient_check_in_list():
 	return Patient_History.objects.filter(checked_in=True,checked_out=False)
 
 def  Check_in_patient_search(searchs,hospital_id):
-	return Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_histor__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
+	return Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
 
 
