@@ -11,26 +11,27 @@
                                                         <div class="text-center">
                                                              <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
                                                         </div>
-                                                        <h3 class="profile-username text-center">Nina Mcintire</h3>
-
+                                                        {% for patient in patient_bio %}
+                                                        <h3 class="profile-username text-center">{{patient.fullname}}</h3>
+                                                        
                                                         <!--<p class="text-muted text-center">Software Engineer</p>-->
 
                                                         <ul class="list-group list-group-unbordered mb-3">
 
                                                             <li class="list-group-item">
-                                                                  <b>Date Of Birth</b> <a class="float-right">13,287</a>
+                                                                  <b>Date Of Birth</b> <a class="float-right">{{patient.dob}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>Telephone</b> <a class="float-right">1,322</a>
+                                                                  <b>Telephone</b> <a class="float-right">{{patient.phone}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                     <b>Region</b> <a class="float-right">543</a>
+                                                                     <b>Region</b> <a class="float-right">{{patient.City}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>City</b> <a class="float-right">13,287</a>
+                                                                  <b>City</b> <a class="float-right">{{patient.region}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>No. of Times</b> <a class="float-right">13,287</a>
+                                                                  <b>No. of Times</b> <a class="float-right">{{patient.visit}}</a>
                                                             </li>
                                                             <!--<li class="list-group-item">
                                                                   <b>Balance</b> <a class="float-right">0.00</a>
@@ -50,6 +51,7 @@
                                                                   <b>Current Price</b> <a class="float-right">13,287</a>
                                                             </li>-->
                                                        </ul>
+                                                       {% endfor %}
                                                  </div>
                                            </div>
                                            

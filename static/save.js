@@ -134,12 +134,14 @@ $(document).ready(function(){
     })
      
     $('#search_patient_medical_history input[name=patient_medical_history]').keyup(function(e){
-         
-      
       e.preventDefault()
-      serverData_1($('#search_patient_medical_history'),'/patient-medical-history-search')
+      serverData_1($('#search_patient_medical_history'),$(".medical_records #results"),'/patient-profile/','/patient-medical-history-search')
     })
-  
+    $('#patientLabRecords input[name=patient_lab_record]').keyup(function(e){
+      //alert('hello')
+      e.preventDefault()
+      serverData_1($('#search-patient-lab-records'),$(".lab-records #results"),'/view-patient-required-lab-test/','/patient-medical-history-search')
+    }) 
 })
 
 /*$(document).ready(function(){
@@ -304,8 +306,8 @@ serverData=(form_id,urls)=>{
 
 
 }
-serverData_1=(form_id,urls)=>{
-
+serverData_1=(form_id,selectors,page,urls)=>{
+      console.log(selectors)
 
 
       $.ajax({
@@ -316,7 +318,8 @@ serverData_1=(form_id,urls)=>{
              beforeSend:function(){
                   rows=""
                   rows+='<tr><td colspan="5" align="center">wait. search for result may take few seconds</td></tr>'
-                  $("#search_results").html(rows)
+                  selectors.html(rows)
+                  
              },
              success:function(data){
                   rows=""
@@ -334,12 +337,13 @@ serverData_1=(form_id,urls)=>{
                         rows+='<td>'+data.result[index].dob+'</td>'
                          //rows+='<td>'+data.result[index].card+'</td>'
                         rows+='<td>'+data.result[index].total_visit+'</td>'
-                        rows+='<td><a href="/patient-profile/'+data.result[index].patient_history_id+'" class="btn btn-info">view and check-in</a></td>'
+                        rows+='<td><a href="'+page+''+data.result[index].patient_history_id+'" class="btn btn-info">view and check-in</a></td>'
+                        ///patient-profile/
                         rows+='</tr>'
                         console.log(rows)
                       }
                 }
-                  $("#results").html(rows)
+                  selectors.html(rows)
                 
 
 

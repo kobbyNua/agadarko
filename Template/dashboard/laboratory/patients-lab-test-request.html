@@ -73,19 +73,21 @@
                                           
 
 
-                                                                              <form>
+                                                                              <form id="patientLabRecords" method="post">
+                                                                                    {% csrf_token %}
                                                                                      <div class="row">
                                                                                             <div class="col-lg-12 col-12">
                                                                                                   <div class="form-group">
 
-                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" placeholder="search patient record">
+                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" name="patient_lab_record" placeholder="search patient record">
                                                                                                   </div>
                                                                                             </div>
                                                                                      </div>
+                                                                                     <input type="hidden" value="1" name="hospital_id"/>
                                                                               </form>
 
 
-                                                                              <table id="example3" class="table table-bordered table-hover">
+                                                                              <table id="example3" class="table table-bordered table-hover lab-records">
                                                                                      <thead>
                                                                                            <tr>
                                                                                                <th>Fullname</th>
@@ -96,7 +98,9 @@
                                                                                                
                                                                                            </tr>
                                                                                      </thead>
-                                                                                     <tbody></tbody>
+                                                                                     <tbody id="results">
+
+                                                                                     </tbody>
 
                                                                               </table>
 
@@ -112,11 +116,19 @@
                                                                                            <tr>
                                                                                                <th>Test Name</th>
                                                                                                <th>Cost</th>
-                                                                                               <th>Status</th>
+                                                                                               
                                                                                          
                                                                                            </tr>
                                                                                      </thead>
-                                                                                     <tbody></tbody>
+                                                                                     <tbody>
+                                                                                              {% for test in test_list %}
+
+                                                                                                 <tr>
+                                                                                                    <td>{{test.test_type}}</td>
+                                                                                                    <td>GHS {{test.cost}}</td>
+                                                                                                 </tr>
+                                                                                              {% endfor %}
+                                                                                     </tbody>
 
                                                                               </table>
 

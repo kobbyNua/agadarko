@@ -33,6 +33,8 @@ urlpatterns=[
    path('view-lab-tests-request',views.view_lab_tests_request,name='view_lab_tests_request'),
    path('view-patient-required-lab-test/<int:patient_history_id>',views.view_patient_required_lab_test,name='view_patient_required_lab_test'),
    path('input-lab-test-result-details',views.input_lab_test_result_details,name="input lab test result"),
+   path('search-patient-lab-records',views.search_patient_lab_records,name="search_patient_lab_records"),
+
 
    path('staff-management/',views.staff_management,name='staff_management'),
    path('staff-user-management/<str:staff_id>',views.staff_user_management,name='staff_user_management'),
