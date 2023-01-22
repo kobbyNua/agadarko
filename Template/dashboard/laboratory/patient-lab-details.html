@@ -240,6 +240,21 @@
                                                                                                <td>view history</td>
                                                                                            </tr>
                                                                                      </thead>
+                                                                                     <tbody>
+                                                                                        
+                                                                                         {% for patient in patient_lab_history_record %}
+                                                                                                <tr>
+                                                                                                    <td>{{patient.patient_laboratory.date_reported}}</td>
+                                                                                                    <td>{{patient.patient_laboratory.patient_history.nurse.username}}</td>
+                                                                                                    <td>{{patient.patient_laboratory.patient_diagonsis_history_details.doctor.username}}</td>
+                                                                                                    <td>{{patient.techinician.username}}</td>
+                                                                                                    <td><a href="/view-patient-required-lab-test/{{patient.patient_laboratory.patient_history.id}}"> view lab history</a></td>
+
+
+                                                                                                </tr>
+
+                                                                                         {% endfor %}
+                                                                                     </tbody>
 
                                                                               </table>
 

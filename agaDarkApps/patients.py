@@ -151,6 +151,7 @@ def patient_lab_report_result(patient_history_id):
 	patient_digonosis_report=getPatientDiagnosisId(patient_history_id)
 	patient_diagnosis_id=""
 	for patient_diagonsis in patient_digonosis_report:
+
 		patient_diagnosis_id+=str(patient_diagonsis.id)
 
 	patient_lab=Patient_Laboratory.objects.get(patient_diagonsis_history_details__id=patient_diagnosis_id,patient_history__id=patient_history_id)
