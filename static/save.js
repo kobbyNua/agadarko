@@ -140,8 +140,14 @@ $(document).ready(function(){
     $('#patientLabRecords input[name=patient_lab_record]').keyup(function(e){
       //alert('hello')
       e.preventDefault()
-      serverData_1($('#search-patient-lab-records'),$(".lab-records #results"),'/view-patient-required-lab-test/','/patient-medical-history-search')
+      serverData_1($('#patientLabRecords'),$(".lab-records #results"),'/view-patient-required-lab-test/','/search-patient-lab-records')
     }) 
+    $('#dietary_search input[name=patient_dietary_search]').keyup(function(e){
+      //alert('hello')
+      e.preventDefault()
+      serverData_1($('#dietary_search'),$(".patient-dietary-search #results"),'/view-patient-dietary-details/','/search-patient-dietory-records')
+    }) 
+
 })
 
 /*$(document).ready(function(){

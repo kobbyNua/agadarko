@@ -43,6 +43,7 @@ urlpatterns=[
    path('laboratory-test-details/<str:lab_test_id>',views.laboratory_test_management_details,name='user_management'),
 
    path('dietary-stocking/',views.dietary_stocking,name="dietary_stocking"),
+   path('search-patient-dietory-records',views.search_patient_dietory_records,name="search_patient_dietory_records"),
    path('dietary-stocking-view/<str:dietary_id>',views.dietary_stocking_view,name='dietary_stocking_view'),
    path('update-dietary-inventary-stock',views.update_dietary_inventary_stock,name="update_dietary_inventary_stock"),
    path('update-dietary-supplement-details',views.update_dietary_supplement_details,name="update_dietary_supplement_details"),

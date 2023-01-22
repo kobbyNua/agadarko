@@ -66,30 +66,33 @@
 
                                                                       <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
                                                                    
-                                                                              <form method="post">
+                                                                              <form method="post" id="dietary_search">
+                                                                                    {% csrf_token %}
                                                                                      <div class="row">
                                                                                             <div class="col-lg-12 col-12">
                                                                                                   <div class="form-group">
 
-                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" placeholder="search patient record">
+                                                                                                         <input type="text" class="glyphicon glyphicon-search form-control-lg form-control" placeholder="search patient dietary record" name="patient_dietary_search">
                                                                                                   </div>
                                                                                             </div>
                                                                                      </div>
+                                                                                     <input type="hidden" name='hospital_id' value="1" class="form-control">
                                                                               </form>
 
 
-                                                                              <table id="example3" class="table table-bordered table-hover">
+                                                                              <table id="example3" class="table table-bordered table-hover patient-dietary-search">
                                                                                      <thead>
                                                                                            <tr>
                                                                                                <th>Fullname</th>
+                                                                                                <th>Telphone</th>
                                                                                                
-                                                                                               <th>Number time visted</th>
                                                                                                <th>Last Date Visited</th>
+                                                                                               <th>Number time visted</th>
                                                                                                <td>View Laboratory History</td>
                                                                                                
                                                                                            </tr>
                                                                                      </thead>
-                                                                                     <tbody></tbody>
+                                                                                     <tbody id="results"></tbody>
 
                                                                               </table>
 
