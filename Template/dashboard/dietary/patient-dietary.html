@@ -12,26 +12,27 @@
                                                         <div class="text-center">
                                                              <img class="profile-user-img img-fluid img-circle" src="/assets/dist/img/user4-128x128.jpg" alt="User profile picture">
                                                         </div>
-                                                        <h3 class="profile-username text-center">Nina Mcintire</h3>
-
+                                                        {% for patient in patient_bio %}
+                                                        <h3 class="profile-username text-center">{{patient.fullname}}</h3>
+                                                        
                                                         <!--<p class="text-muted text-center">Software Engineer</p>-->
 
                                                         <ul class="list-group list-group-unbordered mb-3">
 
                                                             <li class="list-group-item">
-                                                                  <b>Date Of Birth</b> <a class="float-right">13,287</a>
+                                                                  <b>Date Of Birth</b> <a class="float-right">{{patient.dob}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>Telephone</b> <a class="float-right">1,322</a>
+                                                                  <b>Telephone</b> <a class="float-right">{{patient.phone}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                     <b>Region</b> <a class="float-right">543</a>
+                                                                     <b>Region</b> <a class="float-right">{{patient.City}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>City</b> <a class="float-right">13,287</a>
+                                                                  <b>City</b> <a class="float-right">{{patient.region}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>No. of Times</b> <a class="float-right">13,287</a>
+                                                                  <b>No. of Times</b> <a class="float-right">{{patient.visit}}</a>
                                                             </li>
                                                             <!--<li class="list-group-item">
                                                                   <b>Balance</b> <a class="float-right">0.00</a>
@@ -51,6 +52,7 @@
                                                                   <b>Current Price</b> <a class="float-right">13,287</a>
                                                             </li>-->
                                                        </ul>
+                                                       {% endfor %}
                                                  </div>
                                            </div>
                                            
@@ -112,7 +114,7 @@
                                                                                                  <form method="post" id="dispense_dietary">
                                                                                                          {% csrf_token %}
                                                                                                          
-                                                                                                         <table class="table table-bordered table-hover">
+                                                                                                         <table id="example" class="table table-bordered table-hover">
                                                                                                               <tr>
                                                                                                                    <td>Dietary </td>
                                                                                                                    <td>Cost</td>
@@ -141,10 +143,12 @@
                                   
                                       
                                                                                                              {% endfor %}
+                                                                                                             {% if patient_deitary_history.released_status == False %}
                                                                                                              <tr>
                                                                                                               <td colspan="2"></td>
                                                                                                              
                                                                                                              <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
+
                                                                                                             </tr>
                            
                            <tr>
@@ -152,6 +156,8 @@
                         
                                 <td><input type="submit" class="btn btn-info" style="border-radius:0px;border:none" value="dispense dietary"/></td>
                            </tr>
+                           {% endif %}
+
                          </table>
                      </form>
                  {% endif %}
@@ -168,7 +174,35 @@
 
 
                                                                 <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
-vvlvlvl
+                                                                              <table id="example2" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Date Visited</th>
+                                                                                               
+                                                                                               <th>Opd Nurse</th>
+                                                                                               <th>Doctor</th>
+                                                                                               <td>view history</td>
+                                                                                           </tr>
+                                                                                     </thead>
+                                                                                     <tbody>
+                                                                                         
+                                                                                         {% for patient in patient_dietary_history_record %}
+                                                                                                <tr>
+                                                                                                    <td>{{patient.date_reported}}</td>
+                                                                                                    <td>{{patient.patient_history.nurse.username}}</td>
+                                                                                                    <td>{{patient.patient_diagonsis_history_details.doctor.username}}</td>
+                                                                                                    
+                                                                                                    <td><a href="/view-patient-dietary-details/{{patient.patient_history.id}}"> view lab history</a></td>
+
+
+                                                                                                </tr>
+
+                                                                                         {% endfor %}
+
+
+                                                                                     </tbody>
+
+                                                                              </table>
                                                                       
                                                                 </div>
 

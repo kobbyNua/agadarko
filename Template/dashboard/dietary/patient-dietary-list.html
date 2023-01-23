@@ -108,16 +108,37 @@
 
 
 
-                                                                              <table id="example4" class="table table-bordered table-hover">
+                                                                              <table id="example2" class="table table-bordered table-hover">
                                                                                      <thead>
                                                                                            <tr>
-                                                                                               <th>Test Name</th>
+                                                                                               <th>SUpplement Name</th>
                                                                                                <th>Cost</th>
+                                                                                               <th>Quantity</th>
                                                                                                <th>Status</th>
                                                                                          
                                                                                            </tr>
                                                                                      </thead>
-                                                                                     <tbody></tbody>
+                                                                                     <tbody>
+
+                                                                                         {% for supplement in dietary_supplement_details %}
+
+                                                                                                  <tr>
+                                                                                                      <td>{{supplement.dietary_name}}</td>
+                                                                                                      <td>{{supplement.price}}</td>
+                                                                                                      <td>{{supplement.quantity}}</td>
+                                                                                                      <td>
+                                                                                                          {% if supplement.quanity < 10 %}
+                                                                                                               <button class="btn btn-danger" style="border:none;border-radius: 0px;">almost out of stock</button>
+
+                                                                                                          {% else %}
+
+                                                                                                                <button class="btn btn-success" style="border:none;border-radius: 0px;">in stock</button>
+
+                                                                                                          {% endif %}
+                                                                                                      </td>
+                                                                                                  </tr>
+                                                                                         {% endfor %}
+                                                                                     </tbody>
 
                                                                               </table>
 

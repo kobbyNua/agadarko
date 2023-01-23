@@ -27,7 +27,8 @@ def patient_dietary(patient_history_id,patinet_diagonsis_id,user_id,dietary_list
 		patient_dietary_cost_details(patient_dietary_id.id,dietary_list)
 	return True
 
-
+def all_dietary_supplement():
+	return Dietary_Supplementary.objects.all()
 def patient_dietary_cost_details(patient_dietary_id,dietary_list):
 	total_cost=0
 	lists=[]
@@ -45,12 +46,14 @@ def patient_dietary_cost_details(patient_dietary_id,dietary_list):
 def view_dietary_pending_list():
 	return Patient_Dietary.objects.filter(patient_diagonsis_history_details__dietary_report_reuqest_status=True,patient_history__checked_in=True,patient_history__checked_out=False)
 def view_patient_dietary_status(patient_history_id):
-	return Patient_Dietary.objects.filter(patient_history__id=patient_history_id)
+	get_patient=Patient_Dietary.objects.filter(patient_history__id=patient_history_id)
+	if get_patient.exists():
+	    return Patient_Dietary.objects.get(patient_history__id=patient_history_id)
 def view_patient_deietary_details(patient_history_id):
 	return Patient_Dietary_Details.objects.filter(patient_dietary__patient_history__id=patient_history_id)
 
 def input_patient_dietry_request(patient_dietary_details_id,dietary_id,dietary_dispensed_status,quantity,patient_history_id):
-	get_laboratory_id=Patient_Dietary_Details.objects.filter(patient_dietary__patient_history=patient_history_id)[0]
+	get_dietary_id=Patient_Dietary_Details.objects.filter(patient_dietary__patient_history=patient_history_id)[0]
 	for items in range(len(patient_dietary_details_id)):
 		input_patient_dietary_details=Patient_Dietary_Details.objects.get(pk=patient_dietary_details_id[items])
 		input_patient_dietary_details.status=True
@@ -58,10 +61,11 @@ def input_patient_dietry_request(patient_dietary_details_id,dietary_id,dietary_d
 		input_patient_dietary_details.price=dietary_supplement_price(dietary_id[items])
 		input_patient_dietary_details.save()
 		update_supplement_dieary_quanity(dietary_id[items],quantity[items])
-
+	status_updates(get_dietary_id.patient_dietary.id)
+	patient_diagnosis_status(get_dietary_id.patient_dietary.patient_diagonsis_history_details.id)
 	return True
 
-	patient_diagnosis.save()
+	#patient_diagnosis.save()
 def dietary_supplement_price(dietary_id):
 	dietary_price=Dietary_Supplementary.objects.get(pk=dietary_id)
 	return dietary_price.price
@@ -215,5 +219,16 @@ def  patient_dietary_search(searchs,hospital_id):
 	return Patient_Dietary.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
  
 
+
+def patient_dietary_history_details(patient_id):
+	return Patient_Dietary.objects.filter(patient_history__patient__id=patient_id)
+
   
 
+def view_patient_dietary_history_details(patient_card_id):
+	patient_detail=Patient_Dietary.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id','patient_history__patient__Town','patient_history__patient__region__region').filter(patient_history__patient__card_number=patient_card_id).annotate(total_visit=Count('patient_history__patient__id'))
+	return patient_detail
+
+
+def get_patient_history_dietPatient_Dietary(lab_history_id):
+	return Patient_Dietary.objects.get(patient_history__id=lab_history_id)

@@ -43,8 +43,9 @@ def patient_laboratory(patient_history_id,patinet_diagonsis_id,user_id,test_type
 		patient_lab_test_cost_details(patient_laboratory_id.id,test_type)
 	return True
 def patient_lab_test_status(patient_history_id):
-	
-	return Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)
+	get_patient=Patient_Laboratory.objects.filter(patient_history__id=patient_history_id)
+	if get_patient.exists():
+	    return Patient_Laboratory.objects.get(patient_history__id=patient_history_id)
 
 def view_lab_test_request():
 	return Patient_Laboratory.objects.filter(patient_diagonsis_history_details__laboratory_report_request_status=True,patient_history__checked_in=True,patient_history__checked_out=False)
@@ -116,4 +117,12 @@ def multiple_lab_type_list(dietary_id):
 
 def  lab_patient_search(searchs,hospital_id):
 	return Patient_Laboratory.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
-   	
+
+
+def view_patient_laboratory_history_details(patient_card_id):
+	patient_detail=Patient_Laboratory.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id','patient_history__patient__Town','patient_history__patient__region__region').filter(patient_history__patient__card_number=patient_card_id).annotate(total_visit=Count('patient_history__patient__id'))
+	return patient_detail   
+
+
+def get_patient_history_lab(lab_history_id):
+	return Patient_Laboratory.objects.get(patient_history__id=lab_history_id)

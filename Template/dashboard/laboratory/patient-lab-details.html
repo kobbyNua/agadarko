@@ -200,17 +200,20 @@
                                   
                                       
                      	                                                                      {% endfor %}
+                                                                                            {% if get_patient_lab.released_status == False %}
                      	                                                                   <tr>
                      	  	                                                                   <td colspan="2"></td>
                      	  	
-                     	  	                                                                   <td><input type="text" value="{{patient_history_id}}" name="patient_history_id"></td>
+                     	  	                                                                   <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
                      	                                                                    </tr>
+
                      	  
                      	                                                                   <tr>
                      	  	                                                              <td colspan="2"></td>
                      	  	  
                      	  	                                                                         <td><input type="submit" class="btn btn-info" style="border:none;border-radius: 0px;" value="submit lab request"/></td>
                      	                                                                    </tr>
+                                                                                            {% endif %}
                      	                                                                  </table>
                                                                                                    </form>
 	  	                                                                                 {% endif %}

@@ -214,4 +214,14 @@ def patient_check_in_list():
 def  Check_in_patient_search(searchs,hospital_id):
 	return Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
 
+def view_patient_diagnosis_history_details(patient_card_id):
+	print('i am ',patient_card_id)
+	patient_detail=Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id','patient_history__patient__Town','patient_history__patient__region__region').filter(patient_history__patient__card_number=patient_card_id).annotate(total_visit=Count('patient_history__patient__id'))
+	return patient_detail 
 
+
+
+def patient_diagnosis_details(history_id):
+	details=Patient_Diagosis_History.objects.filter(patient_history__id=history_id)
+	if details.exists():
+	    return Patient_Diagosis_History.objects.get(patient_history__id=history_id)

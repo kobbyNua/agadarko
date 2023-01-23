@@ -9,6 +9,7 @@
                                                         <div class="text-center">
                                                              <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
                                                         </div>
+                                                       
                                                         {% for patients in patient_details %}
                                                         <h3 class="profile-username text-center">{{patients.fullname}}</h3>
                                                         
@@ -31,23 +32,7 @@
                                                             <li class="list-group-item">
                                                                   <b>No. of Times</b> <a class="float-right">{{patients.visit}}</a>
                                                             </li>
-                                                            <!--<li class="list-group-item">
-                                                                  <b>Balance</b> <a class="float-right">0.00</a>
-                                                            </li>
 
-                                                            <a href="#" class="btn btn-primary btn-block"><b>Start Sessions</b></a>-->
-                                                            <!--<li class="list-group-item">
-                                                                  <b>Current Quantity Stocked</b> <a class="float-right">13,287</a>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                  <b>Quantity left</b> <a class="float-right">13,287</a>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                  <b>Friends</b> <a class="float-right">13,287</a>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                  <b>Current Price</b> <a class="float-right">13,287</a>
-                                                            </li>-->
                                                        </ul>
                                                        {% endfor %}
                                                  </div>
@@ -242,24 +227,32 @@
 
                                                                                              </div>
                                                                                              <div class="card-body">
+                                                                                               
+                                                                                                    {%  if patient_lab_test_status.released_status == True  %}
+                                                                                                            <table class="table table-striped">
+                                                                                                                <tr>
+                                                                                                                    <th>Test</th>
+                                                                                                                    <th>Reult</th>
+                                                                                                                </tr>
+                                                                                                                {% for test_result in patient_lab_results %}
+                                                                                                                   <tr>
+                                                                                                                       <td>{{test_result.lab_test_type.test_type}}</td>
+                                                                                                                       <td>{{test_result.lab_test_status_report}}</td>
+                                                                                                                   </tr>
+
+                                                                                                                {% endfor %}
+                                                                                                            </table>
+                                                                                                                
+
+                                                                                                    {% else %}
+                                                                                                            
+                                                                                                          {% if patient_diagnosis_history_details.laboratory_report_request_status == True %}
+                                                                                                                 <h3>Lab test not ready</h3>
+
+                                                                                                          {% else %}
 
 
-                                                                                                {% if patient_lab_test_status|length > 0 %}
-                                                                                                {% for patient_lab_test_info in patient_lab_test_status %}
-                                                                                                     {{patient_lab_test_info.released_status}}
-                                                                                                  {% if patient_lab_test_info.released_status == True %}
-                                                                                                              
-                                                                                                              <h3>lab_report ready <a href="">view results</a></h3>
-                                                                              
-                                                                                                  {% elif patient_lab_test_info.released_status == False %}
-                                                                              
-                                                                                                          <div class="">
-                                                                                                              <h3>Lab test not ready</h3>
-                                                                                                          </div>
-                                                                                                  {% endif %}
-                                                                              
-                                                                                               {% endfor %}
-                                                                                           {% else %}
+
                                                                                                   <form method="post" id="select_lab_test">
                                                                                                     {% csrf_token %}
                                                                               
@@ -272,6 +265,7 @@
                                                                                                    </select>
                                                                                                    <input type="hidden" value="1" name="user_id">
                                                                                                    <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"><br/>
+
                                                                                                    <input type="submit" value="send lab request" class="btn btn-info" style="border:none;border-radius: 0px;"/>
                                                                                                  </form>
 
@@ -288,8 +282,15 @@
                                                                                                                </tbody>
                                                                                                          </table>
                                                                                                   </div>
-                                                                              
-                                                                                           {% endif %}
+
+
+
+
+                                                                                                          {% endif %}
+
+                                                                                                    {% endif %}
+
+
 
 
 
@@ -310,8 +311,81 @@
 
                                                                                              </div>
                                                                                              <div class="card-body">
+
+                                                                                                  {% if patient_dietry_state.released_status == True %}
+
+                                                                                                               <table class="table table-striped">
+                                                                                                                      <tr>
+                                                                                                                          <td>Dietary Supplement</td>
+                                                                                                                      </tr>
+                                                                                                                      {% for patient_dietary in patient_dietary_details %}
+                                                                                                                          <tr>
+                                                                                                                              <td>{{patient_dietary.dietary.dietary_name}}</td>
+                                                                                                                          </tr>
+
+                                                                                                                      {% endfor%}
+                                                                                                               </table>
+                                                                                                  {% else %}
+                                                                                                        {% if patient_diagnosis_history_details.dietary_report_reuqest_status == True %}
+
+                                                                                                                        <h3>Dietary Supplement not dispense</h3>
+                                                                                                                        {{patient_dietry_state.released_status}}
+                                                                                                        {% else %}
+
+
+                                                                                                            <form method="post" id="select_dietary_supplement">
+                                                                                                                 {% csrf_token %}
+                                                                              
+                                                                                                                    <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                                                          {% for dietary_info in dietary_lists %}
+                                                                                                                               {% if dietary_info.quantity > 0 %}
+                                                                                                                                 <option value="{{dietary_info.id}}">{{dietary_info.dietary_name}} - GHS{{dietary_info.price}}</option>
+                                                                                                                              {% endif %}
+                                                                                                                          {% endfor %}
+                                                                                                                   </select><br/>
+                                                                                                                   <input type="hidden" value="1" name="user_id">
+                                                                                                                    <input type="hidden" name="patient_history_id" value="{{patient_history_id}}">
+                                                                                                                    <input type="submit" class="btn btn-info" value="send dietary request"/>
+                                                                                                            </form>
+                                                                                                            <div class="table-responsive mt-1 mb-1" >
+                                                                                                                  <table class="table table-bordered" id="selected_dietary_supplement">
+                                                                                                                     <thead>
+                                                                                                                         <tr>
+                                                                                                                             <th>Dietary Supplement</th>
+                                                                                                                             <th>Cost</th>
+                                                                                                                         </tr>
+                                                                                                                     </thead>
+                                                                                                                     <tbody>
+
+                                                                                                                     </tbody>
+                                                                                                                  </table>
+                                                                                                            </div>
+
+
+                                                                                                        {% endif %}
+
+                                                                                                            <!-- <form method="post" id="select_dietary_supplement">
+                                                                                                                  {% csrf_token %}
+                                                                              
+                                                                                                                     <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                                                             {% for dietary_info in dietary_lists %}
+                                                                                                                                {% if dietary_info.quantity > 0 %}
+                                                                                                                                   <option value="{{dietary_info.id}}">{{dietary_info.dietary_name}} - GHS{{dietary_info.price}}</option>
+                                                                                                                                     {% endif %}
+                                                                                                                             {% endfor %}
+                                                                                                                    </select><br/>
+                                                                                                                    <input type="hidden" value="1" name="user_id">
+                                                                                                                  <input type="hidden" name="patient_history_id" value="{{patient_history_id}}">
+                                                                                                                  <input type="submit" class="btn btn-info" value="send dietary request"/>
+                                                                                                                 </form>-->
+                                                                              
+                                                                                           {% endif %}
+
+
+                                                                                           <!---->
+
                                                                                                   
-                                                                                                {% if patient_dietary_status|length > 0 %}
+                                                                                                <!--{% if patient_dietary_status|length > 0 %}
                                                                                                 {% for patient_dietary_info in patient_dietary_status %}
                                                                               
                                                                                                   {% if patient_dietary_info.released_status == True %}
@@ -327,20 +401,7 @@
                                                                               
                                                                                                {% endfor %}
                                                                                            {% else %}
-                                                                                                  <form method="post" id="select_dietary_supplement">
-                                                                                                    {% csrf_token %}
-                                                                              
-                                                                                                   <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
-                                                                                                        {% for dietary_info in dietary_lists %}
-                                                                                                            {% if dietary_info.quantity > 0 %}
-                                                                                                                <option value="{{dietary_info.id}}">{{dietary_info.dietary_name}} - GHS{{dietary_info.price}}</option>
-                                                                                                            {% endif %}
-                                                                                                        {% endfor %}
-                                                                                                   </select><br/>
-                                                                                                   <input type="hidden" value="1" name="user_id">
-                                                                                                   <input type="hidden" name="patient_history_id" value="{{patient_history_id}}">
-                                                                                                   <input type="submit" class="btn btn-info" value="send dietary request"/>
-                                                                                                 </form>
+
                                                                               
                                                                                            {% endif %}
 
@@ -357,7 +418,7 @@
 
                                                                                                       </tbody>
                                                                                                 </table>
-                                                                                         </div>
+                                                                                         </div>-->
                                                                                              </div>
                                                                                       </div>
 

@@ -233,7 +233,27 @@ class Dietary_Supplmentary_Stock_Details(models.Model):
 	def save(self,*args,**kwargs):
 		self.dated_stocked="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		super().save(*args,**kwargs)
-	
+class OPD_Charges(models.Model):
+    first_time_charge = models.FloatField(default=0.00)
+    second_time_charge = models.FloatField(default=0.00)
+class OPD_Payment_Charges(models.Model):
+	patient_history=models.ForeignKey(Patient_History,on_delete=models.CASCADE)
+	amount_paid=models.FloatField(default=0.00)
+	recepit=models.CharField(max_length=120)
+	receiver=models.ForeignKey(User,on_delete=models.CASCADE)
+
+class OPD_Charges_Updates(models.Model):
+	updated_by=models.ForeignKey(User,on_delete=models.CASCADE)
+	first_time_old_charge=models.FloatField(default=0.00)
+	second_time_old_charge = models.FloatField(default=0.00)
+	date_edited = models.DateField()
+	def save(self,*args,**kwargs):
+		self.date_edited="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		super().save(*args,**kwargs)
+
+
+
+
 
 '''
 class Patient_Bills_Record(model.Models):
