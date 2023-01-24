@@ -83,20 +83,23 @@ class Patient_History(models.Model):
 	attended_to=models.BooleanField(default=True)
 	checked_in=models.BooleanField(default=False)
 	checked_out=models.BooleanField(default=False)
-	waiting_state=models.CharField(max_length=150,default="waiting")
-	checked_in_date_time=models.DateField(default="1982-01-02")
-	checked_out_date_time=models.DateField(default="1982-01-02")
-	'''
-	   def save(self,*args,**kwargs):
-	   	
-	   	
-	   	#self.date_reported="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day,datetime.now().strftime("%I"),datetime.now().strftime("%M"),datetime.now().strftime("%S"))
-	   	if self.checked_in == True:
-	   		self.checked_in_date_time="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-	   	elif self.checked_out == True:
-	   		self.checked_out_date_time ="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-        
-    '''
+	waiting_state=models.CharField(max_length=150,default="pending")
+	checked_in_date_time=models.DateField()
+	checked_out_date_time=models.DateField()
+	def save(self,*args,**kwargs):
+		if self.checked_in == True:
+			self.checked_in_date_time="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		elif self.checked_out == True:
+			self.checked_out_date_time ="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		else:
+			self.checked_in_date_time="1982-01-02"
+			self.checked_out_date_time="1982-01-02"
+
+		super().save(*args,**kwargs)
+
+
+
+
 '''
    * Stage 4 Colour 
 '''       
@@ -239,8 +242,13 @@ class OPD_Charges(models.Model):
 class OPD_Payment_Charges(models.Model):
 	patient_history=models.ForeignKey(Patient_History,on_delete=models.CASCADE)
 	amount_paid=models.FloatField(default=0.00)
-	recepit=models.CharField(max_length=120)
+	recepit=models.CharField(max_length=120,default="")
 	receiver=models.ForeignKey(User,on_delete=models.CASCADE)
+	date_paid=models.DateField()
+	def save(self,*args,**kwargs):
+		self.date_paid="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		super().save(*args,**kwargs)
+
 
 class OPD_Charges_Updates(models.Model):
 	updated_by=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -250,6 +258,25 @@ class OPD_Charges_Updates(models.Model):
 	def save(self,*args,**kwargs):
 		self.date_edited="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		super().save(*args,**kwargs)
+
+class Patient_Laboratory_Dietary_Cost(models.Model):
+	patient_history=models.ForeignKey(Patient_History,on_delete=models.CASCADE)
+	lab_total_cost=models.FloatField(default=0.00)
+	supplement_total_cost=models.FloatField(default=0.00)
+	total_cost=models.FloatField(default=0.00)
+
+class Patient_Laboratory_Dietary_Payment(models.Model):
+	lab_supplement=models.ForeignKey(Patient_Laboratory_Dietary_Cost,on_delete=models.CASCADE)
+	amount_paid=models.FloatField(default=0.00)
+	receipts=models.CharField(max_length=120)
+	date_paid=models.DateField()
+
+	date_paid=models.DateField()
+	def save(self,*args,**kwargs):
+		self.date_paid="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		super().save(*args,**kwargs)
+
+
 
 
 

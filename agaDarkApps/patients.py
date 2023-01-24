@@ -63,20 +63,18 @@ def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_i
 
 
 def  patient_history(patient_id,hospital_id,user_id):
-	
+	'''
 	date_formated=datetime.now()
 	date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 	print(date_format)
-	create_patient_history=Patient_History.objects.create(patient=Patient.objects.get(pk=patient_id),hospital=Hospital.objects.get(pk=hospital_id),nurse=User.objects.get(pk=user_id),date_reported=date_format,checked_in=True)
+	'''
+	create_patient_history=Patient_History.objects.create(patient=Patient.objects.get(pk=patient_id),hospital=Hospital.objects.get(pk=hospital_id),nurse=User.objects.get(pk=user_id))
 	create_patient_history.save()
 	return True
 
 
 
-def checked_out(patient_history_id):
-	checked_out_status=Patient_History.objects.get(pk=patient_history_id)
-	checked_out_status.checked_out=False
-	checked_out_status.save()
+
 
 
 '''
@@ -96,7 +94,7 @@ def edit_opd_vitals(vital_id,vitals):
 	vital.save()
 	return True
 def patinet_waiting_list():
-	  return Patient_History.objects.filter(waiting_state="waiting",checked_in=True,checked_out=False)
+	  return Patient_History.objects.filter(waiting_state="checked in",checked_in=True,checked_out=False)
 
 def patient_opd_history_vitals(patient_history_id,vitals,details):
 	#print(details)
