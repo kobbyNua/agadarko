@@ -80,6 +80,7 @@ class Patient_History(models.Model):
 	hospital=models.ForeignKey(Hospital,on_delete=models.CASCADE)
 	nurse=models.ForeignKey(User,on_delete=models.CASCADE)
 	date_reported=models.DateField()
+	case_number=models.CharField(max_length=120,default="")
 	attended_to=models.BooleanField(default=True)
 	checked_in=models.BooleanField(default=False)
 	checked_out=models.BooleanField(default=False)

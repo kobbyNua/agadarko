@@ -210,7 +210,7 @@ submitForms=(form_id,urls)=>{
                         console.log(data)
       	         	if(data.status === "success"){
       	          	      $('#responseBox .modal-body .msg-box').html(data.success)
-      	          	      //window.location=""
+      	          	      window.location=""
       	          	}
 
       	          	else if(data.status === "error"){

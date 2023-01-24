@@ -3,6 +3,7 @@ from django.db.models import Count ,F,Q,Sum
 from .models import Patient,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
 from .laboratory import view_patient_lab_details,patient_lab_test_status,patient_laboratory
 from .dietary import patient_dietary, view_patient_dietary_status,view_patient_deietary_details
+from .account import patient_opd_payment_charges
 from datetime import datetime
 
 '''
@@ -48,29 +49,50 @@ def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_i
 		else:
 			patient_card_number=str(total_number_of_patient)+'-'+str(datetime.now().year)
 			#return patient_card_number
-		unit_number='A.G.D-'+patient_card_number
-		registration_number=patient_card_number
-		print(registration_number)
+		#unit_number='A.G.D-'+patient_card_number
+		#registration_number=patient_card_number
+		#print(registration_number)
 		date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,card_number=patient_card_number,unit_no=unit_number,registration_number=registration_number,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
 		register_patient.save()
 		patient_id=Patient.objects.latest('id')
 		create_patient_history=patient_history(patient_id.id,hospital_id,user_id)
-		print(create_patient_history)
+		#print(create_patient_history)
 		return create_patient_history		
 	else:
 		return False
 
+def patient_card_patient(patient_id):
+	get_patient=Patient.objects.get(pk=patient_id)
+	get_patient.card_number=LPad('id',8,Value('0'))
+	get_patient.unit_number='A.G.D'+patient_id+'-'+datetime+now().year
+	get_patient.registration_number=patient_id+'-'+datetime+now().year
+	get_patient.save()
+
+def check_in_session(patient_id,patient_history_id,amount,user_id,hospital_id):
+	get_patient_history=Patient_History.objects.filter(patient__id=patient_id,waiting_state="pending")
+	if get_patient_history.exists():
+		get_patient=Patient_History.objects.get(patient__id=patient_id)
+		patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
+    
+	else:
+		get_patient_history=patient_history(patient_id,hospital_id,user_id)
+		if get_patient_history == True:
+			get_patient=Patient_History.objects.get(patient__id=patient_id)
+			patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
+
+
 
 def  patient_history(patient_id,hospital_id,user_id):
-	'''
-	date_formated=datetime.now()
-	date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-	print(date_format)
-	'''
+
 	create_patient_history=Patient_History.objects.create(patient=Patient.objects.get(pk=patient_id),hospital=Hospital.objects.get(pk=hospital_id),nurse=User.objects.get(pk=user_id))
 	create_patient_history.save()
 	return True
+
+def patient_history_case_number_generation(patient_history_id):
+	get_patient_history=Patient_History.objects.get(pk=patient_history_id)
+	get_patient_history.case_number=LPad('id',8,Value('0'))
+	get_patient_history.save()
 
 
 

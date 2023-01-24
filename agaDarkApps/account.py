@@ -25,15 +25,17 @@ def patient_opd_payment_charges(patient_id,patient_history_id,amount,user_id):
 	charges=OPD_Payment_Charges.objects.all()[0]
 	if patient_record_details > 1:
 		#pay second charge
-		if amount == second_charge.second_tim_charge:
-			make_payment(patient_history_id,amount,user_id)
+		if amount == second_charge.second_time_charge:
+			payments=make_payment(patient_history_id,amount,user_id)
+			return payments
 		else:
 			return False
 
 
 	elif patient_record_details == 1 :
-		if amount == second_charge.second_old_charge:
-		    make_payment(patient_history_id,amount,user_id)
+		if amount == second_charge.first_tim3_charge:
+		    payments=make_payment(patient_history_id,amount,user_id)
+		    return payments
 		else:
 			return False
 	else:
@@ -70,4 +72,6 @@ def checked_out(patient_history_id):
 	checked_out_status.waiting_state='checked out'
 	checked_out_status.save()
 	return True
+
+
 
