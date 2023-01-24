@@ -63,8 +63,9 @@ class Patient(models.Model):
 		Town=models.CharField(max_length=150)
 		card_number=models.CharField(max_length=150,default="")
 		unit_no=models.CharField(max_length=150,default="")
-		registration_number=models.CharField(max_length=150)
+		registration_number=models.CharField(max_length=150,default="")
 		registered_by=models.ForeignKey(User,on_delete=models.CASCADE)
+		waiting_state=models.CharField(max_length=120,default="checked out")
 		date_registered=models.DateField()
 		'''
 		def save(self,*args,**kwargs):
@@ -88,6 +89,7 @@ class Patient_History(models.Model):
 	checked_in_date_time=models.DateField()
 	checked_out_date_time=models.DateField()
 	def save(self,*args,**kwargs):
+		self.date_reported="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		if self.checked_in == True:
 			self.checked_in_date_time="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		elif self.checked_out == True:

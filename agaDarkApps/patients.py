@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User,auth,Group
-from django.db.models import Count ,F,Q,Sum
+from django.db.models import Count ,F,Q,Sum,Value
 from .models import Patient,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
 from .laboratory import view_patient_lab_details,patient_lab_test_status,patient_laboratory
 from .dietary import patient_dietary, view_patient_dietary_status,view_patient_deietary_details
 from .account import patient_opd_payment_charges
 from datetime import datetime
+from django.db.models.functions import LPad
 
 '''
 stage 2
@@ -23,7 +24,7 @@ def patient_medical_diagnosis_records(patient_id):
 view patient details
 '''
 def view_patient_details(patient_card_id):
-	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
+	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
 	return patient_detail
 
 
@@ -38,9 +39,11 @@ def getRegion():
 def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_id,user_id):
 	
 	check_patient_details=Patient.objects.filter(First_Name=first_name,Last_Name=last_name,Telephone=telephone,Date_Of_Birth=date_of_birth)
+	
 	if not check_patient_details.exists():
 		total_number_of_patient=Patient.objects.all().count()
 		#count=0
+		'''
 		print(total_number_of_patient)
 		if total_number_of_patient == 0:
 			total_number_of_patient+=1
@@ -49,13 +52,15 @@ def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_i
 		else:
 			patient_card_number=str(total_number_of_patient)+'-'+str(datetime.now().year)
 			#return patient_card_number
+		'''
 		#unit_number='A.G.D-'+patient_card_number
 		#registration_number=patient_card_number
 		#print(registration_number)
 		date_format="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
-		register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,card_number=patient_card_number,unit_no=unit_number,registration_number=registration_number,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
+		register_patient=Patient.objects.create(First_Name=first_name,Last_Name=last_name,Date_Of_Birth=date_of_birth,Telephone=telephone,region=Region.objects.get(pk=region),Town=town,registered_by=User.objects.get(pk=user_id),date_registered=date_format)
 		register_patient.save()
 		patient_id=Patient.objects.latest('id')
+		patient_card_patient(patient_id.id)
 		create_patient_history=patient_history(patient_id.id,hospital_id,user_id)
 		#print(create_patient_history)
 		return create_patient_history		
@@ -65,8 +70,8 @@ def  patient(first_name,last_name,date_of_birth,telephone,region,town,hospital_i
 def patient_card_patient(patient_id):
 	get_patient=Patient.objects.get(pk=patient_id)
 	get_patient.card_number=LPad('id',8,Value('0'))
-	get_patient.unit_number='A.G.D'+patient_id+'-'+datetime+now().year
-	get_patient.registration_number=patient_id+'-'+datetime+now().year
+	get_patient.unit_no='A.G.D-'+str(patient_id)+'-'+str(datetime.now().year)
+	get_patient.registration_number=str(patient_id)+'-'+str(datetime.now().year)
 	get_patient.save()
 
 def check_in_session(patient_id,patient_history_id,amount,user_id,hospital_id):
@@ -87,6 +92,8 @@ def  patient_history(patient_id,hospital_id,user_id):
 
 	create_patient_history=Patient_History.objects.create(patient=Patient.objects.get(pk=patient_id),hospital=Hospital.objects.get(pk=hospital_id),nurse=User.objects.get(pk=user_id))
 	create_patient_history.save()
+	get_patient_history=Patient_History.objects.latest('id')
+	patient_history_case_number_generation(get_patient_history.id)
 	return True
 
 def patient_history_case_number_generation(patient_history_id):

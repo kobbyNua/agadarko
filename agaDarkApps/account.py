@@ -27,6 +27,7 @@ def patient_opd_payment_charges(patient_id,patient_history_id,amount,user_id):
 		#pay second charge
 		if amount == second_charge.second_time_charge:
 			payments=make_payment(patient_history_id,amount,user_id)
+			patients_checked_in(patient_id)
 			return payments
 		else:
 			return False
@@ -35,11 +36,16 @@ def patient_opd_payment_charges(patient_id,patient_history_id,amount,user_id):
 	elif patient_record_details == 1 :
 		if amount == second_charge.first_tim3_charge:
 		    payments=make_payment(patient_history_id,amount,user_id)
+		    patients_checked_in(patient_id)
 		    return payments
 		else:
 			return False
 	else:
 		return False
+def patients_checked_in(patient_id):
+	get_patient=Patient.objects.get(pk=patient_id)
+	get_patient.waiting_state="checked in"
+	get_patient.save()
 def make_payment(patient_history_id,amount,user_id):
 	payment=OPD_Payment_Charges.objects.create(patient_history=Patient_History.objects.get(pk=patient_history_id),amount_paid=amount,receiver=User.objects.get(pk=user_id))
 	payment.save()

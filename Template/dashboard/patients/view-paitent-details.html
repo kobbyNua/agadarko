@@ -19,7 +19,7 @@
                                                             
                                                         <h3 class="profile-username text-center">{{ patients.fullname }}</h3>
 
-                                                        <!--<p class="text-muted text-center">Software Engineer</p>-->
+                                                        <p class="text-muted text-center">{{ patients.card }}</p>
 
                                                         <ul class="list-group list-group-unbordered mb-3">
 
@@ -41,8 +41,35 @@
                                                             <!--<li class="list-group-item">
                                                                   <b>Balance</b> <a class="float-right">0.00</a>
                                                             </li>-->
+                                                            <li class="list-group-item">
+                                                                
+                                                                 
+                                                                       {% if patients.checked_in_state == 'checked out' %}
+                                                                            <form>
+                                                                                {% csrf_token %}
+                                                                                  <div class="col-md-12 mt-2 mb-2">
+                                                                                         <div class="form-group">
+                                                                                             <input type="text" class="form-control" placeholder="amount" name="Amount" pattern="[0-9]+">
+                                                                                         </div>
+                                                                                  </div>
+                                                                                  <input type="hidden" name="hospital_id" value="1">
+                                                                                  <input type="hidden" name="user_id" value="1">
+                                                                                  <input type="hidden" name="patient_id" value="{{patients.patient_id}}">
+                                                                                  <div class="col-md-12 mt-2 mb-2">
+                                                                                        <input type="submit"  class="btn btn-info" value="start new Sessions" style="border:none;border-radius: 0px;">
+                                                                                  </div>
+                                                                            </form>
+                                                                        {% else %}
 
-                                                            <a href="#" class="btn btn-primary btn-block"><b>Start Sessions</b></a>
+
+                                                                       
+                                                                                 <a href="#" class="btn btn-primary btn-block" style="border:none;border-radius: 0px;"><b>checked in</b></a> 
+
+                                                                       {% endif %}
+                                                                 
+                                                            </li>
+
+                                                            
                                                             <!--<li class="list-group-item">
                                                                   <b>Current Quantity Stocked</b> <a class="float-right">13,287</a>
                                                             </li>

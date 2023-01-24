@@ -71,7 +71,7 @@ def view_patient_detail(request,patient_card_id):
 	details=[]
 	for patients in patients_details:
 		fullname=patients['patient__First_Name']+" "+patients['patient__Last_Name']
-		details.append({'fullname':fullname,'dob':patients['patient__Date_Of_Birth'],'phone':patients['patient__Telephone'],'region':patients['patient__region__region'],'City':patients['patient__Town'],'visit':patients['total_visit']})
+		details.append({'fullname':fullname,'dob':patients['patient__Date_Of_Birth'],'phone':patients['patient__Telephone'],'region':patients['patient__region__region'],'City':patients['patient__Town'],'card':patients['patient__card_number'],'checked_in_state':patients['patient__waiting_state'],'patient_id':patients['patient__id'],'visit':patients['total_visit']})
 
 	patient_opd_history=paitient_opd_visiting_history(patient_card_id)
 	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','view_patient_details':details,'pateint_opd_history':patient_opd_history}) 
