@@ -35,6 +35,7 @@
 
                                                        </ul>
                                                        {% endfor %}
+                                                      
                                                  </div>
                                            </div>
                                            
@@ -456,8 +457,8 @@
                                                                                                       <td>{{patient_records.patient_history.date_reported}}</td>
                                                                                                       <td>{{patient_records.patient_history.nurse.first_name}}</td>
                                                                                                       <td>{{patient_records.patient_history.nurse.first_name}}</td>
-                                                                                                      <td></td>
-                                                                                                      <td><a href="patient-profile/{{patient_records.patient_history.id}}" class="btn btn-info">view medical history</a></td>
+                                                                                                      <td>{{patient_records.patient_history.case_number}}</td>
+                                                                                                      <td><a href="/patient-profile/{{patient_records.patient_history.case_number}}" class="btn btn-info">view medical history</a></td>
                                                                                                  </tr>
 
                                                                                             {% endfor %}

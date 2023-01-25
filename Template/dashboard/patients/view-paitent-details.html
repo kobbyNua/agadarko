@@ -45,25 +45,26 @@
                                                                 
                                                                  
                                                                        {% if patients.checked_in_state == 'checked out' %}
-                                                                            <form>
+                                                                            <form id="start_session" method="post">
                                                                                 {% csrf_token %}
                                                                                   <div class="col-md-12 mt-2 mb-2">
                                                                                          <div class="form-group">
-                                                                                             <input type="text" class="form-control" placeholder="amount" name="Amount" pattern="[0-9]+">
+                                                                                             <input type="text" class="form-control" placeholder="amount" name="amount" pattern="[0-9]+">
                                                                                          </div>
                                                                                   </div>
                                                                                   <input type="hidden" name="hospital_id" value="1">
                                                                                   <input type="hidden" name="user_id" value="1">
+                                                                                  <input type="hidden" name="patient_history_id" value="{{patients.patient_history_id}}">
                                                                                   <input type="hidden" name="patient_id" value="{{patients.patient_id}}">
                                                                                   <div class="col-md-12 mt-2 mb-2">
-                                                                                        <input type="submit"  class="btn btn-info" value="start new Sessions" style="border:none;border-radius: 0px;">
+                                                                                        <input type="submit"  class="btn btn-info" value="start new Sessions" style="border:none;border-radius: 0px;width: 100%;">
                                                                                   </div>
                                                                             </form>
                                                                         {% else %}
 
 
                                                                        
-                                                                                 <a href="#" class="btn btn-primary btn-block" style="border:none;border-radius: 0px;"><b>checked in</b></a> 
+                                                                                 <a href="#" class="btn btn-success btn-block" style="border:none;border-radius: 0px;"><b>checked in</b></a> 
 
                                                                        {% endif %}
                                                                  
@@ -116,6 +117,7 @@
                                                                               <table id="example2" class="table table-bordered table-hover">
                                                                                      <thead>
                                                                                            <tr>
+                                                                                            <th>case number</th>
                                                                                                <th>Date Checked-in</th>
                                                                                                
                                                                                                <th>Date Checkout</th>
@@ -128,20 +130,25 @@
                                                                                           
                                                                                                 {% for patient in pateint_opd_history %}
                                                                                                      <tr>
-                                                                                                         <td>{{patient.date_reported}}</td>
+                                                                                                         <td>{{patient.patient_history.case_number }}</td>
+                                                                                                         <td>{{patient.patient_history.date_reported}}</td>
                                                                                                          <td>
-                                                                                                            {% if patient.checked_out_date_time != '1982-01-02' %}
-                                                                                                                   {{patient.checked_out_date_time}}
+                                                                                                            {% if patient.patient_history.waiting_state == "checked out" %}
+                                                                                                                   {{patient.patient_history.checked_out_date_time}}
                                                                                                             {% endif %}
                                                                                                          </td>
                                                                                                          <td>
-                                                                                                             {% if patient.waiting_state == "waiting" %}
-                                                                                                                  checked in
+                                                                                                            
+                                                                                                             {% if patient.patient_history.waiting_state == "pending" %}
+                                                                                                                  yet to check in
+                                                                                                             {% elif patient.patient_history.waiting_state == "checked in" %}
+                                                                                                                   {{patient.patient_history.waiting_state}}
                                                                                                              {% else %}
-                                                                                                                   checked out
+                                                                                                                   {{patient.patient_history.waiting_state}}
                                                                                                              {% endif %}
                                                                                                          </td>
-                                                                                                         <td>{{patient.nurse.username}}</td>
+                                                                                                         <td>{{patient.patient_history.nurse.username}}</td>
+                                                                                                         <td>GHS {{patient.amount_paid}}</td>
                                                                                                      </tr>
                                                                                                 {% endfor %}
                                                                                                                                                                       

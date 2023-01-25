@@ -148,6 +148,11 @@ $(document).ready(function(){
       serverData_1($('#dietary_search'),$(".patient-dietary-search #results"),'/view-patient-dietary-details/','/search-patient-dietory-records')
     }) 
 
+    $("#start_session").submit(function(e){
+        e.preventDefault()
+        submitForms(this,"/check-in-patient")
+    })
+
 })
 
 /*$(document).ready(function(){
@@ -343,7 +348,7 @@ serverData_1=(form_id,selectors,page,urls)=>{
                         rows+='<td>'+data.result[index].dob+'</td>'
                          //rows+='<td>'+data.result[index].card+'</td>'
                         rows+='<td>'+data.result[index].total_visit+'</td>'
-                        rows+='<td><a href="'+page+''+data.result[index].patient_history_id+'" class="btn btn-info">view and check-in</a></td>'
+                        rows+='<td><a href="'+page+''+data.result[index].case_number+'" class="btn btn-info">view and check-in</a></td>'
                         ///patient-profile/
                         rows+='</tr>'
                         console.log(rows)

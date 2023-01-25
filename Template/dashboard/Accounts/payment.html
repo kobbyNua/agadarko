@@ -3,4 +3,134 @@
 {% block content %}
 
 
+                                  <div class="col-md-12">
+                                         
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+
+
+                                                          <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                            <li class="pt-2 px-3"><h3 class="card-title">Patients Payment Records</h3></li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Search Records</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                   <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Patient Registration</a>
+                                                              </li>
+                                                              <!--<li class="nav-item">
+                                                                    <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Daily Reports</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-settings" role="tab" aria-controls="custom-content-above-settings" aria-selected="false">In Patients</a>
+                                                             </li>--->
+                                                        </ul>
+                                                        <div class="tab-custom-content">
+                                                          
+
+                                                             <div class="tab-content" id="custom-content-below-tabContent">
+                                                               
+
+                                                                  <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                                  	
+
+
+                                                                              <form method="post" id="patient_payment_search">
+                                                                                {% csrf_token %}
+                                                                                     <div class="row">
+                                                                                            <div class="col-lg-12 col-12">
+                                                                                                  <div class="form-group">
+
+                                                                                                         <input type="text" class="form-control" name="search" placeholder="search patient record by telephone or date of birth">
+                                                                                                  </div>
+                                                                                            </div>
+                                                                                     </div>
+                                                                                     <input type="hidden" value="1" name="hospital_id">
+                                                                              </form>
+
+                                                                              <table id="example2" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Fullname</th>
+                                                                                               <th>Case Number</th>
+                                                                                               <th>Card Number</th>
+                                                                                               <th>Laboratory Cost</th>
+                                                                                               <th>Dietary Cost</th>
+                                                                                               
+                                                                                               <th>View and Check in</th>
+                                                                                           </tr>
+                                                                                     </thead>
+                                                                                     <tbody id="search_results"></tbody>
+ 
+
+                                                                               </table>
+
+
+
+
+
+                                                                  </div>
+
+
+
+                                                                  <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                                                                  	
+
+                                                                              <table id="example3" class="table table-bordered table-hover">
+                                                                                     <thead>
+                                                                                           <tr>
+                                                                                               <th>Fullname</th>
+                                                                                               <th>Card Number</th>
+                                                                                               <th>Case Number</th>
+                                                                                               <th>Laboratory Cost</th>
+                                                                                               <th>Dietary Cost</th>
+                                                                                               
+                                                                                               <th>View and Check out</th>
+                                                                                           </tr>
+                                                                                     </thead>
+                                                                                     <tbody>
+                                                                                     	
+                                                                                     	  {% for patient in patient_record %}
+                                                                                     	  
+                                                                                              <tr>
+                                                                                              	
+                                                                                              	  <td>{{patient.fullname}}</td>
+                                                                                              	  <td>{{patient.patients_card}}</td>
+                                                                                              	  <td>{{patient.case_number}}</td>
+                                                                                              	  <td>GHS {{patient.lab_total_cost}}</td>
+                                                                                              	  <td>GHS {{patient.dietary_total_cost}}</td>
+                                                                                              	  <td><a href="/#/{{patient.case_number}}" class="btn btn-info" style="border:none;border-radius:0px"> view and checkout</a></td>
+                                                                                              	
+                                                                                              </tr>
+
+
+                                                                                     	  {% endfor %}
+                                                                                     </tbody>
+ 
+
+                                                                               </table>
+
+
+
+                                                                  </div>
+
+
+
+
+                                                             </div>
+                                                        </div>
+
+
+
+
+
+
+                                                 </div>
+
+                                           </div>
+                                   </div>
+
+
+
+
 {% endblock %}

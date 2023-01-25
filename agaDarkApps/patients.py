@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User,auth,Group
 from django.db.models import Count ,F,Q,Sum,Value
-from .models import Patient,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
+from .models import Patient,OPD_Payment_Charges,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
 from .laboratory import view_patient_lab_details,patient_lab_test_status,patient_laboratory
 from .dietary import patient_dietary, view_patient_dietary_status,view_patient_deietary_details
 from .account import patient_opd_payment_charges
@@ -24,13 +24,13 @@ def patient_medical_diagnosis_records(patient_id):
 view patient details
 '''
 def view_patient_details(patient_card_id):
-	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
+	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
 	return patient_detail
 
 
 
 def paitient_opd_visiting_history(card_id):
-	return Patient_History.objects.filter(patient__card_number=card_id)
+	return OPD_Payment_Charges.objects.filter(patient_history__patient__card_number=card_id)
 '''
 create patients
 '''
@@ -78,13 +78,15 @@ def check_in_session(patient_id,patient_history_id,amount,user_id,hospital_id):
 	get_patient_history=Patient_History.objects.filter(patient__id=patient_id,waiting_state="pending")
 	if get_patient_history.exists():
 		get_patient=Patient_History.objects.get(patient__id=patient_id)
-		patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
+		get_patient_details=patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
+		return get_patient_details
     
 	else:
 		get_patient_history=patient_history(patient_id,hospital_id,user_id)
 		if get_patient_history == True:
 			get_patient=Patient_History.objects.get(patient__id=patient_id)
-			patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
+			get_patient_details=patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
+			return get_patient_details
 
 
 
