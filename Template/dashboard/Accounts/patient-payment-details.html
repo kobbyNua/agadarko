@@ -1,1 +1,151 @@
-e
+{% extends '../base.html' %}
+
+{% block content %}
+
+
+
+                                    <div class="col-md-3">                                     
+            <!-- Profile Image -->
+                                           <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                                        <div class="text-center">
+                                                             <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/user4-128x128.jpg" alt="User profile picture">
+                                                        </div>
+                                                     
+                                                        {% for patients in patient_details %}
+                                                        <h3 class="profile-username text-center">{{patients.fullname}}</h3>
+                                                        
+                                                        <p class="text-muted text-center">{{patients.card}}</p>
+
+                                                        <ul class="list-group list-group-unbordered mb-3">
+
+                                                            <li class="list-group-item">
+                                                                  <b>Date Of Birth</b> <a class="float-right">{{patients.dob}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Telephone</b> <a class="float-right">{{patients.phone}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                     <b>City/Town</b> <a class="float-right">{{patients.town}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>Region</b> <a class="float-right">{{patients.regions}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>No. of Times</b> <a class="float-right">{{patients.visit}}</a>
+                                                            </li>
+
+                                                            <li class="list-group-item">
+                                                                  <b>Case Number</b> <a class="float-right">{{patients.case}}</a>
+                                                            </li>                                                            
+                                                            <li class="list-group-item">
+                                                                  <b>lab cost</b> <a class="float-right">GHS {{patients.lab_cost}}</a>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                  <b>lab cost</b> <a class="float-right">GHS {{patients.dietary_cost}}</a>
+                                                            </li>
+
+                                                       </ul>
+                                                       {% endfor %}
+                                                      
+                                                 </div>
+                                           </div>
+                                           
+
+                                  </div>
+
+
+
+                                  <div class="col-md-9">
+                                            <div class="card card-primary card-outline">
+                                                 <div class="card-body box-profile">
+                                              
+
+                                                        <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                                                            <li class="pt-2 px-3"><h3 class="card-title">Medical</h3></li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Make Payments</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                   <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Patient Medical History</a>
+                                                              </li>
+                                                              <!--<li class="nav-item">
+                                                                    <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Restock Dietary Supplement</a>
+                                                              </li>
+                                                              <li class="nav-item">
+                                                                  <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-settings" role="tab" aria-controls="custom-content-above-settings" aria-selected="false">Dietary Supplement Stocking Reports Reports</a>
+                                                             </li>-->
+                                                        </ul>
+
+
+                                                        <div class="tab-custom-content">
+                                                          
+
+                                                                <div class="tab-content" id="custom-content-below-tabContent">
+                                                                	
+
+                                                                               <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                                               	
+                                                                                      {% if patient_payment_tracking_history == False %}
+
+                                                                                            <form method="post" id="patients_payment">
+                                                                                            	{% csrf_token %}
+                                                                                                  <div class="row">
+                                                                                                           <div class="col-md-12">
+
+                                                                                                                 <div class="input-group mb-3">
+
+                                                                                                                            <div class="input-group-prepend">
+                                                                                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                                                                                </div>
+                                                                                                                    <input type="tel" name="amount" class="form-control form-control-lg" placeholder="enter amount">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div> 
+                                                                                                    <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"> 
+                                                                                                    <input type="hidden" name="user_id" value="1">                                                                              <div class="row">
+                                                                                                           <div class="col-md-12">
+                                                                                                           	       <button class="btn btn-info" style="border: none;border-radius: 0px;">make payments</button>
+                                                                                                           </div>
+                                                                                                    </div>                                                                      
+                                                                                            </form>
+
+                                                                                      {% else %}
+
+                                                                                      {% endif %}
+
+                                                                               </div>
+
+
+
+                                                                                <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                </div>
+                                                        </div>
+
+
+                                                  </div>
+                                            </div>
+                              </div>
+
+
+
+
+
+
+
+
+{% endblock %}

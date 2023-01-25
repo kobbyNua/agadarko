@@ -150,7 +150,16 @@ $(document).ready(function(){
 
     $("#start_session").submit(function(e){
         e.preventDefault()
+        $('#responseBox').modal('show')
         submitForms(this,"/check-in-patient")
+    })
+
+
+    $('#patients_payment').submit(function(e){
+
+         e.preventDefault()
+         $('#responseBox').modal('show')
+         submitForms(this,'/payments-checked-out')
     })
 
 })
@@ -300,7 +309,7 @@ serverData=(form_id,urls)=>{
                         rows+='<td>'+data.result[index].dob+'</td>'
                          //rows+='<td>'+data.result[index].card+'</td>'
                         rows+='<td>'+data.result[index].total_visit+'</td>'
-                        rows+='<td><a href="/view-patient-detail/'+data.result[index].patient_id+'" class="btn btn-info">view and check-in</a></td>'
+                        rows+='<td><a href="/view-patient-detail/'+data.result[index].case_number+'" class="btn btn-info">view and check-in</a></td>'
                         rows+='</tr>'
                         console.log(rows)
                       }

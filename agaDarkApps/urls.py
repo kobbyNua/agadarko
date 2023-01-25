@@ -45,6 +45,8 @@ urlpatterns=[
 
 
    path('patient-payment-records',views.patient_payment_list_records,name="patient_payment_list_records"),
+   path('patient-payment-records-details/<str:patient_history_id>',views.patient_payment_records_details,name='patient_payment_records_details'),
+   path('payments-checked-out',views.payments_checked_out,name="payments_checked_out"),
 
 
 

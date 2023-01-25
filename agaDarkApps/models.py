@@ -261,7 +261,7 @@ class OPD_Charges_Updates(models.Model):
 	def save(self,*args,**kwargs):
 		self.date_edited="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		super().save(*args,**kwargs)
-
+'''
 class Patient_Laboratory_Dietary_Cost(models.Model):
 	patient_history=models.ForeignKey(Patient_History,on_delete=models.CASCADE)
 	lab_total_cost=models.FloatField(default=0.00)
@@ -278,7 +278,20 @@ class Patient_Laboratory_Dietary_Payment(models.Model):
 	def save(self,*args,**kwargs):
 		self.date_paid="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		super().save(*args,**kwargs)
+'''
 
+class Medical_History_Diagnosis_Payment(models.Model):
+	patient_history=models.ForeignKey(Patient_History,on_delete=models.CASCADE)
+	lab_total_cost=models.FloatField(default=0.00)
+	supplement_total_cost=models.FloatField(default=0.00)
+	total_cost=models.FloatField(default=0.00)	
+	amount_paid=models.FloatField(default=0.00)
+	recepit=models.CharField(max_length=120,default="")
+	receiver=models.ForeignKey(User,on_delete=models.CASCADE)
+	date_paid=models.DateField()
+	def save(self,*args,**kwargs):
+		self.date_paid="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		super().save(*args,**kwargs)
 
 
 

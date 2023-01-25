@@ -2,11 +2,11 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse,FileResponse
 from django.contrib.auth.models import User,auth,Group
 from .models import Hospital_Staff,Patient_Diagosis_History,Patient_History
-from .patients import patient_search,check_in_session,view_patient_diagnosis_history_details,patient_diagnosis_details,patient_history_details,patient_medical_diagnosis_records,Check_in_patient_search,patient_check_in_list,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
+from .patients import patient_search,check_in_session,view_patient_details_info,view_patient_diagnosis_history_details,patient_diagnosis_details,patient_history_details,patient_medical_diagnosis_records,Check_in_patient_search,patient_check_in_list,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
 from .laboratory import view_lab_test_list,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,view_all_staffs,create_staff,edit_staff,change_staff_password
-from .account import patient_payment_list
+from .account import patient_payment_list,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
 '''
@@ -41,7 +41,7 @@ def patient_searchs(request):
 	for results in search_result:
 		print(results['patient__card_number'])
 		fullname=results['patient__First_Name']+" "+results['patient__Last_Name']
-		data_list.append({'fullname':fullname,'dob':results['patient__Date_Of_Birth'],'telephone':results['patient__Telephone'],'patient_id':results['patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient__id']})
+		data_list.append({'fullname':fullname,'dob':results['patient__Date_Of_Birth'],'telephone':results['patient__Telephone'],'patient_id':results['patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient__id'],'case_number':results['case_number']})
 	return JsonResponse({'result':data_list})
 
 def create_patient(request):
@@ -68,7 +68,7 @@ def create_patient(request):
 	return JsonResponse({'status':status_type,status_type:msg})
 
 def view_patient_detail(request,patient_card_id):
-	patients_details=view_patient_details(patient_card_id)
+	patients_details=view_patient_details_info(patient_card_id)
 	details=[]
 	for patients in patients_details:
 		fullname=patients['patient__First_Name']+" "+patients['patient__Last_Name']
@@ -576,6 +576,30 @@ def patient_payment_list_records(request):
 
 	return render(request,'dashboard/accounts/payment.html',{'title':'patients payment Records'.upper(),"patient_record":patient_record})
 
+
+def patient_payment_records_details(request,patient_history_id):
+	patient_payment_history=patient_payment_history_records(patient_history_id)
+	patient_payment_tracking_history=payment_trakings(patient_history_id)
+
+
+	return render(request,'dashboard/accounts/patient-payment-details.html',{'title':'Patient payment Records','patient_details':patient_payment_history,'patient_payment_tracking_history':patient_payment_tracking_history,'patient_history_id':patient_history_id})
+
+
+
+def payments_checked_out(request):
+	patient_history_id=request.POST['patient_history_id']
+	user_id=request.POST['user_id']
+	amount=request.POST['amount']
+	payments=patient_dietary_lab_payment(patient_history_id,amount,user_id)
+	msg=""
+	status=""
+	if payments == True:
+		status+="success"
+		msg+='patient checked out succefully'
+	else:
+		status+="error"
+		msg+="patient couldn't checked out"
+	return JsonResponse({'status':status,status:msg})
 
 '''
            stocking updates

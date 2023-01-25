@@ -1,4 +1,4 @@
-from .models import Patient_History,Patient,Patient_Diagosis_History,Patient_Laboratory,Patient_Dietary,OPD_Charges,OPD_Payment_Charges,OPD_Charges_Updates
+from .models import Patient_History,Patient,Patient_Diagosis_History,Patient_Laboratory,Patient_Dietary,OPD_Charges,OPD_Payment_Charges,OPD_Charges_Updates,Medical_History_Diagnosis_Payment
 from django.db.models import Count ,F,Q,Sum,Value
 from django.db.models.functions import LPad 
 from django.contrib.auth.models import User,auth,Group
@@ -75,7 +75,7 @@ def updates_opd_charges(first_charge,second_charge,user_id):
 	return True
 
 def check_in_patient(patient_history_id):
-	print('am here',patient_history_id)
+
 	check_in_status=Patient_History.objects.get(pk=patient_history_id)
 	check_in_status.checked_in=True
 	check_in_status.waiting_state='checked in'
@@ -119,12 +119,71 @@ def patient_payment_list():
 
 
 def payment_trakings(patient_history_id):
-	payments=OPD_Payment_Charges.objects.filter(patient_history__case_number=patient_history_id)
+	payments=Medical_History_Diagnosis_Payment.objects.filter(patient_history__case_number=patient_history_id)
 	if payments.exists():
-		return True
+		results=payments
 	else:
-		return False
+		results=False
+
+	return results
+
+def patient_dietary_lab_payment(patient_history_id,amount,user_id):
+	get_patient_lab=Patient_Laboratory.objects.get(patient_history__case_number=patient_history_id)
+	get_patient_dietary=Patient_Dietary.objects.get(patient_history__case_number=patient_history_id)
+	payments=make_patient_payment_lab_dietary_patient(patient_history_id,get_patient_lab.total_cost,get_patient_dietary.total_cost,amount,user_id)
+	return payments
+
 
 def payment_trakings_history(patient_history_id):
+	print(patient_history_id)
 	patient_history_records=Patient_History.objects.get(case_number=patient_history_id)
-	return OPD_Payment_Charges.objects.filter(patient_history__id=patient_history_records.id)
+	opd_charges=OPD_Payment_Charges.objects.filter(patient_history__id=patient_history_records.id)
+	payments_history=Medical_History_Diagnosis_Payment.objects.filter(patient_history__id=patient_history_records.id)
+	details=[]
+	if opd_charges.exists() and payments_history.exists():
+		for opd_charge in opd_charges:
+			details.append({'registration_recepit':opd_charge.recepit,'opd_amount_paid':opd_charge.amount_paid,'opd_receiver':opd_charge.receiver,'opd_date_paid':opd_charge.date_paid})
+		for payment_history in payments_history:
+				details.append({'payment_history_recepit':payment_history.recepit,'payment_history_amount_paid':payment_history.amount_paid,'payment_history_receiver':payment_history.receiver,'payment_history_date_paid':payment_history.date_paid})
+		return details
+
+def patient_payment_history_records(patient_history_id):
+	details=[]
+	patient_history_records=Patient_History.objects.get(case_number=patient_history_id)
+
+	patient_bio_visits=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id','case_number').filter(patient__card_number=patient_history_records.case_number).annotate(total_visit=Count('patient__id'))
+	for patient_bio in patient_bio_visits:
+		get_patient_lab=Patient_Laboratory.objects.get(patient_history__id=patient_bio['id'])
+		get_patient_dietary=Patient_Dietary.objects.get(patient_history__id=patient_bio['id'])
+		fullname=patient_bio['patient__First_Name']+' '+patient_bio['patient__Last_Name']
+		details.append({'fullname':fullname,'dob':patient_bio['patient__Date_Of_Birth'],'phone':patient_bio['patient__Telephone'],'card':patient_bio['patient__card_number'],'case':patient_bio['case_number'],'regions':patient_bio['patient__region__region'],'town':patient_bio['patient__Town'],'lab_cost':get_patient_lab.total_cost,'dietary_cost':get_patient_dietary.total_cost})
+	return details
+
+def make_patient_payment_lab_dietary_patient(patient_history_id,lab_cost,dietary_cost,amount_paid,user_id):
+	total_cost=float(lab_cost)+float(dietary_cost)
+	get_patient_history=Patient_History.objects.get(case_number=patient_history_id)
+	payments_made=Medical_History_Diagnosis_Payment.objects.create(patient_history=Patient_History.objects.get(pk=get_patient_history.id),lab_total_cost=lab_cost,supplement_total_cost=dietary_cost,total_cost=total_cost,amount_paid=amount_paid,receiver=User.objects.get(pk=user_id))
+	payments_made.save()
+	get_patient_payments_history=Medical_History_Diagnosis_Payment.objects.latest('id')
+	payments=patient_payment_recepits(get_patient_payments_history.id)
+	if payments== True:
+		patients=patients_checked_details(patient_history_id)
+		patient_checked_out(patients.patient.id)
+		checked_out(patients.id)
+		return True
+
+
+
+
+def patient_payment_recepits(payment_id):
+	get_payments_history=Medical_History_Diagnosis_Payment.objects.get(pk=payment_id)
+	get_payments_history.recepit=LPad('id',6,Value('0'))
+	get_payments_history.save()
+	return True
+def patient_checked_out(patient_id):
+	get_patient=Patient.objects.get(pk=patient_id)
+	get_patient.waiting_state="checked out"
+	get_patient.save()
+def patients_checked_details(patient_history_id):
+	return Patient_History.objects.get(case_number=patient_history_id)
+

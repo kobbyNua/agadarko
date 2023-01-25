@@ -11,18 +11,22 @@ from django.db.models.functions import LPad
 stage 2
 '''
 def patient_history_details(patient):
+
 	return Patient_History.objects.get(pk=patient)
 '''
   search for patient details
 '''
 def  patient_search(searchs,hospital_id):
-	return Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id').filter(Q(patient__First_Name=searchs)|Q(patient__Last_Name=searchs)|Q(patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient__id')).order_by()
+	return Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','case_number').filter(Q(patient__First_Name=searchs)|Q(patient__Last_Name=searchs)|Q(patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient__id')).order_by()
 def patient_medical_diagnosis_records(patient_id):
 	return Patient_Diagosis_History.objects.filter(patient_history__patient__id=patient_id)
 
 '''
 view patient details
 '''
+def view_patient_details_info(patient_card_id):
+	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id').filter(patient__card_number=patient_card_id,waiting_state="pending").annotate(total_visit=Count('patient__id'))
+	return patient_detail
 def view_patient_details(patient_card_id):
 	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
 	return patient_detail
