@@ -181,8 +181,7 @@ def deitary_stock_info(dietary_id):
 def update_dietary_details_stock(dietary_id,quantity,price,user_id):
 	get_dietary=Dietary_Supplementary.objects.get(pk=dietary_id)
 	quantity_stock_history=Dietary_Supplmentary_Details.objects.filter(dietary__id=dietary_id).order_by('-id')[0]
-	print('tested ',quantity_stock_history.quantity_stocked)
-	print(type(get_dietary.quantity), type(quantity))
+
 	total_quantity_stocked=int(get_dietary.quantity)+int(quantity)
 	old_quantity_stocked=quantity_stock_history.quantity_stocked
 	quantity_at_time_of_stocking=get_dietary.quantity

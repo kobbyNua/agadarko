@@ -42,7 +42,7 @@
                                                                   <b>lab cost</b> <a class="float-right">GHS {{patients.lab_cost}}</a>
                                                             </li>
                                                             <li class="list-group-item">
-                                                                  <b>lab cost</b> <a class="float-right">GHS {{patients.dietary_cost}}</a>
+                                                                  <b>Dietary cost</b> <a class="float-right">GHS {{patients.dietary_cost}}</a>
                                                             </li>
 
                                                        </ul>
@@ -111,6 +111,64 @@
                                                                                             </form>
 
                                                                                       {% else %}
+                                                                                          
+                                                                                          <table class="table table-striped">
+                                                                                                 <thead>
+                                                                                                     <tr>
+                                                                                                         <th colspan="7" style="text-align: center;">Medical Treatment Payment History</th>
+                                                                                                     </tr>
+                                                                                                 </thead>
+                                                                                                 <thead>
+                                                                                                     <tr>
+                                                                                                        <th>Date Paid</th>
+                                                                                                         <th>Receipts No.</th>
+                                                                                                         <th>Receiver</th>
+                                                                                                         <th>Total Cost</th>
+                                                                                                         <th>Amount Paid</th>
+                                                                                                         <th>Dietary Cost</th>
+                                                                                                         <th>Lab Cost</th>
+                                                                                                     </tr>
+                                                                                                 </thead>
+                                                                                                 <tbody>
+                                                                                                       {% for patient in patient_payment_tracking_history %}
+
+                                                                                                                  <tr>
+                                                                                                                      <td>{{patient.date_paid}}</td>
+                                                                                                                      <td>{{patient.recepit}}</td>
+                                                                                                                      <td>{{patient.receiver}}</td>
+                                                                                                                      <td>GHS {{patient.total_cost}}</td>
+                                                                                                                      <td>GHS {{patient.amount_paid}}</td>
+                                                                                                                      <td>GHS {{patient.supplement_total_cost}}</td>
+                                                                                                                      <td>GHS {{patient.lab_total_cost}}</td>
+                                                                                                                  </tr>
+                                                                                                       {% endfor %}
+                                                                                                 </tbody>
+                                                                                          </table>
+                                                                                          <table class="table table-striped">
+                                                                                              <thead>
+                                                                                                  <tr>
+                                                                                                      <th colspan="4" style="text-align: center;">Patient OPD Charges History</th>
+                                                                                                  </tr>
+                                                                                              </thead>
+                                                                                              <thead>
+                                                                                                  <tr>
+                                                                                                      <th>Date Paid</th>
+                                                                                                      <th>amount paid</th>
+                                                                                                      <th>Receipt No.</th>
+                                                                                                      <th>Receiver<th>
+                                                                                                  </tr>
+                                                                                              </thead>
+                                                                                              <tbody>
+                                                                                                  
+                                                                                                  <tr>
+                                                                                                      
+                                                                                                      <td>{{payment_opd_charges_history.date_paid}}</td>
+                                                                                                      <td>{{payment_opd_charges_history.amount_paid}}</td>
+                                                                                                      <td>{{payment_opd_charges_history.recepit}}</td>
+                                                                                                      <td>{{payment_opd_charges_history.receiver}}</td>
+                                                                                                  </tr>
+                                                                                              </tbody>
+                                                                                          </table>
 
                                                                                       {% endif %}
 
@@ -118,7 +176,32 @@
 
 
 
-                                                                                <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab"></div>
+                                                                                <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                                                                                    
+                                                                                       <table id="example2" class="table table-bordered table-striped">
+                                                                                             <thead>
+                                                                                                  <tr>
+                                                                                                      <th>Date Paid</th>
+                                                                                                      <th>Case Number</th>
+                                                                                                      <th>Receipt Number</th>
+                                                                                                      <th>Total Cost</th>
+                                                                                                      <th>View Details</th>
+                                                                                                  </tr>
+                                                                                             </thead>
+                                                                                             <tbody>
+                                                                                                 {% for payments in payment_history %}
+                                                                                                 <tr>
+                                                                                                         <td>{{payments.date_paid}}}</td>
+                                                                                                         <td>{{payments.patient_history.case_number}}</td>
+                                                                                                         <td>{{payments.recepit}}</td>
+                                                                                                         <td>{{payments.total_cost}}</td>
+                                                                                                         <td><a href="/patient-payment-records-details/{{payments.patient_history.case_number}}">view details</a></td>
+                                                                                                  </tr>
+
+                                                                                                 {% endfor %}
+                                                                                             </tbody>
+                                                                                       </table>
+                                                                                </div>
 
 
 

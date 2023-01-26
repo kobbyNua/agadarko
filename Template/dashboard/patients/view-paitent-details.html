@@ -41,10 +41,16 @@
                                                             <!--<li class="list-group-item">
                                                                   <b>Balance</b> <a class="float-right">0.00</a>
                                                             </li>-->
-                                                            <li class="list-group-item">
-                                                                
-                                                                 
-                                                                       {% if patients.checked_in_state == 'checked out' %}
+
+                                                       </ul>
+
+                                                       {% endfor %}
+
+
+                                                                     {{check_in_status}}
+
+
+                                                                       {% if check_in_status == 'checked out' %}
                                                                             <form id="start_session" method="post">
                                                                                 {% csrf_token %}
                                                                                   <div class="col-md-12 mt-2 mb-2">
@@ -54,8 +60,8 @@
                                                                                   </div>
                                                                                   <input type="hidden" name="hospital_id" value="1">
                                                                                   <input type="hidden" name="user_id" value="1">
-                                                                                  <input type="hidden" name="patient_history_id" value="{{patients.patient_history_id}}">
-                                                                                  <input type="hidden" name="patient_id" value="{{patients.patient_id}}">
+                                                                                  <input type="text" name="patient_history_id" value="{{patient_waiting_id}}">
+                                                                                  <input type="hidden" name="patient_id" value="{{patients_id}}">
                                                                                   <div class="col-md-12 mt-2 mb-2">
                                                                                         <input type="submit"  class="btn btn-info" value="start new Sessions" style="border:none;border-radius: 0px;width: 100%;">
                                                                                   </div>
@@ -67,25 +73,6 @@
                                                                                  <a href="#" class="btn btn-success btn-block" style="border:none;border-radius: 0px;"><b>checked in</b></a> 
 
                                                                        {% endif %}
-                                                                 
-                                                            </li>
-
-                                                            
-                                                            <!--<li class="list-group-item">
-                                                                  <b>Current Quantity Stocked</b> <a class="float-right">13,287</a>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                  <b>Quantity left</b> <a class="float-right">13,287</a>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                  <b>Friends</b> <a class="float-right">13,287</a>
-                                                            </li>
-                                                            <li class="list-group-item">
-                                                                  <b>Current Price</b> <a class="float-right">13,287</a>
-                                                            </li>-->
-                                                       </ul>
-
-                                                       {% endfor %}
                                                  </div>
                                            </div>
                                            

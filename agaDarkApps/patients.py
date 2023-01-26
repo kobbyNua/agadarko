@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User,auth,Group
 from django.db.models import Count ,F,Q,Sum,Value
-from .models import Patient,OPD_Payment_Charges,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
+from .models import Patient,OPD_Payment_Charges,Hospital_Staff,Patient_History,OPD_Vitals,Patient_History_OPD_Vitals_Details,Patient_Diagosis_History,Region,Hospital,Patient_Laboratory,Patient_Dietary
 from .laboratory import view_patient_lab_details,patient_lab_test_status,patient_laboratory
 from .dietary import patient_dietary, view_patient_dietary_status,view_patient_deietary_details
 from .account import patient_opd_payment_charges
@@ -17,9 +17,10 @@ def patient_history_details(patient):
   search for patient details
 '''
 def  patient_search(searchs,hospital_id):
-	return Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','case_number').filter(Q(patient__First_Name=searchs)|Q(patient__Last_Name=searchs)|Q(patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient__id')).order_by()
+	return Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id').filter(Q(patient__First_Name=searchs)|Q(patient__Last_Name=searchs)|Q(patient__Telephone=searchs),hospital__id=hospital_id).annotate(total_visit=Count('patient__id')).order_by()
 def patient_medical_diagnosis_records(patient_id):
 	return Patient_Diagosis_History.objects.filter(patient_history__patient__id=patient_id)
+
 
 '''
 view patient details
@@ -28,10 +29,12 @@ def view_patient_details_info(patient_card_id):
 	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id').filter(patient__card_number=patient_card_id,waiting_state="pending").annotate(total_visit=Count('patient__id'))
 	return patient_detail
 def view_patient_details(patient_card_id):
-	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
+	patient_detail=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region').filter(patient__card_number=patient_card_id).annotate(total_visit=Count('patient__id'))
 	return patient_detail
 
+def patient_waiting_state(patient_card_id):
 
+	return Patient_History.objects.filter(patient__card_number=patient_card_id)
 
 def paitient_opd_visiting_history(card_id):
 	return OPD_Payment_Charges.objects.filter(patient_history__patient__card_number=card_id)
@@ -81,18 +84,26 @@ def patient_card_patient(patient_id):
 def check_in_session(patient_id,patient_history_id,amount,user_id,hospital_id):
 	get_patient_history=Patient_History.objects.filter(patient__id=patient_id,waiting_state="pending")
 	if get_patient_history.exists():
-		get_patient=Patient_History.objects.get(patient__id=patient_id)
+		get_patient=Patient_History.objects.get(patient__id=patient_id,waiting_state="pending")
 		get_patient_details=patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
 		return get_patient_details
     
 	else:
 		get_patient_history=patient_history(patient_id,hospital_id,user_id)
 		if get_patient_history == True:
-			get_patient=Patient_History.objects.get(patient__id=patient_id)
+			get_patient=Patient_History.objects.get(patient__id=patient_id,waiting_state="pending")
 			get_patient_details=patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
 			return get_patient_details
 
-
+def checK_patient_history(patient_card_id,user_id):
+	patient_detail=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="checked in")
+	if not patient_detail.exists():
+		get_patient=Patient.objects.get(card_number=patient_card_id)
+		#get_user=Hospital_Staff.objects.get(staff__id=user_id)
+		patient_history(get_patient.id,1,user_id)
+		return True
+	else:
+		return False
 
 def  patient_history(patient_id,hospital_id,user_id):
 
@@ -245,10 +256,10 @@ def patient_check_in_list():
 	return Patient_History.objects.filter(checked_in=True,checked_out=False)
 
 def  Check_in_patient_search(searchs,hospital_id):
-	return Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
+	return Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__case_number','patient_history__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
 
 def view_patient_diagnosis_history_details(patient_card_id):
-	print('i am ',patient_card_id)
+	
 	patient_detail=Patient_Diagosis_History.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id','patient_history__patient__Town','patient_history__patient__region__region').filter(patient_history__patient__card_number=patient_card_id).annotate(total_visit=Count('patient_history__patient__id'))
 	return patient_detail 
 

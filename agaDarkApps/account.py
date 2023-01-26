@@ -26,7 +26,7 @@ def patient_opd_payment_charges(patient_id,patient_history_id,amount,user_id):
 	charges=OPD_Charges.objects.all()[0]
 	if patient_record_details > 1:
 		#pay second charge
-		if flaot(amount) == charges.second_time_charge:
+		if float(amount) == charges.second_time_charge:
 
 			payments=make_payment(patient_history_id,amount,user_id)
 			if payments == True:
@@ -106,8 +106,8 @@ def patient_payment_list():
 	patient_history_records=Patient_History.objects.all()
 	for patients in patient_history_records:
 
-		patient_laboratory_records=Patient_Laboratory.objects.filter(patient_history__id=patients.id,released_status=True)
-		patient_dietary_records=Patient_Dietary.objects.filter(patient_history__id=patients.id,released_status=True)
+		patient_laboratory_records=Patient_Laboratory.objects.filter(patient_history__id=patients.id,released_status=True,patient_history__checked_out=False)
+		patient_dietary_records=Patient_Dietary.objects.filter(patient_history__id=patients.id,released_status=True,patient_history__checked_out=False)
 		if patient_laboratory_records.exists() and patient_dietary_records.exists():
 			get_patient_laboratory_records=Patient_Laboratory.objects.get(patient_history__id=patients.id,released_status=True)
 
@@ -127,6 +127,7 @@ def payment_trakings(patient_history_id):
 
 	return results
 
+
 def patient_dietary_lab_payment(patient_history_id,amount,user_id):
 	get_patient_lab=Patient_Laboratory.objects.get(patient_history__case_number=patient_history_id)
 	get_patient_dietary=Patient_Dietary.objects.get(patient_history__case_number=patient_history_id)
@@ -135,7 +136,7 @@ def patient_dietary_lab_payment(patient_history_id,amount,user_id):
 
 
 def payment_trakings_history(patient_history_id):
-	print(patient_history_id)
+	
 	patient_history_records=Patient_History.objects.get(case_number=patient_history_id)
 	opd_charges=OPD_Payment_Charges.objects.filter(patient_history__id=patient_history_records.id)
 	payments_history=Medical_History_Diagnosis_Payment.objects.filter(patient_history__id=patient_history_records.id)
@@ -151,8 +152,9 @@ def patient_payment_history_records(patient_history_id):
 	details=[]
 	patient_history_records=Patient_History.objects.get(case_number=patient_history_id)
 
-	patient_bio_visits=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id','case_number').filter(patient__card_number=patient_history_records.case_number).annotate(total_visit=Count('patient__id'))
+	patient_bio_visits=Patient_History.objects.values('patient__First_Name','patient__Last_Name','patient__Date_Of_Birth','patient__Telephone','patient__card_number','patient__id','patient__Town','patient__region__region','patient__waiting_state','id','case_number').filter(case_number=patient_history_records.case_number).annotate(total_visit=Count('patient__id'))
 	for patient_bio in patient_bio_visits:
+		
 		get_patient_lab=Patient_Laboratory.objects.get(patient_history__id=patient_bio['id'])
 		get_patient_dietary=Patient_Dietary.objects.get(patient_history__id=patient_bio['id'])
 		fullname=patient_bio['patient__First_Name']+' '+patient_bio['patient__Last_Name']
@@ -186,4 +188,25 @@ def patient_checked_out(patient_id):
 	get_patient.save()
 def patients_checked_details(patient_history_id):
 	return Patient_History.objects.get(case_number=patient_history_id)
+
+
+def patient_opd_payment_charges_history(case_number):
+	return OPD_Payment_Charges.objects.get(patient_history__case_number=case_number)
+
+def patient_payment_history_details(patient_history_id):
+	get_patient=Patient_History.objects.get(case_number=patient_history_id)
+	return Medical_History_Diagnosis_Payment.objects.filter(patient_history__patient__id=get_patient.patient.id)
+
+
+def  patient_payment_search(searchs,hospital_id):
+	patient_bio=Medical_History_Diagnosis_Payment.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id').filter(Q(patient_history__patient__First_Name=searchs)|Q(patient_history__patient__Last_Name=searchs)|Q(patient_history__patient__Telephone=searchs),patient_history__hospital__id=hospital_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
+	patient_id=""
+	for patient in patient_bio:
+		patient_id+=str(patient['patient_history__patient__id'])
+
+	results=search_reeults(patient_id)
+	return results
+ 
+def search_reeults(patient_id):
+	return Medical_History_Diagnosis_Payment.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id','patient_history__case_number').filter(patient_history__patient__id=patient_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
 
