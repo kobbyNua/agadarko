@@ -74,9 +74,10 @@
                                           </div>
                         </li>
 
+
                       <li class="nav-item dropdown">
                           <a class="nav-link" data-toggle="dropdown" href="#">
-                                <i class="far fa-user"></i>
+                                {{request.user.username}} <i class="far fa-user"></i>
                                 <!--<span class="badge badge-warning navbar-badge">15</span>-->
                           </a>
                           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -115,7 +116,7 @@
                                       <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
                               </div>
                               <div class="info">
-                                    <a href="#" class="d-block">Alexander Pierce</a>
+                                    <a href="#" class="d-block">{{request.user.first_name}} {{request.user.last_name}}</a>
                               </div>
                         </div>
 

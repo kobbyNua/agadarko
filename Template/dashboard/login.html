@@ -1,0 +1,84 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <title>{{title}}</title>
+
+       <!-- Google Font: Source Sans Pro -->
+       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+       <!-- Font Awesome Icons -->
+       <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+       <!-- overlayScrollbars -->
+       <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+
+       <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+       <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+       <!-- Theme style -->
+       <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+        <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'main.css'%}">
+   </head>
+   <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+
+               <div class="wrapper">
+                       <div class="logo">
+                            <img src="https://www.freepnglogos.com/uploads/twitter-logo-png/twitter-bird-symbols-png-logo-0.png" alt="">
+                       </div>
+                       <form class="p-3 mt-3" method="post" id="login_user">
+                          {% csrf_token %}
+                       <div class="text-center mt-4 name">
+                                AGADARKO
+                                <span class="msg-box"></span>
+                      </div>
+                                                      <div class="form-field d-flex align-items-center">
+                                    <span class="fas fa-user"></span>
+                                    <input type="text" name="username" id="userName" placeholder="Username">
+                                </div>
+                                <div class="form-field d-flex align-items-center">
+                               <span class="fas fa-key"></span>
+                                <input type="password" name="password" id="pwd" placeholder="Password">
+                                </div>
+                            <button class="btn mt-3">Login</button>
+                      </form>
+                    <!--<div class="text-center fs-6">
+                             <a href="#">Forget password?</a> or <a href="#">Sign up</a>
+                    </div>-->
+              </div>
+
+
+        <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+        <!-- Bootstrap -->
+        <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <!-- overlayScrollbars -->
+        <script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+
+        <script src="{% static 'save.js' %}"></script>
+        <!-- AdminLTE App -->
+        <script src="{% static 'dist/js/adminlte.js' %}"></script>
+
+        <!-- PAGE PLUGINS -->
+        <!-- jQuery Mapael -->
+        <script src="{% static 'plugins/jquery-mousewheel/jquery.mousewheel.js' %}"></script>
+        <script src="{% static 'plugins/raphael/raphael.min.js' %}"></script>
+        <script src="{% static 'plugins/jquery-mapael/jquery.mapael.min.js' %}"></script>
+       
+
+        
+        <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="{% static 'dist/js/demo.js' %}"></script>
+        <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+        <script src="../assets/dist/js/pages/dashboard2.js"></script>
+        <script type="text/javascript" src="{% static 'auth.js'%}"></script>
+
+
+
+
+
+
+   </body>
+
+</html>

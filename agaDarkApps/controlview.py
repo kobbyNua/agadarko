@@ -56,7 +56,7 @@ def edit_group_permissions(group_id,permission_id,group_permission_id):
 '''
 
 def create_staff(first_name,last_name,email,username,telephone,group_id,user_id):
-	check_user=User.objects.filter(email=email)
+	check_user=User.objects.filter(Q(email=email)|Q(username=username))
 	if not check_user.exists():
 		default_password='Password@1'
 		hospital_info=Hospital.objects.filter(adminstrator__id=user_id)
@@ -117,5 +117,18 @@ def  region(region_name):
 	create_region=Region.objects.create(region=region_name)
 	create_region.save()
 
+def get_user_details(user_id):
+	return User.objects.get(pk=user_id)
+
+def get_user_hospital_details(user_id):
+	get_user=User.objects.get(pk=user_id)
+	details={}
+	if get_user.is_superuser:
+		get_hospital_details=Hospital.objects.get(adminstrator__id=user_id)
+		details.update({'user_id':user_id,"hospital_id":get_hospital_details.id})
+	else:
+		get_hospital_details=Hospital_Staff.objects.get(staff__id=user_id)
+		details.update({'user_id':user_id,'hospital_id':get_hospital_details.hospital.id})
+	return details
 
 

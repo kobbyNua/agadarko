@@ -207,7 +207,7 @@
                                                                                                            </textarea>
                                                                                                           
                                                                                 
-                                                                                                           <input type="hidden" value="1" name="user_id"><br>
+                                                                                                           <input type="hidden" value="{{user_id}}" name="user_id"><br>
                                                                                                            <input type="submit" class="btn btn-info" value="submit patient compliants">
                                                                                                  </form>
                                                                                                     
@@ -264,7 +264,7 @@
                                                                               
                                                                                                         {% endfor %}
                                                                                                    </select>
-                                                                                                   <input type="hidden" value="1" name="user_id">
+                                                                                                   <input type="hidden" value="{{user_id}}" name="user_id">
                                                                                                    <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"><br/>
 
                                                                                                    <input type="submit" value="send lab request" class="btn btn-info" style="border:none;border-radius: 0px;"/>
@@ -344,7 +344,7 @@
                                                                                                                               {% endif %}
                                                                                                                           {% endfor %}
                                                                                                                    </select><br/>
-                                                                                                                   <input type="hidden" value="1" name="user_id">
+                                                                                                                   <input type="hidden" value="{{user_id}}" name="user_id">
                                                                                                                     <input type="hidden" name="patient_history_id" value="{{patient_history_id}}">
                                                                                                                     <input type="submit" class="btn btn-info" value="send dietary request"/>
                                                                                                             </form>
