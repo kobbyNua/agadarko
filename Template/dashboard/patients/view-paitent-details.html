@@ -66,11 +66,19 @@
                                                                                         <input type="submit"  class="btn btn-info" value="start new Sessions" style="border:none;border-radius: 0px;width: 100%;">
                                                                                   </div>
                                                                             </form>
-                                                                        {% else %}
+                                                                        {% elif check_in_status == 'checked in' %}
 
 
                                                                        
-                                                                                 <a href="#" class="btn btn-success btn-block" style="border:none;border-radius: 0px;"><b>checked in</b></a> 
+                                                                                 <a href="#" class="btn btn-primary btn-block" style="border:none;border-radius: 0px;"><b>checked in</b></a> 
+                                                                        {% else %}
+                                                                             <form id="" method="post">
+                                                                                {% csrf_token %}
+                                                                                <input type="text" name="patient_card_id" value="{{patients_card_number}}">
+                                                                                <input type="text" name="user_id" value="{{user_id}}">
+                                                                                 
+                                                                             </form>
+                                                                                
 
                                                                        {% endif %}
                                                  </div>

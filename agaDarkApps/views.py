@@ -93,16 +93,21 @@ def view_patient_detail(request,patient_card_id):
 	waiting_state=patient_waiting_state(patient_card_id)
 	waiting_patient_id=""
 	patients_id=""
+	patients_card_number=""
 	check_in_status=""
 	for patients in waiting_state:
+		patients_card_number+=str(patients.patient.card_number)
 		if patients.waiting_state == "pending":
 			waiting_patient_id+=str(patients.id)
 			patients_id+=str(patients.patient.id)
 			check_in_status+=str(patients.patient.waiting_state)
+		else:
+			check_in_status+=str(patients.patient.waiting_state)
+
 	
 	details=[]
-	user_id=1
-	checK_patient_history(patient_card_id,user_id)
+	#user_id=1
+	#checK_patient_history(patient_card_id,user_id)
 	user_info=get_user_hospital_details(request.user.id)
 
 	#waiting_patient=patient_history_details(waiting_patient_id)
@@ -112,7 +117,7 @@ def view_patient_detail(request,patient_card_id):
 
 	patient_opd_history=paitient_opd_visiting_history(patient_card_id)
 
-	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_id':patients_id,'check_in_status':check_in_status,'view_patient_details':details,'pateint_opd_history':patient_opd_history}) 
+	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_card_number':patients_card_number,'patients_id':patients_id,'check_in_status':check_in_status,'view_patient_details':details,'pateint_opd_history':patient_opd_history}) 
 def checkin_patient(request):
 	patient_id=request.POST['patient_id']
 	hospital_id=request.POST['hospital_id']

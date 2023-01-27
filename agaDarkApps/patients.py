@@ -5,6 +5,7 @@ from .laboratory import view_patient_lab_details,patient_lab_test_status,patient
 from .dietary import patient_dietary, view_patient_dietary_status,view_patient_deietary_details
 from .account import patient_opd_payment_charges
 from datetime import datetime
+from .controlview import get_user_hospital_details
 from django.db.models.functions import LPad
 
 '''
@@ -96,14 +97,18 @@ def check_in_session(patient_id,patient_history_id,amount,user_id,hospital_id):
 			return get_patient_details
 
 def checK_patient_history(patient_card_id,user_id):
-	patient_detail=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="checked in")
+	patient_detail=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="pending")
 	if not patient_detail.exists():
-		get_patient=Patient.objects.get(card_number=patient_card_id)
-		#get_user=Hospital_Staff.objects.get(staff__id=user_id)
-		patient_history(get_patient.id,1,user_id)
-		return True
+		get_patient_checked_in_state=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="checked in",checked_in=True,checked_out=False)
+		if get_patient_checked_in_state.exists():
+			return True
+		else:
+			get_patient=Patient.objects.get(card_number=patient_card_id)
+			user_details=get_user_hospital_details(user_id)
+			patient=patient_history(get_patient.id,user_details['hospital_id'],user_details['user_id'])
+			return patient
 	else:
-		return False
+      pass
 
 def  patient_history(patient_id,hospital_id,user_id):
 
