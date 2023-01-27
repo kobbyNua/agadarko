@@ -94,15 +94,27 @@ def view_patient_detail(request,patient_card_id):
 	waiting_patient_id=""
 	patients_id=""
 	patients_card_number=""
-	check_in_status=""
+	check_in_status=waiting_state.patient.waiting_state
+	print(waiting_state.id)
+	if waiting_state.waiting_state == "pending":
+		waiting_patient_id+=str(waiting_state.id)
+		patients_id+=str(waiting_state.patient.id)
+
+	'''
 	for patients in waiting_state:
-		patients_card_number+=str(patients.patient.card_number)
+		
 		if patients.waiting_state == "pending":
 			waiting_patient_id+=str(patients.id)
 			patients_id+=str(patients.patient.id)
 			check_in_status+=str(patients.patient.waiting_state)
+			patients_card_number+=str(patients.patient.card_number)
 		else:
 			check_in_status+=str(patients.patient.waiting_state)
+			patients_id+=str(patients.patient.id)
+			waiting_patient_id+=str(patients.id)
+			patients_card_number+=str(patients.patient.card_number)
+	'''
+
 
 	
 	details=[]

@@ -35,7 +35,8 @@ def view_patient_details(patient_card_id):
 
 def patient_waiting_state(patient_card_id):
 
-	return Patient_History.objects.filter(patient__card_number=patient_card_id)
+	patients=Patient_History.objects.filter(patient__card_number=patient_card_id).order_by('id')
+	return patients.reverse()[0]
 
 def paitient_opd_visiting_history(card_id):
 	return OPD_Payment_Charges.objects.filter(patient_history__patient__card_number=card_id)
@@ -83,21 +84,21 @@ def patient_card_patient(patient_id):
 	get_patient.save()
 
 def check_in_session(patient_id,patient_history_id,amount,user_id,hospital_id):
-	get_patient_history=Patient_History.objects.filter(patient__id=patient_id,waiting_state="pending")
+	get_patient_history=Patient_History.objects.filter(patient__id=patient_id,waiting_state="pending",id=patient_history_id)
 	if get_patient_history.exists():
-		get_patient=Patient_History.objects.get(patient__id=patient_id,waiting_state="pending")
+		get_patient=Patient_History.objects.get(patient__id=patient_id,waiting_state="pending",pk=patient_history_id)
 		get_patient_details=patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
 		return get_patient_details
     
 	else:
 		get_patient_history=patient_history(patient_id,hospital_id,user_id)
 		if get_patient_history == True:
-			get_patient=Patient_History.objects.get(patient__id=patient_id,waiting_state="pending")
+			get_patient=Patient_History.objects.get(patient__id=patient_id,waiting_state="pending",id=patient_history_id)
 			get_patient_details=patient_opd_payment_charges(patient_id,get_patient.id,amount,user_id)
 			return get_patient_details
 
-def checK_patient_history(patient_card_id,user_id):
-	patient_detail=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="pending")
+def checK_patient_history(patient_card_id,user_id,patient_history_id):
+	patient_detail=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="pending",id=patient_history_id)
 	if not patient_detail.exists():
 		get_patient_checked_in_state=Patient_History.objects.filter(patient__card_number=patient_card_id,waiting_state="checked in",checked_in=True,checked_out=False)
 		if get_patient_checked_in_state.exists():
@@ -108,7 +109,7 @@ def checK_patient_history(patient_card_id,user_id):
 			patient=patient_history(get_patient.id,user_details['hospital_id'],user_details['user_id'])
 			return patient
 	else:
-      pass
+		pass
 
 def  patient_history(patient_id,hospital_id,user_id):
 
