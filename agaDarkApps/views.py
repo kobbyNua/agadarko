@@ -6,7 +6,7 @@ from .patients import patient_search,check_in_session,patient_waiting_state,chec
 from .laboratory import view_lab_test_list,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
-from .account import patient_payment_list,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
+from .account import patient_payment_list,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
 '''
@@ -694,6 +694,25 @@ def payments_checked_out(request):
 		status+="error"
 		msg+="patient couldn't checked out"
 	return JsonResponse({'status':status,status:msg})
+
+def create_opd_charges(request):
+	first_time_charge=request.POST['first_time_charge']
+	second_time_charge=request.POST['second_time_charge']
+	user_id=request.POST['user_id']
+	create_charges=create_update_opd_charges(first_time_charge,second_time_charge,user_id)
+	msg=""
+	status=""
+	print(create_charges)
+	if create_charges == True:
+		status+="success"
+		msg+="opd charges created"
+	else:
+		status+="error"
+		msg+="couldn't create opd charges"
+	return JsonResponse({'status':status,status:msg})
+
+
+
 
 '''
            stocking updates

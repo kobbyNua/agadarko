@@ -16,7 +16,7 @@
                                                                   <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Set and OPD charges</a>
                                                               </li>
                                                               <li class="nav-item">
-                                                                   <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Patient Registration</a>
+                                                                   <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">OPD Charges History</a>
                                                               </li>
                                                               <!--<li class="nav-item">
                                                                     <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Daily Reports</a>
@@ -32,23 +32,24 @@
                                                                    
 
 
-                                                                               <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                                                        <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
                                                                                      
 
+                                                               <div class="row">
+                                                                     <div class="col-md-12 mt-2 mb-2">
+                                                                            <form  method="post" id="create_opd_charges">
+                                                                                {% csrf_token %}
                                                                                      <div class="row">
-                                                                                             <div class="col-md-12 mt-2 mb-2">
-                                                                                                   <form class="" method="post" id="">
-                                                                                                         <div class="row">
-                                                                                                                <div class="col-md-6 col-12">
-                                                                                                                      <input type="tel" name="first_time_charge" class="form-control form-control-lg" placeholder="first time charge">
-                                                                                                                </div>
-                                                                                                                <div class="col-md-6 col-12">
-                                                                                                                      <input type="tel" name="second_time_charge" class="form-control form-control-lg" placeholder="second time charge">
+                                                                                        <div class="col-md-6 col-12">
+                                                                                            <input type="tel" name="first_time_charge" class="form-control form-control-lg" placeholder="first time charge">
+                                                                                        </div>
+                                                                                        <div class="col-md-6 col-12">
+                                                                                        <input type="tel" name="second_time_charge" class="form-control form-control-lg" placeholder="second time charge">
                                                                                                                 </div>
                                                                                                          </div>
                                                                                                          
-                                                                                                         <input type="text" value="{{user_id}}" name="user_id">
-                                                                                                         <div class="row">
+                                                                                        <input type="hidden" value="{{user_id}}" name="user_id">
+                                                                                             <div class="row">
                                                                                                                 <div class="col-md-12 mt-2 mb-2">
                                                                                                                       <button class="btn btn-info" style="border:none;border-radius: 0px;">save</button>
                                                                                                                 </div>
@@ -65,13 +66,13 @@
                                                                                                                  </tr>
                                                                                                             </thead>
                                                                                                             <tbody>
-                                                                                                                  {% for charges in opd_charges %}
+                                                                                         {% for charges in opd_charges %}
 
-                                                                                                                       <tr>
+                                                                                                        <tr>
                                                                                                                              <td>{{charges.first_time_charge}}</td>
                                                                                                                              <td>{{charges.second_time_charge}}</td>
 
-                                                                                                                       </tr>
+                                                                                                                 </tr>
 
                                                                                                                   {% endfor %}
                                                                                                             </tbody>
@@ -94,9 +95,9 @@
                                                                                                                  </tr>
                                                                                                             </thead>
                                                                                                                                                                                               </thead>
-                                                                                                            <tbody>
+                                                                                            <tbody>
 
-                                                                                                                  {% for charges in opd_charges_update %}
+                                                                            {% for charges in opd_charges_update %}
                                                                                                                           <tr>
                                                                                                                                 <td>{{charges.first_time_old_charge}}</td>
                                                                                                                                 <td>{{charges.second_time_old_charge}}</td>

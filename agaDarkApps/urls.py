@@ -51,6 +51,7 @@ urlpatterns=[
    path('payments-checked-out',views.payments_checked_out,name="payments_checked_out"),
    path('search-patient-payment-records',views.search_patient_payment_records,name="search_patient_payment_records"),
    path('opd-charges-info',views.opd_charges_info,name="opd_charges_info"),
+   path('create-opd-charges',views.create_opd_charges,name="create_opd_charges"),
 
 
 

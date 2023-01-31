@@ -166,6 +166,14 @@ $(document).ready(function(){
          $('#responseBox').modal('show')
          submitForms(this,'/payments-checked-out')
     })
+    $('#create_opd_charges').submit(function(e){
+
+
+        e.preventDefault()
+        $('#responseBox').modal('show')
+        submitForms(this,"/create-opd-charges")
+
+    })
 
 })
 

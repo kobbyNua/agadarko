@@ -3,7 +3,7 @@ from django.db.models import Count ,F,Q,Sum,Value
 from django.db.models.functions import LPad 
 from django.contrib.auth.models import User,auth,Group
 
-def creat_update_opd_charges(first_charge,second_charge,user_id):
+def create_update_opd_charges(first_charge,second_charge,user_id):
 	check_charges=OPD_Charges.objects.all().count()
 	charges=OPD_Charges.objects.all()[0]
 	if check_charges == 1:
@@ -12,12 +12,14 @@ def creat_update_opd_charges(first_charge,second_charge,user_id):
 		 new_charges.first_time_charge=first_charge
 		 new_charges.second_time_charge=second_charge
 		 new_charges.save()
-		 updates_opd_charges(first_charge,second_charge,user_id)
+		 charges_update=updates_opd_charges(first_charge,second_charge,user_id)
+		 return charges_update
 	elif check_charges == 0:
 		#inserting data into OPD_Charges table and OPD_Charges_Updates
-		new_charges=OPD_Charges.objects.create(first_time_charge=first_charge,second_time_charge=second_charge)
+		new_charges=OPD_Charges.objects.create(updated_by=User.objects.get(pk=user_id),first_time_charge=first_charge,second_time_charge=second_charge)
 		new_charges.save()
-		updates_opd_charges(first_charge,second_charge,user_id)
+		charges_update=updates_opd_charges(first_charge,second_charge,user_id)
+		return charges_update
 		 
 
 def patient_opd_payment_charges(patient_id,patient_history_id,amount,user_id):
@@ -70,7 +72,7 @@ def payment_receipts(payment_id):
 	payments.save()
 	return True
 def updates_opd_charges(first_charge,second_charge,user_id):
-	new_updates=OPD_Charges_Updates.objects.create(updated_by=user_id,first_time_old_charge=first_charge,second_time_old_charge=second_charge)
+	new_updates=OPD_Charges_Updates.objects.create(updated_by=User.objects.get(pk=user_id),first_time_old_charge=first_charge,second_time_old_charge=second_charge)
 	new_updates.save()
 	return True
 
