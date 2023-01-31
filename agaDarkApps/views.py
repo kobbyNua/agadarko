@@ -7,6 +7,7 @@ from .laboratory import view_lab_test_list,get_patient_history_lab,view_patient_
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
 from .account import patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
+from django.contrib.auth.decorators import login_required
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
 '''
@@ -37,11 +38,11 @@ def authuser(request):
             status_type+="error"
             message+="invalid user name and password combination"
     return JsonResponse({'status':status_type,status_type:message})
-
+@login_required(login_url="/")
 def dashboard(request):
 	return render(request,'dashboard/dashboard.html',{'title':'dashboard','page_title':'Dashboard','path':'home'})
 
-
+@login_required(login_url="/")
 def patient_opd_panel(request):
 	'''
        present the nurse with a view to either search for a patient or register a patient
@@ -51,7 +52,7 @@ def patient_opd_panel(request):
 	user_info=get_user_hospital_details(request.user.id)
 
 	return render(request,'dashboard/patients/opd-patient-records.html',{'title':'Patient OPD Records'.upper(),'hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'page_title':'Patient Records','in_patient_list':in_patient_list,'regions':regions,'path':'home'})
-
+@login_required(login_url="/")
 def patient_searchs(request):
 	search=request.POST['search']
 	hospital_id=request.POST['hospital_id']   
@@ -63,7 +64,7 @@ def patient_searchs(request):
 		fullname=results['patient__First_Name']+" "+results['patient__Last_Name']
 		data_list.append({'fullname':fullname,'dob':results['patient__Date_Of_Birth'],'telephone':results['patient__Telephone'],'patient_id':results['patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient__id']})
 	return JsonResponse({'result':data_list})
-
+@login_required(login_url="/")
 def create_patient(request):
 	first_name=request.POST['first_name']
 	last_name=request.POST['last_name']
@@ -86,7 +87,7 @@ def create_patient(request):
 		status_type+="error"
 		msg+="couldn't patient details"
 	return JsonResponse({'status':status_type,status_type:msg})
-
+@login_required(login_url="/")
 def view_patient_detail(request,patient_card_id):
 	#check not done
 	patients_details=view_patient_details(patient_card_id)
@@ -132,6 +133,7 @@ def view_patient_detail(request,patient_card_id):
 	patient_opd_history=paitient_opd_visiting_history(patient_card_id)
 
 	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'patient_number_of_visits':patient_number_of_visits,'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_card_number':patients_card_number,'patients_id':patients_id,'check_in_status':check_in_status,'view_patient_details':details,'pateint_opd_history':patient_opd_history,'page_title':'patient opd history','path':'opd'}) 
+@login_required(login_url="/")
 def checkin_patient(request):
 	patient_id=request.POST['patient_id']
 	hospital_id=request.POST['hospital_id']
@@ -150,7 +152,7 @@ def checkin_patient(request):
 	return JsonResponse({'status':status_type,status_type:msg})			
 def view_patient_visitng_history(patient_id):
 	pass
-
+@login_required(login_url="/")
 def view_opd_vitals(request):
 	#this page is for only admin for viewing, creating and editing opd vitals
 	opd_vital=opd_vitals()
@@ -158,6 +160,7 @@ def view_opd_vitals(request):
 	#print(opd_vital)
 	#print('we are here')
 	return render(request,'dashboard/patients/view-opd-vital-list.html',{'title':'OPD Panel','opd_vitals':opd_vital,'page_title':'OPD vitals ','path':'opd'})
+@login_required(login_url="/")
 def create_opd_vital(request):
 	#create opd vitals
 	vitals_list=['temperature','weight','blood pressure']
@@ -172,6 +175,7 @@ def create_opd_vital(request):
 		msg+="Couldn't create opd vital"
 	return JsonResponse({'status':status_type,status_type:msg})
 
+@login_required(login_url="/")
 def edit_opd_details(request):
 	#edit opd vitals
 	vital="BP"
@@ -188,11 +192,13 @@ def edit_opd_details(request):
 
 	return JsonResponse({'status':status_type,status_type:msg})
 
+@login_required(login_url="/")
 def waiting_patient_list(request):
 	#can only be view by admin and doctor
 	waiting_patient=patinet_waiting_list()
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,'dashboard/patients/medicals-patients-waiting.html',{'title':'waiting patient list','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'waiting_list':waiting_patient,'page_title':'waitng list','path':'OPD'})
+@login_required(login_url="/")
 def patient_medical_history_search(request):
 	search=request.POST['patient_medical_history']
 	hospital_id=request.POST['hospital_id']   
@@ -205,6 +211,7 @@ def patient_medical_history_search(request):
 		data_list.append({'fullname':fullname,'dob':results['patient_history__patient__Date_Of_Birth'],'telephone':results['patient_history__patient__Telephone'],'case_number':results['patient_history__case_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient_history__id']})
 	return JsonResponse({'result':data_list})
 
+@login_required(login_url="/")
 def patient_profile(request,patient_history_id):
 	#admin will have acces but cannot create or edit
 	#doctors will have accces to write and edit
@@ -273,6 +280,8 @@ def patient_profile(request,patient_history_id):
 	return render(request,'dashboard/patients/patient-profile.html',{'title':'patient profile','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_opd_vital':patient_opd_vital,'patient_dietry_state':patient_dietry_state,'opd_vital':opd_vital,'patient_lab_test_status':patient_lab_test_status,'lab_test_lists':lab_test_lists,'patient_dietary_details':patient_dietry_details,'dietary_lists':dietary_lists,'patient_history_id':get_patient_history_id.id,'patient_complaints':patient_complaints,'patient_lab_results':lab_results,'patient_details':details,'patient_medical_records':patient_medical_records,'patient_diagnosis_history_details':patient_diagnosis_history_details,'page_title':'patient diagnosis history','path':'medical'})
 
 
+
+@login_required(login_url="/")
 def create_patient_complaints_diagonsis(request):
 	patient_history_id=request.POST['patient_history_id']
 	user_id=request.POST['user_id']
@@ -291,7 +300,7 @@ def create_patient_complaints_diagonsis(request):
 
 	return JsonResponse({'status':status_type,status_type:msg})
 
-
+@login_required(login_url="/")
 def create_patient_opd_vitals(request):
 	patient_history_id = request.POST.get('patient_history_id',False)
 	vital_id=request.POST.getlist('vital_id')
@@ -309,7 +318,7 @@ def create_patient_opd_vitals(request):
 	  
 
 
-
+@login_required(login_url="/")
 def edit_doctor_diagonsis(request):
 	patient_diagnosis_id=request.POST['diagnosis_id']
 	diagnosis=request.POST['doctor_diagonsis'].strip()
@@ -323,8 +332,10 @@ def edit_doctor_diagonsis(request):
 		status_type+="error"
 		msg+="couldn't create patient diagnosis details"
 	return JsonResponse({'status':status_type,status_type:msg})
+@login_required(login_url="/")
 def patient_medical_history_records(request):
 	return render(request,'dashboard/patients/patient-diagnosis-medical-history.html',{'title':'patient medical history'.upper(),'page_title':'patient medical records','path':'medical'})
+@login_required(login_url="/")
 def create_patient_lab_request(request):
 	patient_id=request.POST['patient_history_id']
 
@@ -355,7 +366,7 @@ def create_patient_lab_request(request):
 	
 	return JsonResponse({'status':status_type,status_type:msg})
 	
-
+@login_required(login_url="/")
 def create_patient_dietary_request(request):
 	patient_id=request.POST['patient_history_id']
 	patient_history=getPatientDiagnosisId(patient_id)
@@ -390,6 +401,7 @@ laboratory test setup
 
 '''
 
+@login_required(login_url="/")
 def view_lab_test_types(request):
 	#only to be viewed by the lab technician and admin
 	'''
@@ -401,6 +413,8 @@ def view_lab_test_types(request):
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,'dashboard/laboratory/lab-test.html',{'title':'Lab test list','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'lab_test':lab_test_lists,'page_title':'lab test list','path':'lab'})
 
+
+@login_required(login_url="/")
 def create_lab_test_types(request):
 	lab_test=request.POST['test']
 	cost=request.POST['cost']
@@ -416,7 +430,7 @@ def create_lab_test_types(request):
 		msg+="couldn't create lab test types. Test Details already exist"
 	return JsonResponse({'status':status_type,status_type:msg})	
 
-
+@login_required(login_url="/")
 def edit_lab_test_type(request):
 	lab_test=request.POST['test']
 	notes=request.POST['notes']
@@ -436,7 +450,7 @@ def edit_lab_test_type(request):
 	return JsonResponse({'status':status_type,status_type:msg})
 
 
-
+@login_required(login_url="/")
 def view_lab_tests_request(request):
 	'''
 	  list of all patient taking lab test
@@ -446,6 +460,7 @@ def view_lab_tests_request(request):
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,'dashboard/laboratory/patients-lab-test-request.html',{'title':'Patient Lab test request','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'view_patient_lab_request':view_patient_lab_request,'test_list':lab_test_list})
 
+@login_required(login_url="/")
 def search_patient_lab_records(request):
 	search=request.POST['patient_lab_record']
 	hospital_id=request.POST['hospital_id']   
@@ -457,6 +472,7 @@ def search_patient_lab_records(request):
 		fullname=results['patient_history__patient__First_Name']+" "+results['patient_history__patient__Last_Name']
 		data_list.append({'fullname':fullname,'dob':results['patient_history__patient__Date_Of_Birth'],'telephone':results['patient_history__patient__Telephone'],'patient_id':results['patient_history__patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient_history__id'],'case_number':results['patient_history__case_number']})
 	return JsonResponse({'result':data_list})
+@login_required(login_url="/")
 def view_patient_required_lab_test(request,patient_history_id):
     
     get_patient_history=Patient_History.objects.get(case_number=patient_history_id)
@@ -478,7 +494,7 @@ def view_patient_required_lab_test(request,patient_history_id):
    #view patient test history
    #enter test results and relaese test results
 
-  
+@login_required(login_url="/")
 def input_lab_test_result_details(request):
 	lab_test_id=request.POST.getlist('lab_id')
 	patient_lab_test_id=request.POST.getlist('patient_lab_id')
@@ -507,6 +523,7 @@ def view_dietary(request):
     pass
 def view_dietary_stock(request):
 	pass
+@login_required(login_url="/")
 def create_inventary_dietary_stock(request):
 	dietary=request.POST['dietary']
 	notes=request.POST['notes']
@@ -525,15 +542,17 @@ def create_inventary_dietary_stock(request):
 		msg+="couldn't create dietary supplementary stock. Details already exists"
 	return JsonResponse({'status':status_type,status_type:msg})	
 
+
 def edit_dietary_inventory_stock(request):
 	pass
-
+@login_required(login_url="/")
 def view_patient_dietary_lists(request):
 	patient_dietary_list=view_dietary_pending_list()
 	dietary_supplement_details=all_dietary_supplement()
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,"dashboard/dietary/patient-dietary-list.html",{'title':'Patient Dietary','user_id':user_info['user_id'],'hospital_id':user_info['user_id'],'patient_dietary_list':patient_dietary_list,'dietary_supplement_details':dietary_supplement_details,'page_title':'dietary list','path':'dietary'})
 
+@login_required(login_url="/")
 def view_patient_dietary_details(request,patient_history_id):
 	get_patient_history_info=Patient_History.objects.get(case_number=patient_history_id)
 
@@ -551,6 +570,8 @@ def view_patient_dietary_details(request,patient_history_id):
 	
 	return render(request,'dashboard/dietary/patient-dietary.html',{'title':'Patient Dietary Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_dietary_record':patient_dietary_record,'patient_dietry_details':patient_deitary_details,'patient_history_id':get_patient_history_info.id,'patient_bio':details,'patient_dietary_history_record':patient_dietary_record,'patient_deitary_history':patient_deitary_history,'page_title':'patient dietary details','path':'dietary'})
 
+
+@login_required(login_url="/")
 def dispen_patient_dietary(request):
 	patient_dietary_id=request.POST.getlist('patient_dietary_id')
 	dietary_id=request.POST.getlist('dietary_id')
@@ -571,6 +592,7 @@ def dispen_patient_dietary(request):
 
 
 
+@login_required(login_url="/")
 
 def search_patient_dietory_records(request):
 	search=request.POST['patient_dietary_search']
@@ -585,7 +607,7 @@ def search_patient_dietory_records(request):
 	return JsonResponse({'result':data_list})
 
 
-
+@login_required(login_url="/")
 def staff_management(request):
 	'''
          admin only
@@ -596,7 +618,7 @@ def staff_management(request):
 
 
 	return render(request,'dashboard/setting/staff-management.html',{'title':'staff management','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'groups':get_groups,'staffs':all_staffs,'page_title':'staff management','path':'setting'})
-
+@login_required(login_url="/")
 def staff_user_management(request,staff_id):
 	staff_details=Hospital_Staff.objects.get(pk=staff_id)
 	user_groups=request.user.groups.filter(user__id=staff_details.staff.id)
@@ -604,25 +626,28 @@ def staff_user_management(request,staff_id):
 
 	return render(request,'dashboard/setting/staff-user-management.html',{'title':'staff management','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'staff_details':staff_details,'page_title':'staff user management details','path':'setting'})
 
-
+@login_required(login_url="/")
 def user_management(request):
 	return render(request,'dashboard/setting/user-management.html',{'title':'staff management','page_title':'staff management','path':'staffs','page_title':'user management','path':'setting'})
+@login_required(login_url="/")
 def laboratory_management(request):
 	lab_test_lists=view_lab_test_list()
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,'dashboard/setting/Laboratory-management.html',{'title':'Laboratory Management','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'lab_test':lab_test_lists,'page_title':'laboratory mgt.','path':'setting'})
 
+@login_required(login_url="/")
 def laboratory_test_management_details(request,lab_test_id):
 	laboratory_test=getLaboratory(lab_test_id)
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,'dashboard/setting/Laboratory-test-details.html',{'title':'Laboratory Test Management Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'lab_details':laboratory_test,'page_title':'lab test details management','path':'setting'})
 
-
+@login_required(login_url="/")
 def dietary_stocking(request):
 	dietary_list=view_dietary_list()
 	restock_dietary=dietary_need_restock()
 	user_info=get_user_hospital_details(request.user.id)
 	return render(request,'dashboard/setting/dietary-stock.html',{'title':'Dietary Supplement Stocking','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'dietary':dietary_list,'restock':restock_dietary,'page_title':'dietary stocking management','path':'setting'})
+@login_required(login_url="/")
 def dietary_stocking_view(request,dietary_id):
 	dietary_supplement_stock=dietary_supplement_stocking_details_history(dietary_id)
 	dietary_supplement_stock_details=deitary_stock_info(dietary_id)
@@ -630,6 +655,7 @@ def dietary_stocking_view(request,dietary_id):
 
 	return render(request,'dashboard/setting/dietary-stock-view-edit.html',{'title':'dietary stocking history','user_id':user_info['user_id'],'dietary_stock':dietary_supplement_stock,'dietary_id':dietary_id,'dietary_details':dietary_supplement_stock_details,'page_title':'dietary stocking','path':'setting'})
 
+@login_required(login_url="/")
 def company(request):
 	region=Region.objects.all()
 
@@ -643,13 +669,14 @@ def company(request):
 
 '''
 
+@login_required(login_url="/")
 def patient_payment_list_records(request):
 	patient_record=patient_payment_list()
 	user_info=get_user_hospital_details(request.user.id)
 
 	return render(request,'dashboard/Accounts/payment.html',{'title':'patients payment Records'.upper(),'hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],"patient_record":patient_record,'page_title':'Patient Payment List','path':'payment list'})
 
-
+@login_required(login_url="/")
 def patient_payment_records_details(request,patient_history_id):
 	patient_payment_history=patient_payment_history_records(patient_history_id)
 	patient_payment_tracking_history=payment_trakings(patient_history_id)
@@ -660,7 +687,7 @@ def patient_payment_records_details(request,patient_history_id):
 
 	return render(request,'dashboard/Accounts/patient-payment-details.html',{'title':'Patient payment Records','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'payment_history':payment_history,'patient_details':patient_payment_history,'patient_payment_tracking_history':patient_payment_tracking_history,'patient_history_id':patient_history_id,'payment_opd_charges_history':payment_opd_charges_history,'page_title':'Patient payment','path':'Accounts'})
 
-
+@login_required(login_url="/")
 def search_patient_payment_records(request):
 	search=request.POST['patient_payment_search']
 	hospital_id=request.POST['hospital_id']   
@@ -673,6 +700,7 @@ def search_patient_payment_records(request):
 		data_list.append({'fullname':fullname,'dob':results['patient_history__patient__Date_Of_Birth'],'telephone':results['patient_history__patient__Telephone'],'patient_id':results['patient_history__patient__card_number'],'total_visit':results['total_visit'],'patient_history_id':results['patient_history__patient__id'],'case_number':results['patient_history__case_number']})
 	return JsonResponse({'result':data_list})
 
+@login_required(login_url="/")
 def opd_charges_info(request):
 	opd_charges=current_registration_charges()
 	opd_charges_update=registration_payment_history()
@@ -681,7 +709,7 @@ def opd_charges_info(request):
 	return render(request,'dashboard/Accounts/opd_charges.html',{'title':'OPD Visit Charges','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'opd_charges_update':opd_charges_update,'page_title':'OPD Charges','path':'account'})
 
 
-
+@login_required(login_url="/")
 def payments_checked_out(request):
 	patient_history_id=request.POST['patient_history_id']
 	user_id=request.POST['user_id']
@@ -697,6 +725,7 @@ def payments_checked_out(request):
 		msg+="patient couldn't checked out"
 	return JsonResponse({'status':status,status:msg})
 
+@login_required(login_url="/")
 def create_opd_charges(request):
 	first_time_charge=request.POST['first_time_charge']
 	second_time_charge=request.POST['second_time_charge']
@@ -712,8 +741,9 @@ def create_opd_charges(request):
 		status+="error"
 		msg+="couldn't create opd charges"
 	return JsonResponse({'status':status,status:msg})
-
-
+@login_required(login_url="/")
+def reports(request):
+	return render(request,'dashboard/Accounts/report.html',{'title':'Reports','page_title':'Report Statememt','path':'account'})
 
 
 '''
@@ -721,7 +751,7 @@ def create_opd_charges(request):
 '''
 
 
-
+@login_required(login_url="/")
 def update_dietary_inventary_stock(request):
 	price=request.POST['price']
 	quantity=request.POST['quantity']
@@ -738,6 +768,8 @@ def update_dietary_inventary_stock(request):
 		status+="error"
 		msg+="couldn't update dietary supplement"
 	return JsonResponse({'status':status,status:msg})
+
+@login_required(login_url="/")
 def update_dietary_supplement_details(request):
 	dietary=request.POST['dietary']
 	notes=request.POST['notes'].strip()
@@ -754,6 +786,7 @@ def update_dietary_supplement_details(request):
 
 	return JsonResponse({'status':status,status:msg})
 
+@login_required(login_url="/")
 def set_hospital_details(request):
 	hospital_name=request.POST['company_name']
 	user=request.POST['user']
@@ -772,6 +805,8 @@ def set_hospital_details(request):
 		status+="error"
 		msg+="couldn't create hospital details. Hospital Details already exist"
 	return JsonResponse({'status':status,status:msg})
+
+@login_required(login_url="/")
 def create_staff_details(request):
 	first_name=request.POST['fname']
 	last_name=request.POST['lname']
@@ -791,6 +826,8 @@ def create_staff_details(request):
 		msg+="couldn't create staff account. Staff account already exist"
 	return JsonResponse({'status':status,status:msg})
 
+
+@login_required(login_url="/")
 def staff_update(request):
 	first_name=request.POST['fname']
 	last_name=request.POST['lname']
@@ -811,7 +848,7 @@ def staff_update(request):
 		msg+="couldn't update staff account."
 	return JsonResponse({'status':status,status:msg})
 
-
+@login_required(login_url="/")
 def change_pass(request):
 	password=request.POST['new_password']
 	confirm_password=request.POST['retype_new_password']
@@ -827,7 +864,7 @@ def change_pass(request):
 		msg+="couldn't change staff_password ! password mismatch"	
 	return JsonResponse({'status':status,status:msg})		
 
-
+@login_required(login_url="/")
 def multiple_dietary_supplement_list(request):
 	dietary_list=request.GET.getlist('choose')
 	lists=list()
@@ -838,6 +875,8 @@ def multiple_dietary_supplement_list(request):
 	
 	return JsonResponse({'status':diet})
 
+
+@login_required(login_url="/")
 def multiple_lab_test_list(request):
 	dietary_list=request.GET.getlist('choose')
 	lists=list()
@@ -848,12 +887,15 @@ def multiple_lab_test_list(request):
 	
 	return JsonResponse({'status':diet})
 
-
+@login_required(login_url="/")
 def error_404(request,exception):
 	return render(request,'dashboard/error/error.html',{'title':'404 error','page_title':'404 error','path':'error'})
 
+@login_required(login_url="/")
 def error_500(request):
 	return render(request,'dashboard/error/error.html',{'title':'500 error','page_title':'500 error','path':'error'})
 
-
-
+@login_required(login_url="/")
+def logout(request):
+	auth.logout(request)
+	return redirect('/')

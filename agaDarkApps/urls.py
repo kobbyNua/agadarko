@@ -52,6 +52,7 @@ urlpatterns=[
    path('search-patient-payment-records',views.search_patient_payment_records,name="search_patient_payment_records"),
    path('opd-charges-info',views.opd_charges_info,name="opd_charges_info"),
    path('create-opd-charges',views.create_opd_charges,name="create_opd_charges"),
+   path('reports',views.reports,name="reports"),
 
 
 
@@ -66,6 +67,7 @@ urlpatterns=[
    path('create-staff-details',views.create_staff_details,name='create_staff_details'),
    path('staff-update',views.staff_update,name='update_staff'),
    path('change-password',views.change_pass,name="change password"),
+   path('logout',views.logout,name="logout"),
    #path("",views.home,name="home"),
    #path("books-list/",views.booksList,name="bookList"),
    #path('book-details/<int:id>',views.bookDetails,name="book-details"),
