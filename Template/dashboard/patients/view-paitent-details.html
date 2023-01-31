@@ -45,6 +45,22 @@
                                                        </ul>
 
                                                        {% endfor %}
+                                                       <ul class="list-group list-group-unbordered mb-3">
+                                                       <li class="list-group-item">
+                                                        <b>OPD</b>
+                                                        <a class="float-right"> GHS 
+
+                                                           {% if patient_number_of_visits == 1 %}
+                                                                {{opd_charges.first_time_charge}}
+
+                                                           {% elif patient_number_of_visits > 1 %}
+                                                                {{opd_charges.second_time_charge}}
+
+
+                                                           {% endif %}
+                                                       </a>
+                                                       </li>
+                                                   </ul>
 
 
                                                                      

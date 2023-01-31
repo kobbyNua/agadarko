@@ -3,6 +3,8 @@ from django.db.models import Count ,F,Q,Sum,Value
 from django.db.models.functions import LPad 
 from django.contrib.auth.models import User,auth,Group
 
+def get_opd_charges():
+	return OPD_Charges.objects.all()[0]
 def create_update_opd_charges(first_charge,second_charge,user_id):
 	check_charges=OPD_Charges.objects.all().count()
 	charges=OPD_Charges.objects.all()[0]
@@ -20,7 +22,7 @@ def create_update_opd_charges(first_charge,second_charge,user_id):
 		new_charges.save()
 		charges_update=updates_opd_charges(first_charge,second_charge,user_id)
 		return charges_update
-		 
+	 
 
 def patient_opd_payment_charges(patient_id,patient_history_id,amount,user_id):
 	patient_record_details=Patient_History.objects.filter(patient__id=patient_id).count()

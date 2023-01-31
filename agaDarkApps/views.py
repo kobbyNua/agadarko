@@ -2,11 +2,11 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse,FileResponse
 from django.contrib.auth.models import User,auth,Group
 from .models import Hospital_Staff,Patient_Diagosis_History,Patient_History
-from .patients import patient_search,check_in_session,patient_waiting_state,checK_patient_history,view_patient_details_info,view_patient_diagnosis_history_details,patient_diagnosis_details,patient_history_details,patient_medical_diagnosis_records,Check_in_patient_search,patient_check_in_list,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
+from .patients import patient_search,patient_count_history,check_in_session,patient_waiting_state,checK_patient_history,view_patient_details_info,view_patient_diagnosis_history_details,patient_diagnosis_details,patient_history_details,patient_medical_diagnosis_records,Check_in_patient_search,patient_check_in_list,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
 from .laboratory import view_lab_test_list,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
-from .account import patient_payment_list,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
+from .account import patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
 '''
@@ -95,7 +95,8 @@ def view_patient_detail(request,patient_card_id):
 	patients_id=""
 	patients_card_number=""
 	check_in_status=waiting_state.patient.waiting_state
-	print(waiting_state.id)
+	patient_number_of_visits=patient_count_history(patient_card_id)
+	opd_charges=get_opd_charges()
 	if waiting_state.waiting_state == "pending":
 		waiting_patient_id+=str(waiting_state.id)
 		patients_id+=str(waiting_state.patient.id)
@@ -122,6 +123,7 @@ def view_patient_detail(request,patient_card_id):
 	#checK_patient_history(patient_card_id,user_id)
 	user_info=get_user_hospital_details(request.user.id)
 
+
 	#waiting_patient=patient_history_details(waiting_patient_id)
 	for patients in patients_details:
 		fullname=patients['patient__First_Name']+" "+patients['patient__Last_Name']
@@ -129,7 +131,7 @@ def view_patient_detail(request,patient_card_id):
 
 	patient_opd_history=paitient_opd_visiting_history(patient_card_id)
 
-	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_card_number':patients_card_number,'patients_id':patients_id,'check_in_status':check_in_status,'view_patient_details':details,'pateint_opd_history':patient_opd_history}) 
+	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'patient_number_of_visits':patient_number_of_visits,'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_card_number':patients_card_number,'patients_id':patients_id,'check_in_status':check_in_status,'view_patient_details':details,'pateint_opd_history':patient_opd_history,'page_title':'patient opd history','path':'opd'}) 
 def checkin_patient(request):
 	patient_id=request.POST['patient_id']
 	hospital_id=request.POST['hospital_id']
@@ -155,7 +157,7 @@ def view_opd_vitals(request):
 	user_info=get_user_hospital_details(request.user.id)
 	#print(opd_vital)
 	#print('we are here')
-	return render(request,'dashboard/patients/view-opd-vital-list.html',{'title':'OPD Panel','opd_vitals':opd_vital})
+	return render(request,'dashboard/patients/view-opd-vital-list.html',{'title':'OPD Panel','opd_vitals':opd_vital,'page_title':'OPD vitals ','path':'opd'})
 def create_opd_vital(request):
 	#create opd vitals
 	vitals_list=['temperature','weight','blood pressure']
@@ -190,7 +192,7 @@ def waiting_patient_list(request):
 	#can only be view by admin and doctor
 	waiting_patient=patinet_waiting_list()
 	user_info=get_user_hospital_details(request.user.id)
-	return render(request,'dashboard/patients/medicals-patients-waiting.html',{'title':'waiting patient list','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'waiting_list':waiting_patient})
+	return render(request,'dashboard/patients/medicals-patients-waiting.html',{'title':'waiting patient list','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'waiting_list':waiting_patient,'page_title':'waitng list','path':'OPD'})
 def patient_medical_history_search(request):
 	search=request.POST['patient_medical_history']
 	hospital_id=request.POST['hospital_id']   
@@ -268,7 +270,7 @@ def patient_profile(request,patient_history_id):
 	dietary_lists=view_dietary_list()
 	user_info=get_user_hospital_details(request.user.id)
 	#print(details)
-	return render(request,'dashboard/patients/patient-profile.html',{'title':'patient profile','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_opd_vital':patient_opd_vital,'patient_dietry_state':patient_dietry_state,'opd_vital':opd_vital,'patient_lab_test_status':patient_lab_test_status,'lab_test_lists':lab_test_lists,'patient_dietary_details':patient_dietry_details,'dietary_lists':dietary_lists,'patient_history_id':get_patient_history_id.id,'patient_complaints':patient_complaints,'patient_lab_results':lab_results,'patient_details':details,'patient_medical_records':patient_medical_records,'patient_diagnosis_history_details':patient_diagnosis_history_details})
+	return render(request,'dashboard/patients/patient-profile.html',{'title':'patient profile','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_opd_vital':patient_opd_vital,'patient_dietry_state':patient_dietry_state,'opd_vital':opd_vital,'patient_lab_test_status':patient_lab_test_status,'lab_test_lists':lab_test_lists,'patient_dietary_details':patient_dietry_details,'dietary_lists':dietary_lists,'patient_history_id':get_patient_history_id.id,'patient_complaints':patient_complaints,'patient_lab_results':lab_results,'patient_details':details,'patient_medical_records':patient_medical_records,'patient_diagnosis_history_details':patient_diagnosis_history_details,'page_title':'patient diagnosis history','path':'medical'})
 
 
 def create_patient_complaints_diagonsis(request):
@@ -322,7 +324,7 @@ def edit_doctor_diagonsis(request):
 		msg+="couldn't create patient diagnosis details"
 	return JsonResponse({'status':status_type,status_type:msg})
 def patient_medical_history_records(request):
-	return render(request,'dashboard/patients/patient-diagnosis-medical-history.html',{'title':'patient medical history'.upper()})
+	return render(request,'dashboard/patients/patient-diagnosis-medical-history.html',{'title':'patient medical history'.upper(),'page_title':'patient medical records','path':'medical'})
 def create_patient_lab_request(request):
 	patient_id=request.POST['patient_history_id']
 
@@ -397,7 +399,7 @@ def view_lab_test_types(request):
 	'''
 	lab_test_lists=view_lab_test_list()
 	user_info=get_user_hospital_details(request.user.id)
-	return render(request,'dashboard/laboratory/lab-test.html',{'title':'Lab test list','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'lab_test':lab_test_lists})
+	return render(request,'dashboard/laboratory/lab-test.html',{'title':'Lab test list','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'lab_test':lab_test_lists,'page_title':'lab test list','path':'lab'})
 
 def create_lab_test_types(request):
 	lab_test=request.POST['test']
@@ -471,7 +473,7 @@ def view_patient_required_lab_test(request,patient_history_id):
     patient_lab_request_details=view_patient_lab_details(get_patient_history.id)
     get_patient_lab=get_patient_history_lab(get_patient_history.id)
     user_info=get_user_hospital_details(request.user.id)
-    return render(request,'dashboard/laboratory/patient-lab-details.html',{'title':'patient lab history','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_lab_history':patient_lab_history,'lab_request':patient_lab_request_details,'patient_history_id':get_patient_history.id,'patient_lab_history_record':patient_lab_record,'patient_bio':details,'get_patient_lab':get_patient_lab})
+    return render(request,'dashboard/laboratory/patient-lab-details.html',{'title':'patient lab history','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_lab_history':patient_lab_history,'lab_request':patient_lab_request_details,'patient_history_id':get_patient_history.id,'patient_lab_history_record':patient_lab_record,'patient_bio':details,'get_patient_lab':get_patient_lab,'page_title':'patient labe test','path':'laboratory'})
    #view vital test to be taken
    #view patient test history
    #enter test results and relaese test results
@@ -530,7 +532,7 @@ def view_patient_dietary_lists(request):
 	patient_dietary_list=view_dietary_pending_list()
 	dietary_supplement_details=all_dietary_supplement()
 	user_info=get_user_hospital_details(request.user.id)
-	return render(request,"dashboard/dietary/patient-dietary-list.html",{'title':'Patient Dietary','user_id':user_info['user_id'],'hospital_id':user_info['user_id'],'patient_dietary_list':patient_dietary_list,'dietary_supplement_details':dietary_supplement_details})
+	return render(request,"dashboard/dietary/patient-dietary-list.html",{'title':'Patient Dietary','user_id':user_info['user_id'],'hospital_id':user_info['user_id'],'patient_dietary_list':patient_dietary_list,'dietary_supplement_details':dietary_supplement_details,'page_title':'dietary list','path':'dietary'})
 
 def view_patient_dietary_details(request,patient_history_id):
 	get_patient_history_info=Patient_History.objects.get(case_number=patient_history_id)
@@ -547,7 +549,7 @@ def view_patient_dietary_details(request,patient_history_id):
 		details.append({'fullname':fullname,'dob':patients['patient_history__patient__Date_Of_Birth'],'phone':patients['patient_history__patient__Telephone'],'region':patients['patient_history__patient__region__region'],'City':patients['patient_history__patient__Town'],'visit':patients['total_visit']})
 
 	
-	return render(request,'dashboard/dietary/patient-dietary.html',{'title':'Patient Dietary Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_dietary_record':patient_dietary_record,'patient_dietry_details':patient_deitary_details,'patient_history_id':get_patient_history_info.id,'patient_bio':details,'patient_dietary_history_record':patient_dietary_record,'patient_deitary_history':patient_deitary_history})
+	return render(request,'dashboard/dietary/patient-dietary.html',{'title':'Patient Dietary Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_dietary_record':patient_dietary_record,'patient_dietry_details':patient_deitary_details,'patient_history_id':get_patient_history_info.id,'patient_bio':details,'patient_dietary_history_record':patient_dietary_record,'patient_deitary_history':patient_deitary_history,'page_title':'patient dietary details','path':'dietary'})
 
 def dispen_patient_dietary(request):
 	patient_dietary_id=request.POST.getlist('patient_dietary_id')
@@ -593,45 +595,45 @@ def staff_management(request):
 	user_info=get_user_hospital_details(request.user.id)
 
 
-	return render(request,'dashboard/setting/staff-management.html',{'title':'staff management','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'groups':get_groups,'staffs':all_staffs})
+	return render(request,'dashboard/setting/staff-management.html',{'title':'staff management','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'groups':get_groups,'staffs':all_staffs,'page_title':'staff management','path':'setting'})
 
 def staff_user_management(request,staff_id):
 	staff_details=Hospital_Staff.objects.get(pk=staff_id)
 	user_groups=request.user.groups.filter(user__id=staff_details.staff.id)
 	user_info=get_user_hospital_details(request.user.id)
 
-	return render(request,'dashboard/setting/staff-user-management.html',{'title':'staff management','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'staff_details':staff_details})
+	return render(request,'dashboard/setting/staff-user-management.html',{'title':'staff management','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'staff_details':staff_details,'page_title':'staff user management details','path':'setting'})
 
 
 def user_management(request):
-	return render(request,'dashboard/setting/user-management.html',{'title':'staff management'})
+	return render(request,'dashboard/setting/user-management.html',{'title':'staff management','page_title':'staff management','path':'staffs','page_title':'user management','path':'setting'})
 def laboratory_management(request):
 	lab_test_lists=view_lab_test_list()
 	user_info=get_user_hospital_details(request.user.id)
-	return render(request,'dashboard/setting/Laboratory-management.html',{'title':'Laboratory Management','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'lab_test':lab_test_lists})
+	return render(request,'dashboard/setting/Laboratory-management.html',{'title':'Laboratory Management','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'lab_test':lab_test_lists,'page_title':'laboratory mgt.','path':'setting'})
 
 def laboratory_test_management_details(request,lab_test_id):
 	laboratory_test=getLaboratory(lab_test_id)
 	user_info=get_user_hospital_details(request.user.id)
-	return render(request,'dashboard/setting/Laboratory-test-details.html',{'title':'Laboratory Test Management Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'lab_details':laboratory_test})
+	return render(request,'dashboard/setting/Laboratory-test-details.html',{'title':'Laboratory Test Management Details','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'lab_details':laboratory_test,'page_title':'lab test details management','path':'setting'})
 
 
 def dietary_stocking(request):
 	dietary_list=view_dietary_list()
 	restock_dietary=dietary_need_restock()
 	user_info=get_user_hospital_details(request.user.id)
-	return render(request,'dashboard/setting/dietary-stock.html',{'title':'Dietary Supplement Stocking','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'dietary':dietary_list,'restock':restock_dietary})
+	return render(request,'dashboard/setting/dietary-stock.html',{'title':'Dietary Supplement Stocking','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'dietary':dietary_list,'restock':restock_dietary,'page_title':'dietary stocking management','path':'setting'})
 def dietary_stocking_view(request,dietary_id):
 	dietary_supplement_stock=dietary_supplement_stocking_details_history(dietary_id)
 	dietary_supplement_stock_details=deitary_stock_info(dietary_id)
 	user_info=get_user_hospital_details(request.user.id)
 
-	return render(request,'dashboard/setting/dietary-stock-view-edit.html',{'title':'dietary stocking history','user_id':user_info['user_id'],'dietary_stock':dietary_supplement_stock,'dietary_id':dietary_id,'dietary_details':dietary_supplement_stock_details})
+	return render(request,'dashboard/setting/dietary-stock-view-edit.html',{'title':'dietary stocking history','user_id':user_info['user_id'],'dietary_stock':dietary_supplement_stock,'dietary_id':dietary_id,'dietary_details':dietary_supplement_stock_details,'page_title':'dietary stocking','path':'setting'})
 
 def company(request):
 	region=Region.objects.all()
 
-	return render(request,'dashboard/setting/company.html',{'title':'comapny agadarko','Region':region})
+	return render(request,'dashboard/setting/company.html',{'title':'comapny agadarko','Region':region,'page_title':'company set up','path':'company'})
 
 
 
@@ -645,7 +647,7 @@ def patient_payment_list_records(request):
 	patient_record=patient_payment_list()
 	user_info=get_user_hospital_details(request.user.id)
 
-	return render(request,'dashboard/Accounts/payment.html',{'title':'patients payment Records'.upper(),'hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],"patient_record":patient_record})
+	return render(request,'dashboard/Accounts/payment.html',{'title':'patients payment Records'.upper(),'hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],"patient_record":patient_record,'page_title':'Patient Payment List','path':'payment list'})
 
 
 def patient_payment_records_details(request,patient_history_id):
@@ -656,7 +658,7 @@ def patient_payment_records_details(request,patient_history_id):
 	user_info=get_user_hospital_details(request.user.id)
 
 
-	return render(request,'dashboard/Accounts/patient-payment-details.html',{'title':'Patient payment Records','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'payment_history':payment_history,'patient_details':patient_payment_history,'patient_payment_tracking_history':patient_payment_tracking_history,'patient_history_id':patient_history_id,'payment_opd_charges_history':payment_opd_charges_history})
+	return render(request,'dashboard/Accounts/patient-payment-details.html',{'title':'Patient payment Records','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'payment_history':payment_history,'patient_details':patient_payment_history,'patient_payment_tracking_history':patient_payment_tracking_history,'patient_history_id':patient_history_id,'payment_opd_charges_history':payment_opd_charges_history,'page_title':'Patient payment','path':'Accounts'})
 
 
 def search_patient_payment_records(request):
@@ -676,7 +678,7 @@ def opd_charges_info(request):
 	opd_charges_update=registration_payment_history()
 	user_info=get_user_hospital_details(request.user.id)
 
-	return render(request,'dashboard/Accounts/opd_charges.html',{'title':'OPD Visit Charges','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'opd_charges_update':opd_charges_update})
+	return render(request,'dashboard/Accounts/opd_charges.html',{'title':'OPD Visit Charges','user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'opd_charges_update':opd_charges_update,'page_title':'OPD Charges','path':'account'})
 
 
 
@@ -845,6 +847,13 @@ def multiple_lab_test_list(request):
 	diet=multiple_lab_type_list(data)
 	
 	return JsonResponse({'status':diet})
+
+
+def error_404(request,exception):
+	return render(request,'dashboard/error/error.html',{'title':'404 error','page_title':'404 error','path':'error'})
+
+def error_500(request):
+	return render(request,'dashboard/error/error.html',{'title':'500 error','page_title':'500 error','path':'error'})
 
 
 

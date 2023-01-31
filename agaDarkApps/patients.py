@@ -22,7 +22,8 @@ def  patient_search(searchs,hospital_id):
 def patient_medical_diagnosis_records(patient_id):
 	return Patient_Diagosis_History.objects.filter(patient_history__patient__id=patient_id)
 
-
+def patient_count_history(patient_card_id):
+	return Patient_History.objects.filter(patient__card_number=patient_card_id).count()
 '''
 view patient details
 '''

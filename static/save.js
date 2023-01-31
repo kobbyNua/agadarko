@@ -231,23 +231,23 @@ submitForms=(form_id,urls)=>{
       	         type:'post',
       	         dataType:'json',
       	         beforeSend:function(){
-      	    	       $('#responseBox .modal-body .msg-box').html('ascending request')
+      	    	       $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-info fa fa-spinner fa spin" style="font-size:3.5em"></i></div><br/><h3>sending request to server</h3></div>')
       	         },
       	         success:function(data){
                         console.log(data)
       	         	if(data.status === "success"){
-      	          	      $('#responseBox .modal-body .msg-box').html(data.success)
+      	          	      $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-primary fa fa-spinner fa spin" style="font-size:3.5em"></i></div><br/><h3>'+data.success+"</div>")
       	          	      window.location=""
       	          	}
 
       	          	else if(data.status === "error"){
-      	          		$('#responseBox .modal-body .msg-box').html(data.error)
+      	          		$('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-danger fa fa-exclamation" style="font-size:3.5em"></i></div><br/><h3>'+data.error+"</div>")
 
       	          	}
 
       	        },
       	        error:function(){
-      	        	$('#responseBox .modal-body .msg-box').html('network timeout')
+      	        	$('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-info fa fa-exclamation-triangle fa spin" style="font-size:3.5em"></i></div><br/><h3>network timeout</div>')
       	        }
 
 
@@ -267,24 +267,25 @@ formFileUpload=(form_id,urls)=>{
                     contentType:false,
                     processData:false,
 
-                     beforSend:function(){
-                         $('#responseBox .modal-body .msg-box').html('ascending request')
-                     },
-                     success:function(data){
-                        if(data.status === "success"){
-                              $('#responseBox .modal-body .msg-box').html(data.success)
-                              window.location=""
-                        }
-
-                        else if(data.status === "error"){
-                              $('#responseBox .modal-body .msg-box').html(data.error)
-
-                        }
-
-                    },
-                    error:function(){
-                        $('#responseBox .modal-body .msg-box').html('network timeout')
+                 beforeSend:function(){
+                       $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-info fa fa-spinner fa-spin" style="font-size:3.5em"></i></div><br/><h3>sending request to server</h3></div>')
+                 },
+                 success:function(data){
+                        console.log(data)
+                    if(data.status === "success"){
+                          $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-primary fa fa-spinner fa-spin" style="font-size:3.5em"></i></div><br/><h3>'+data.success+"</div>")
+                          window.location=""
                     }
+
+                    else if(data.status === "error"){
+                        $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-danger fa fa-exclamation" style="font-size:3.5em"></i></div><br/><h3>'+data.error+"</div>")
+
+                    }
+
+                },
+                error:function(){
+                    $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-info fa fa-exclamation-triangle fa spin" style="font-size:3.5em"></i></div><br/><h3>network timeout</div>')
+                }
 
 
        });
