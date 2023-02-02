@@ -98,6 +98,7 @@ def view_patient_detail(request,patient_card_id):
 	check_in_status=waiting_state.patient.waiting_state
 	patient_number_of_visits=patient_count_history(patient_card_id)
 	opd_charges=get_opd_charges()
+	print(waiting_state.waiting_state)
 	if waiting_state.waiting_state == "pending":
 		waiting_patient_id+=str(waiting_state.id)
 		patients_id+=str(waiting_state.patient.id)
@@ -123,6 +124,7 @@ def view_patient_detail(request,patient_card_id):
 	#user_id=1
 	#checK_patient_history(patient_card_id,user_id)
 	user_info=get_user_hospital_details(request.user.id)
+	print("hello ",patients_id)
 
 
 	#waiting_patient=patient_history_details(waiting_patient_id)

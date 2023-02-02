@@ -59,14 +59,18 @@ def create_staff(first_name,last_name,email,username,telephone,group_id,user_id)
 	check_user=User.objects.filter(Q(email=email)|Q(username=username))
 	if not check_user.exists():
 		default_password='Password@1'
-		hospital_info=Hospital.objects.filter(adminstrator__id=user_id)
+		hospital_info=get_user_hospital_details(user_id)
+		#hospital_info=Hospital.objects.filter(adminstrator__id=user_id)
 		hospital_id=""
 		users=User.objects.create_user(username=username,password=default_password,first_name=first_name,last_name=last_name,email=email)
 		users.save()
 		user_id=User.objects.latest('id')
+		'''
 		for hospitals in hospital_info:
-			pass
-		hospital_staffs(user_id.id,telephone,hospitals.id)
+			hospital_id+=str(hospitals.id)
+		print(hospital_id)
+		'''
+		hospital_staffs(user_id.id,telephone,hospital_info["hospital_id"])
 		for groups in range(len(group_id)):
 			get_group=Group.objects.get(pk=group_id[groups])
 			get_group.user_set.add(user_id.id)
