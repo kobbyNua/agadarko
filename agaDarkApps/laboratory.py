@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User,auth,Group
 from django.db.models import Count ,F,Q,Sum
-from .models import Lab_Test_Cost_Details,Patient_Laboratory,Patient_Laboratory_Details,laboratory_test_techician,Patient_Laboratory_Date_Released,Patient_History,Patient_Diagosis_History
+from .models import Lab_Test_Cost_Details,Discount,Patient_Laboratory,Patient_Laboratory_Details,laboratory_test_techician,Patient_Laboratory_Date_Released,Patient_History,Patient_Diagosis_History
 from datetime import datetime
 
 
@@ -126,3 +126,52 @@ def view_patient_laboratory_history_details(patient_card_id):
 
 def get_patient_history_lab(lab_history_id):
 	return Patient_Laboratory.objects.get(patient_history__id=lab_history_id)
+
+
+
+def discount_update_status(state,user_id):
+	print(state,type(state))
+	if state == 'checked' :
+		sdisc=set_discount(user_id)
+		return sdisc
+	elif state == 'unchecked' :
+		usdisc=unset_discount(user_id)
+		return usdisc
+	else:
+		pass
+
+def set_discount(user):
+	cost=setup_discount(user)
+	patient_lab=Patient_Laboratory.objects.get(patient_history__case_number=user)
+	patient_lab.total_cost=cost['discount_cost']
+	patient_lab.discount_rate=cost['rate']
+	patient_lab.discount_state=True
+	patient_lab.save()
+	return True
+def unset_discount(user):
+	cost=lab_costs(user)
+	patient_lab=Patient_Laboratory.objects.get(patient_history__case_number=user)
+	patient_lab.total_cost=cost['total_cost']
+	patient_lab.discount_rate=0
+	patient_lab.discount_state=False
+	patient_lab.save()
+	return True
+def setup_discount(user):
+	get_total_cost=Patient_Laboratory.objects.get(patient_history__case_number=user)
+	current_rate=Discount.objects.all()[0]
+	discount_cost=(100-current_rate.rate)/100*get_total_cost.total_cost
+	#print(discount_cost)
+	return {'discount_cost':discount_cost,'rate':current_rate.rate}
+
+def lab_costs(user):
+	#print('am here')
+	get_lab_details=Patient_Laboratory_Details.objects.filter(patient_laboratory__patient_history__case_number=user)
+	total_cost=0
+	for test in get_lab_details:
+		lab_details_cost=Lab_Test_Cost_Details.objects.filter(pk=test.lab_test_type.id)
+		for costs in lab_details_cost:
+			print(costs.cost,':',test.lab_test_type.id)
+			total_cost+=costs.cost
+
+	print(total_cost)
+	return ({'total_cost':total_cost,'rate':0})

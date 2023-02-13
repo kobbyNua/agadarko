@@ -127,7 +127,7 @@
 
                                                                                                            <tr>
                     	                                                                                       <td>GHS {{patient_history.total_cost}}</td>
-                    	                                                                                       <td>{{patient_hsistory.date_reported}}</td>
+                    	                                                                                       <td>{{patient_history.date_reported}}</td>
                     	                                                                                       <td>
                     		                                                                                     {% if patient_history.released_status == True %}
                                                                                                                          test Results Relased
@@ -144,7 +144,23 @@
                     	                                                                                       </td>
 
                                                                                                              </tr>
-	  	                                                                                                     {% endfor %}
+                                                                                                             <tr>
+                                                                                                                  <td colspan="4">
+                                                                                                                  {% if patient_history.released_status == True  %}
+                                                                                                                         {{patient_history.discount_rate}}%  discount offered
+                                                                                                                  {% else %}
+                                                                                                                         {% if patient_history.discount_state == True %}
+                                                                                                                                <input type="checkbox" name="apply_discount" id="apply_discount" checked> check to apply for discount
+                                                                                                                         {% else %}    
+                                                                                                                            <input type="checkbox" name="apply_discount" id="apply_discount"> check to apply for discount
+                                                                                                                         {% endif %}
+                                                                                                                  
+                                                                                                                         <input type="hidden" name="case_numbers_dis" value="{{patient_history.patient_history.case_number}}">
+                                                                                                                  {% endif %}
+                                                                                                                  </td>
+                                                                                                             </tr>
+	  	                                                                                                {% endfor %}
+                                                                                                           
 	  	                                                                                           </table>
 
                                                                                                </div>
@@ -200,12 +216,17 @@
                                   
                                       
                      	                                                                      {% endfor %}
+                                                                                              
                                                                                             {% if get_patient_lab.released_status == False %}
                      	                                                                   <tr>
                      	  	                                                                   <td colspan="2"></td>
                      	  	
                      	  	                                                                   <td><input type="hidden" value="{{patient_history_id}}" name="patient_history_id"></td>
-                     	                                                                    </tr>
+                     	                                                                    
+                                                                                                <td>
+                                                                                                      <input type="hidden"  name="discount_applied_state">
+                                                                                                </td>
+                                                                                            </tr>
 
                      	  
                      	                                                                   <tr>

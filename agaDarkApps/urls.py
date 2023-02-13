@@ -53,6 +53,10 @@ urlpatterns=[
    path('opd-charges-info',views.opd_charges_info,name="opd_charges_info"),
    path('create-opd-charges',views.create_opd_charges,name="create_opd_charges"),
    path('reports',views.reports,name="reports"),
+   path('new-discounts',views.new_discounts,name="new_discounts"),
+   path('set-patient-discount',views.set_patient_discount,name='set_patient_discount'),
+   path('discounts',views.view_discount,name="reports"),
+   
 
 
 

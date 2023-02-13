@@ -161,10 +161,12 @@ class Patient_Laboratory(models.Model):
 	patient_diagonsis_history_details=models.ForeignKey(Patient_Diagosis_History,on_delete=models.CASCADE)  
 	date_reported=models.DateField()
 	lab_report_status_seen=models.BooleanField(default=False)
-
 	released_status=models.BooleanField(default=False)
 	viewed_status=models.BooleanField(default=False)
 	total_cost=models.FloatField(max_length=150,default=0.00)
+	discount_rate=models.FloatField(default=0.0)
+	discount_state=models.BooleanField(default=False)
+
 
 class Patient_Laboratory_Details(models.Model):
          patient_laboratory=models.ForeignKey(Patient_Laboratory,on_delete=models.CASCADE)
@@ -247,6 +249,7 @@ class OPD_Payment_Charges(models.Model):
 	amount_paid=models.FloatField(default=0.00)
 	recepit=models.CharField(max_length=120,default="")
 	receiver=models.ForeignKey(User,on_delete=models.CASCADE)
+	
 	date_paid=models.DateField()
 	def save(self,*args,**kwargs):
 		self.date_paid="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
@@ -284,6 +287,7 @@ class Medical_History_Diagnosis_Payment(models.Model):
 	patient_history=models.ForeignKey(Patient_History,on_delete=models.CASCADE)
 	lab_total_cost=models.FloatField(default=0.00)
 	supplement_total_cost=models.FloatField(default=0.00)
+	dietary_reference_code=models.CharField(max_length=120,default=" ")
 	total_cost=models.FloatField(default=0.00)	
 	amount_paid=models.FloatField(default=0.00)
 	recepit=models.CharField(max_length=120,default="")
@@ -293,6 +297,15 @@ class Medical_History_Diagnosis_Payment(models.Model):
 		self.date_paid="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
 		super().save(*args,**kwargs)
 
+class Discount(models.Model):
+	rate=models.FloatField(default=0.00)
+class Discount_History(models.Model):
+	rate=models.FloatField(default=0.00)
+	updated_by=models.ForeignKey(User,on_delete=models.CASCADE)
+	date_updated=models.DateField()
+	def save(self,*args,**kwargs):
+		self.date_updated="{}-{}-{}".format(datetime.now().year,datetime.now().month,datetime.now().day)
+		super().save(*args,**kwargs)	
 
 
 

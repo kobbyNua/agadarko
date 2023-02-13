@@ -254,35 +254,35 @@
 
 
 
-                                                                                                  <form method="post" id="select_lab_test">
-                                                                                                    {% csrf_token %}
+                                                                                                                    <form method="post" id="select_lab_test">
+                                                                                                                        {% csrf_token %}
                                                                               
-                                                                                                   <select name="lab_test" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
-                                                                                                        {% for lab_test in lab_test_lists %}
+                                                                                                                        <select name="lab_test" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
+                                                                                                                               {% for lab_test in lab_test_lists %}
                                                                               
-                                                                                                           <option value="{{lab_test.id}}">{{lab_test.test_type}} - {{lab_test.cost}}</option>
+                                                                                                                                    <option value="{{lab_test.id}}">{{lab_test.test_type}}</option>
                                                                               
-                                                                                                        {% endfor %}
-                                                                                                   </select>
-                                                                                                   <input type="hidden" value="{{user_id}}" name="user_id">
-                                                                                                   <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"><br/>
+                                                                                                                              {% endfor %}
+                                                                                                                        </select>
+                                                                                                                        <input type="hidden" value="{{user_id}}" name="user_id">
+                                                                                                                        <input type="hidden" name="patient_history_id" value="{{patient_history_id}}"><br/>
 
-                                                                                                   <input type="submit" value="send lab request" class="btn btn-info" style="border:none;border-radius: 0px;"/>
-                                                                                                 </form>
+                                                                                                                        <input type="submit" value="send lab request" class="btn btn-info" style="border:none;border-radius: 0px;"/>
+                                                                                                                        </form>
 
-                                                                                                  <div class="table-responsive mt-1 mb-1" >
-                                                                                                         <table class="table table-bordered" id="selected_lab_test">
-                                                                                                               <thead>
-                                                                                                                  <tr>
-                                                                                                                        <th>Laboratary Test</th>
-                                                                                                                        <th>Cost</th>
-                                                                                                                  </tr>
-                                                                                                               </thead>
-                                                                                                               <tbody>
+                                                                                                                        <div class="table-responsive mt-1 mb-1" >
+                                                                                                                            <table class="table table-bordered" id="selected_lab_test">
+                                                                                                                               <thead>
+                                                                                                                                     <tr>
+                                                                                                                                       <th>Laboratary Test</th>
+                                                                                                                        
+                                                                                                                                      </tr>
+                                                                                                                                </thead>
+                                                                                                                                <tbody>
 
-                                                                                                               </tbody>
-                                                                                                         </table>
-                                                                                                  </div>
+                                                                                                                                </tbody>
+                                                                                                                           </table>
+                                                                                                                       </div>
 
 
 
@@ -340,7 +340,7 @@
                                                                                                                     <select name="dietary" class="select2" multiple="multiple" data-placeholder="select staff role" data-dropdown-css-class="select2-purple" style="width: 100%;">
                                                                                                                           {% for dietary_info in dietary_lists %}
                                                                                                                                {% if dietary_info.quantity > 0 %}
-                                                                                                                                 <option value="{{dietary_info.id}}">{{dietary_info.dietary_name}} - GHS{{dietary_info.price}}</option>
+                                                                                                                                 <option value="{{dietary_info.id}}">{{dietary_info.dietary_name}} </option>
                                                                                                                               {% endif %}
                                                                                                                           {% endfor %}
                                                                                                                    </select><br/>
@@ -353,7 +353,7 @@
                                                                                                                      <thead>
                                                                                                                          <tr>
                                                                                                                              <th>Dietary Supplement</th>
-                                                                                                                             <th>Cost</th>
+                                                                                                                            
                                                                                                                          </tr>
                                                                                                                      </thead>
                                                                                                                      <tbody>

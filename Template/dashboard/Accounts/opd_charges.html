@@ -40,22 +40,23 @@
                                                                             <form  method="post" id="create_opd_charges">
                                                                                 {% csrf_token %}
                                                                                      <div class="row">
-                                                                                        <div class="col-md-6 col-12">
-                                                                                            <input type="tel" name="first_time_charge" class="form-control form-control-lg" placeholder="first time charge">
-                                                                                        </div>
-                                                                                        <div class="col-md-6 col-12">
-                                                                                        <input type="tel" name="second_time_charge" class="form-control form-control-lg" placeholder="second time charge">
-                                                                                                                </div>
-                                                                                                         </div>
+                                                                                            <div class="col-md-6 col-12">
+                                                                                                      <input type="text" name="first_time_charge" class="form-control form-control-lg" placeholder="first time charge">
+                                                                                            </div>
+                                                                                            <div class="col-md-6 col-12">
+                                                                                                   <input type="text" name="second_time_charge" class="form-control form-control-lg" placeholder="second time charge">
+                                                                                            </div>
+                                                                                     </div>
                                                                                                          
                                                                                         <input type="hidden" value="{{user_id}}" name="user_id">
                                                                                              <div class="row">
                                                                                                                 <div class="col-md-12 mt-2 mb-2">
                                                                                                                       <button class="btn btn-info" style="border:none;border-radius: 0px;">save</button>
                                                                                                                 </div>
-                                                                                                         </div>
-                                                                                                   </form>
+                                                                                                        <!-- </div>-->
+                                                                                                   
                                                                                              </div>
+                                                                                          </form>
                                                                                              <div class="col-md-12">
                                                                                                  <div class="table-responsive">
                                                                                                        <table class="table table-bordered">
@@ -101,8 +102,8 @@
                                                                                                                           <tr>
                                                                                                                                 <td>{{charges.first_time_old_charge}}</td>
                                                                                                                                 <td>{{charges.second_time_old_charge}}</td>
-                                                                                                                                <td>{{charges.updated_by.username}}</td>
-                                                                                                                                <td>{{charges.date_paid}}</td>
+                                                                                                                                <td>{{charges.updated_by.first_name|title}} {{charges.updated_by.last_name|title}}</td>
+                                                                                                                                <td>{{charges.date_edited}}</td>
                                                                                                                           </tr>
                                                                                                                   {% endfor %}
                                                                                                             </tbody>

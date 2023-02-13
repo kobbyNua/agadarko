@@ -174,7 +174,14 @@ $(document).ready(function(){
         submitForms(this,"/create-opd-charges")
 
     })
+    $('#setDiscounts').submit(function(e){
 
+
+      e.preventDefault()
+      $('#responseBox').modal('show')
+      submitForms(this,"/new-discounts")
+
+  })
 })
 
 /*$(document).ready(function(){
@@ -409,6 +416,57 @@ getInfo=(id,url)=>{
 
 }
 
+$(document).ready(function(){
+
+    
+      //alert(document.getElementById('apply_discount').value)
+      document.getElementById('apply_discount').onchange=function(){
+            $('#responseBox').modal('show')
+            if (this.checked){
+                  $("#lab_results_entery input[name=discount_applied_state").val("True")
+                  discount($("input[name=case_numbers_dis]").val(),'checked')
+
+                  //alert(this.value)
+            }else{
+                  $("#lab_results_entery input[name=discount_applied_state").val("False")
+                  discount($("input[name=case_numbers_dis]").val(),'unchecked')
+                  //alert('this is off '+this.value)
+                  //console.log('ok off '+this.value)
+            }
+      }
+
+
+})
+
+discount=(user,discounts)=>{
+       $.ajax({
+            url:'/set-patient-discount',
+            data:{case_number:user,discount:discounts},
+            type:'get',
+            dataType:'json',
+            beforeSend:function(){
+                  $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-info fa fa-spinner fa-spin" style="font-size:3.5em"></i></div><br/><h3>sending request to server</h3></div>')
+            },
+            success:function(data){
+                   //console.log(data)
+               if(data.status === "success"){
+                     $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-primary fa fa-spinner fa-spin" style="font-size:3.5em"></i></div><br/><h3>'+data.success+"</div>")
+                     window.location=""
+               }
+
+               else if(data.status === "error"){
+                   $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-danger fa fa-exclamation" style="font-size:3.5em"></i></div><br/><h3>'+data.error+"</div>")
+
+               }
+
+           },
+           error:function(){
+               $('#responseBox .modal-body .msg-box').html('<div class="beforesend" style="padding:30px 20px;text-algin:center"><div class="icon"><i class="text-info fa fa-exclamation-triangle fa spin" style="font-size:3.5em"></i></div><br/><h3>network timeout</div>')
+           }            
+       })
+}
+
+
 onselectChange=(selector_id,results,url)=>{
       options=$(selector_id).val()
 
@@ -426,12 +484,12 @@ onselectChange=(selector_id,results,url)=>{
                   for(var index=0;index<data.status.length;index++){
                         row+="<tr>"
                         row+="<td>"+data.status[index].items+"</td>"
-                        row+="<td>GHS "+data.status[index].amount+"</td>"
+                        //row+="<td>GHS "+data.status[index].amount+"</td>"
                         row+="</tr>"
-                        total+=data.status[index].amount
+                        //total+=data.status[index].amount
                         
                   }
-                  row+='<tr><td>Total </td><td>GHS '+total+'</td></tr>'
+                  //row+='<tr><td>Total </td><td>GHS '+total+'</td></tr>'
                   
                   //console.log(results)
                   $(results).html(row)

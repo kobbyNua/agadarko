@@ -1,4 +1,4 @@
-from .models import Patient_History,Patient,Patient_Diagosis_History,Patient_Laboratory,Patient_Dietary,OPD_Charges,OPD_Payment_Charges,OPD_Charges_Updates,Medical_History_Diagnosis_Payment
+from .models import Discount,Discount_History,Patient_History,Patient,Patient_Diagosis_History,Patient_Laboratory,Patient_Dietary,OPD_Charges,OPD_Payment_Charges,OPD_Charges_Updates,Medical_History_Diagnosis_Payment
 from django.db.models import Count ,F,Q,Sum,Value
 from django.db.models.functions import LPad 
 from django.contrib.auth.models import User,auth,Group
@@ -7,18 +7,19 @@ def get_opd_charges():
 	return OPD_Charges.objects.all()[0]
 def create_update_opd_charges(first_charge,second_charge,user_id):
 	check_charges=OPD_Charges.objects.all().count()
-	charges=OPD_Charges.objects.all()[0]
-	if check_charges == 1:
-		 #update data in OPD_Charges table and OPD_Charges_Updates
-		 new_charges=OPD_Charges.objects.get(pk=charges.id)
-		 new_charges.first_time_charge=first_charge
-		 new_charges.second_time_charge=second_charge
-		 new_charges.save()
-		 charges_update=updates_opd_charges(first_charge,second_charge,user_id)
-		 return charges_update
+	
+	if check_charges == 1 :
+		charges=OPD_Charges.objects.all()[0]
+		new_charges=OPD_Charges.objects.get(pk=charges.id)
+		new_charges.first_time_charge=first_charge
+		new_charges.second_time_charge=second_charge
+		new_charges.save()
+		charges_update=updates_opd_charges(first_charge,second_charge,user_id)
+		return charges_update
 	elif check_charges == 0:
 		#inserting data into OPD_Charges table and OPD_Charges_Updates
-		new_charges=OPD_Charges.objects.create(updated_by=User.objects.get(pk=user_id),first_time_charge=first_charge,second_time_charge=second_charge)
+		
+		new_charges=OPD_Charges.objects.create(first_time_charge=first_charge,second_time_charge=second_charge)
 		new_charges.save()
 		charges_update=updates_opd_charges(first_charge,second_charge,user_id)
 		return charges_update
@@ -132,10 +133,10 @@ def payment_trakings(patient_history_id):
 	return results
 
 
-def patient_dietary_lab_payment(patient_history_id,amount,user_id):
+def patient_dietary_lab_payment(patient_history_id,amount,dietary_ref_code,user_id):
 	get_patient_lab=Patient_Laboratory.objects.get(patient_history__case_number=patient_history_id)
 	get_patient_dietary=Patient_Dietary.objects.get(patient_history__case_number=patient_history_id)
-	payments=make_patient_payment_lab_dietary_patient(patient_history_id,get_patient_lab.total_cost,get_patient_dietary.total_cost,amount,user_id)
+	payments=make_patient_payment_lab_dietary_patient(patient_history_id,get_patient_lab.total_cost,get_patient_dietary.total_cost,amount,dietary_ref_code,user_id)
 	return payments
 
 
@@ -165,10 +166,11 @@ def patient_payment_history_records(patient_history_id):
 		details.append({'fullname':fullname,'dob':patient_bio['patient__Date_Of_Birth'],'phone':patient_bio['patient__Telephone'],'card':patient_bio['patient__card_number'],'case':patient_bio['case_number'],'regions':patient_bio['patient__region__region'],'town':patient_bio['patient__Town'],'lab_cost':get_patient_lab.total_cost,'dietary_cost':get_patient_dietary.total_cost})
 	return details
 
-def make_patient_payment_lab_dietary_patient(patient_history_id,lab_cost,dietary_cost,amount_paid,user_id):
+def make_patient_payment_lab_dietary_patient(patient_history_id,lab_cost,dietary_cost,amount_paid,dietary_ref_code,user_id):
+	#maount paid checker must be added
 	total_cost=float(lab_cost)+float(dietary_cost)
 	get_patient_history=Patient_History.objects.get(case_number=patient_history_id)
-	payments_made=Medical_History_Diagnosis_Payment.objects.create(patient_history=Patient_History.objects.get(pk=get_patient_history.id),lab_total_cost=lab_cost,supplement_total_cost=dietary_cost,total_cost=total_cost,amount_paid=amount_paid,receiver=User.objects.get(pk=user_id))
+	payments_made=Medical_History_Diagnosis_Payment.objects.create(patient_history=Patient_History.objects.get(pk=get_patient_history.id),lab_total_cost=lab_cost,supplement_total_cost=dietary_cost,dietary_reference_code=dietary_ref_code,total_cost=total_cost,amount_paid=amount_paid,receiver=User.objects.get(pk=user_id))
 	payments_made.save()
 	get_patient_payments_history=Medical_History_Diagnosis_Payment.objects.latest('id')
 	payments=patient_payment_recepits(get_patient_payments_history.id)
@@ -214,3 +216,31 @@ def  patient_payment_search(searchs,hospital_id):
 def search_reeults(patient_id):
 	return Medical_History_Diagnosis_Payment.objects.values('patient_history__patient__First_Name','patient_history__patient__Last_Name','patient_history__patient__Date_Of_Birth','patient_history__patient__Telephone','patient_history__patient__card_number','patient_history__patient__id','patient_history__case_number').filter(patient_history__patient__id=patient_id).annotate(total_visit=Count('patient_history__patient__id')).order_by()
 
+def discounts():
+	return Discount.objects.all()
+def get_all_rate():
+	return Discount_History.objects.all().order_by('-id')
+
+
+def set_discounts(rate,user_id):
+	discounts=Discount.objects.all().count()
+
+	if discounts == 1:
+		current_discount=Discount.objects.all()[0]
+		set_new_discount_rate=Discount.objects.get(pk=current_discount.id)
+		set_new_discount_rate.rate=rate
+		set_new_discount_rate.save()
+		discount_history=create_new_discount(rate,user_id)
+		return discount_history
+
+	elif discounts == 0 :
+		#current_discount=Discount.objects.all()[0]
+		create_discount=Discount.objects.create(rate=rate)
+		create_discount.save()
+		discount_history=create_new_discount(rate,user_id)
+		return discount_history
+
+def create_new_discount(rate,user_id):
+	set_new_discount=Discount_History.objects.create(rate=rate,updated_by=User.objects.get(pk=user_id))
+	set_new_discount.save()
+	return True

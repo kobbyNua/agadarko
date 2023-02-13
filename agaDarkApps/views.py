@@ -3,10 +3,10 @@ from django.http import HttpResponse,JsonResponse,FileResponse
 from django.contrib.auth.models import User,auth,Group
 from .models import Hospital_Staff,Patient_Diagosis_History,Patient_History
 from .patients import patient_search,patient_count_history,check_in_session,patient_waiting_state,checK_patient_history,view_patient_details_info,view_patient_diagnosis_history_details,patient_diagnosis_details,patient_history_details,patient_medical_diagnosis_records,Check_in_patient_search,patient_check_in_list,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
-from .laboratory import view_lab_test_list,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
+from .laboratory import view_lab_test_list,discount_update_status,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
-from .account import patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
+from .account import discounts,get_all_rate,set_discounts,patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 from django.contrib.auth.decorators import login_required
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
@@ -482,9 +482,9 @@ def view_patient_required_lab_test(request,patient_history_id):
     patient_record_details=view_patient_laboratory_history_details(check_details.patient.card_number)
     patient_lab_record=patient_laboratory_records_history(check_details.patient.id)
     details=[]
-    for patients in patient_record_details:
-    	fullname=patients['patient_history__patient__First_Name']+" "+patients['patient_history__patient__Last_Name']
-    	details.append({'fullname':fullname,'dob':patients['patient_history__patient__Date_Of_Birth'],'phone':patients['patient_history__patient__Telephone'],'region':patients['patient_history__patient__region__region'],'City':patients['patient_history__patient__Town'],'visit':patients['total_visit']})
+    for patients in patient_record_details :
+	    fullname=patients['patient_history__patient__First_Name']+" "+patients['patient_history__patient__Last_Name']
+	    details.append({'fullname':fullname,'dob':patients['patient_history__patient__Date_Of_Birth'],'phone':patients['patient_history__patient__Telephone'],'region':patients['patient_history__patient__region__region'],'City':patients['patient_history__patient__Town'],'visit':patients['total_visit']})
 
     patient_lab_report_result(get_patient_history.id)
     patient_lab_history=view_patint_lab_history(get_patient_history.id)
@@ -716,7 +716,8 @@ def payments_checked_out(request):
 	patient_history_id=request.POST['patient_history_id']
 	user_id=request.POST['user_id']
 	amount=request.POST['amount']
-	payments=patient_dietary_lab_payment(patient_history_id,amount,user_id)
+	dietary_ref_code=request.POST['ref_code']
+	payments=patient_dietary_lab_payment(patient_history_id,amount,dietary_ref_code,user_id)
 	msg=""
 	status=""
 	if payments == True:
@@ -889,6 +890,40 @@ def multiple_lab_test_list(request):
 	
 	return JsonResponse({'status':diet})
 
+@login_required(login_url="/")
+def view_discount(request):
+	 return render(request,'dashboard/accounts/discounts-rate.html',{'title':'Discount Rates','all_discounts':discounts,'all_rates':get_all_rate(),'page_title':'Discount rates','path':'discount'})
+
+@login_required(login_url="/")
+def new_discounts(request):
+	rate=request.POST['rate']
+	user=request.POST['user_id']
+	set_discount=set_discounts(rate,user)
+	msg=""
+	status=""
+	if set_discount == True :
+		status+="success"
+		msg+='discount rate create successfully'
+	else:
+		status+="error"
+		msg+="couldn't add discount rate"	
+	return JsonResponse({'status':status,status:msg})
+
+def set_patient_discount(request):
+	case_no=request.GET.get('case_number')
+	discount_state=request.GET.get('discount')
+	
+	set_discount=discount_update_status(discount_state,case_no)
+	msg=""
+	status=""
+	if set_discount == True :
+		status+="success"
+		msg+='patient discount update successfull'
+	else:
+		status+="error"
+		msg+="patient discount not successfull"	
+	return JsonResponse({'status':status,status:msg})		
+	
 @login_required(login_url="/")
 def error_404(request,exception):
 	return render(request,'dashboard/error/error.html',{'title':'404 error','page_title':'404 error','path':'error'})
