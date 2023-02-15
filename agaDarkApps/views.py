@@ -40,6 +40,7 @@ def authuser(request):
     return JsonResponse({'status':status_type,status_type:message})
 @login_required(login_url="/")
 def dashboard(request):
+	print(Group.objects.all())
 	return render(request,'dashboard/dashboard.html',{'title':'dashboard','page_title':'Dashboard','path':'home'})
 
 @login_required(login_url="/")
@@ -90,6 +91,7 @@ def create_patient(request):
 @login_required(login_url="/")
 def view_patient_detail(request,patient_card_id):
 	#check not done
+	print('hit ',patient_card_id)
 	patients_details=view_patient_details(patient_card_id)
 	waiting_state=patient_waiting_state(patient_card_id)
 	waiting_patient_id=""
@@ -134,7 +136,7 @@ def view_patient_detail(request,patient_card_id):
 
 	patient_opd_history=paitient_opd_visiting_history(patient_card_id)
 
-	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'patient_number_of_visits':patient_number_of_visits,'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_card_number':patients_card_number,'patients_id':patients_id,'check_in_status':check_in_status,'view_patient_details':details,'pateint_opd_history':patient_opd_history,'page_title':'patient opd history','path':'opd'}) 
+	return render(request,'dashboard/patients/view-paitent-details.html',{'title':'Views Patient Details','hospital_id':user_info['hospital_id'],'opd_charges':opd_charges,'patient_number_of_visits':patient_number_of_visits,'user_id':user_info['user_id'],'patient_waiting_id':waiting_patient_id,'patients_card_number':patients_card_number,'patients_id':patients_id,'check_in_status':check_in_status,'patient_card_number':patient_card_id,'view_patient_details':details,'pateint_opd_history':patient_opd_history,'page_title':'patient opd history','path':'opd'}) 
 @login_required(login_url="/")
 def checkin_patient(request):
 	patient_id=request.POST['patient_id']
@@ -151,7 +153,19 @@ def checkin_patient(request):
 	else:
 		status_type="error"
 		msg="couldn't patient start session"
-	return JsonResponse({'status':status_type,status_type:msg})			
+	return JsonResponse({'status':status_type,status_type:msg})
+def patient_history_checked_in(request):
+    patient_card_id=request.POST['check_patient_card_no']
+    user_id=request.POST['user_id']
+    patient_history_id=0
+    new_sessions=checK_patient_history(patient_card_id,user_id,patient_history_id)
+    if new_sessions == True:
+    	status_type="success"
+    	msg="proceed to check in patients"
+    else:
+    	status_type="error"
+    	msg="can't check in patient"
+    return JsonResponse({'status':status_type,status_type:msg})
 def view_patient_visitng_history(patient_id):
 	pass
 @login_required(login_url="/")

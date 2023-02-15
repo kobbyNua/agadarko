@@ -181,7 +181,12 @@ $(document).ready(function(){
       $('#responseBox').modal('show')
       submitForms(this,"/new-discounts")
 
-  })
+     })
+    $("#new_checks").submit(function(e){
+        e.preventDefault()
+        $('#responseBox').modal('show')
+        submitForms(this,'/patient-history-checked-in')
+    })
 })
 
 /*$(document).ready(function(){
