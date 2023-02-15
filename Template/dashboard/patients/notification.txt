@@ -1,0 +1,6 @@
+1. when customer checin to see a doctor and doctor see toast
+2. when doctor request for laboratory
+
+3.when lab request is ready
+4.when doctor prescribes dietaary supplement
+5.when dispensry dispense and send cost to account for payment

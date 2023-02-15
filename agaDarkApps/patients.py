@@ -110,7 +110,10 @@ def checK_patient_history(patient_card_id,user_id,patient_history_id):
 			patient=patient_history(get_patient.id,user_details['hospital_id'],user_details['user_id'])
 			return patient
 	else:
-		pass
+			get_patient=Patient.objects.get(card_number=patient_card_id)
+			user_details=get_user_hospital_details(user_id)
+			patient=patient_history(get_patient.id,user_details['hospital_id'],user_details['user_id'])
+			return patient
 
 def  patient_history(patient_id,hospital_id,user_id):
 

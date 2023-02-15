@@ -16,6 +16,7 @@ urlpatterns=[
    path('patient-medical-history-search',views.patient_medical_history_search,name='patient_medical_history_search'),
    path('patient-profile/<str:patient_history_id>',views.patient_profile,name="patient_profile"),
    path('create-patient-opd-vitals',views.create_patient_opd_vitals,name="create_patient_opd_vitals"),
+   path('patient-history-checked-in',views.patient_history_checked_in,name="patient_history_checked_in"),
    path('check-in-patient',views.checkin_patient,name="checkin_patient"),
    path('create-patient-complaints-diagonsis',views.create_patient_complaints_diagonsis,name="create_patient_complaints_diagonsis"),
    path('edit-doctor-diagonsis',views.edit_doctor_diagonsis,name="edit_doctor_diagonsis"),
