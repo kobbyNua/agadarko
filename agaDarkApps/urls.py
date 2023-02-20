@@ -67,6 +67,12 @@ urlpatterns=[
    path('dietary-stocking-view/<str:dietary_id>',views.dietary_stocking_view,name='dietary_stocking_view'),
    path('update-dietary-inventary-stock',views.update_dietary_inventary_stock,name="update_dietary_inventary_stock"),
    path('update-dietary-supplement-details',views.update_dietary_supplement_details,name="update_dietary_supplement_details"),
+
+   path('report-dashboard',views.reports_dashboard,name="reports_dashboard"),
+   path('generate-opd-reports',views.generate_opd_reports,name="generate_opd_reports"),
+   path('generate-patients-bill-reports',views.generate_patients_bill_reports,name="generate_patients_bill_reports"),
+
+   path('notification',views.notification,name="notification"),
    path('company/',views.company,name="company"),
    path('set-hospital-details',views.set_hospital_details,name="set_hospital_details"),
    path('create-staff-details',views.create_staff_details,name='create_staff_details'),

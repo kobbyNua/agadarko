@@ -187,6 +187,19 @@ $(document).ready(function(){
         $('#responseBox').modal('show')
         submitForms(this,'/patient-history-checked-in')
     })
+
+    $('#generate_opd_reports').submit(function(e){
+
+        e.preventDefault()
+        //alert($('#generate_opd_reports #reservation').val())
+        finance_reports_generation(this,$('#odp_charges_results'),'/generate-opd-reports')
+    })
+    $('#patients_biils_reports').submit(function(e){
+
+      e.preventDefault()
+      //alert($('#generate_opd_reports #reservation').val())
+      finance_reports_generation(this,$('#patient_bills_payment'),'/generate-patients-bill-reports')
+  })
 })
 
 /*$(document).ready(function(){
@@ -505,7 +518,55 @@ onselectChange=(selector_id,results,url)=>{
       })    
 
 }
+///generate-opd-reports
+finance_reports_generation=(form_id,selectors,urls)=>{
+    
+      $.ajax({
 
+            url:urls,
+            data:$(form_id).serialize(),
+            type:'post',
+            dataType:'json',
+            beforeSend:function(){
+                 rows=""
+                 rows+='<tr id="first_child"><td colspan="4" align="center"><i class="fas fa-spinner fa-spin"></i> wait. result search may take few seconds</td></tr>'
+                 selectors.html(rows)
+                
+                 
+            },
+            success:function(data){
+                  console.log(data)
+                  row=""
+                  amount=""
+                  if(data.amount_generated == null){
+                         amount+=0.00
+                  }else{
+                        amount+=data.amount_generated 
+                  }
+                  row+="<tr><td>"+data.start_date+"</td><td>"+data.end_date+"</td><td>"+data.total_patients+"</td><td>"+amount+"</td></tr>"   
+                  
+                  selectors.html(row)    
+                          
+            }
 
-  
+      })
+}
+$(function(){
+      setInterval(notifications,10000)
+})
+notifications=()=>{
+      $.ajax({
+            url:'/notification',
+            type:'get',
+            dataType:'json',
+            success:function(data){
+                  var total=0
+                 
+                  for (result in data.hello){
+                        console.log(result)
+                  }
+               /*console.log(total)*/
+            }
 
+      })
+}

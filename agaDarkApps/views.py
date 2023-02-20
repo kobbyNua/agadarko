@@ -8,6 +8,8 @@ from .dietary import view_patient_deietary_details,get_patient_history_dietPatie
 from .controlview import create_hospital_details,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
 from .account import discounts,get_all_rate,set_discounts,patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 from django.contrib.auth.decorators import login_required
+from datetime import *
+from .notifications import notification_box
 #from .controlview import hospital,view_all_staffs,staff_detail,create_groups,edit_groups,getHospital_details,patient_details,patient,opd_vitals,create_opd_vitals,edit_opd_vitals,patient_opd_history_vitals
 #from .decorators import unauthenicated_user,hospital_ddetails_set_up
 '''
@@ -15,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import BooksSerializers,RegionSerializers
 '''
+from .reports import daily_payment_charges,daily_opd_charge_payment,opdChargesReports,generate_medical_diagnosis_paymem_record
 import json
 from .models import Books,Region
 
@@ -155,17 +158,17 @@ def checkin_patient(request):
 		msg="couldn't patient start session"
 	return JsonResponse({'status':status_type,status_type:msg})
 def patient_history_checked_in(request):
-    patient_card_id=request.POST['check_patient_card_no']
-    user_id=request.POST['user_id']
-    patient_history_id=0
-    new_sessions=checK_patient_history(patient_card_id,user_id,patient_history_id)
-    if new_sessions == True:
-    	status_type="success"
-    	msg="proceed to check in patients"
-    else:
-    	status_type="error"
-    	msg="can't check in patient"
-    return JsonResponse({'status':status_type,status_type:msg})
+	patient_card_id=request.POST['check_patient_card_no']
+	user_id=request.POST['user_id']
+	patient_history_id=0
+	new_sessions=checK_patient_history(patient_card_id,user_id,patient_history_id)
+	if new_sessions == True:
+		status_type="success"
+		msg="proceed to check in patients"
+	else:
+		status_type="error"
+		msg="can't check in patient"
+	return JsonResponse({'status':status_type,status_type:msg})
 def view_patient_visitng_history(patient_id):
 	pass
 @login_required(login_url="/")
@@ -490,22 +493,20 @@ def search_patient_lab_records(request):
 	return JsonResponse({'result':data_list})
 @login_required(login_url="/")
 def view_patient_required_lab_test(request,patient_history_id):
-    
-    get_patient_history=Patient_History.objects.get(case_number=patient_history_id)
-    check_details=patient_history_details(get_patient_history.id)
-    patient_record_details=view_patient_laboratory_history_details(check_details.patient.card_number)
-    patient_lab_record=patient_laboratory_records_history(check_details.patient.id)
-    details=[]
-    for patients in patient_record_details :
-	    fullname=patients['patient_history__patient__First_Name']+" "+patients['patient_history__patient__Last_Name']
-	    details.append({'fullname':fullname,'dob':patients['patient_history__patient__Date_Of_Birth'],'phone':patients['patient_history__patient__Telephone'],'region':patients['patient_history__patient__region__region'],'City':patients['patient_history__patient__Town'],'visit':patients['total_visit']})
-
-    patient_lab_report_result(get_patient_history.id)
-    patient_lab_history=view_patint_lab_history(get_patient_history.id)
-    patient_lab_request_details=view_patient_lab_details(get_patient_history.id)
-    get_patient_lab=get_patient_history_lab(get_patient_history.id)
-    user_info=get_user_hospital_details(request.user.id)
-    return render(request,'dashboard/laboratory/patient-lab-details.html',{'title':'patient lab history','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_lab_history':patient_lab_history,'lab_request':patient_lab_request_details,'patient_history_id':get_patient_history.id,'patient_lab_history_record':patient_lab_record,'patient_bio':details,'get_patient_lab':get_patient_lab,'page_title':'patient labe test','path':'laboratory'})
+	get_patient_history=Patient_History.objects.get(case_number=patient_history_id)
+	check_details=patient_history_details(get_patient_history.id)
+	patient_record_details=view_patient_laboratory_history_details(check_details.patient.card_number)
+	patient_lab_record=patient_laboratory_records_history(check_details.patient.id)
+	details=[]
+	for patients in patient_record_details :
+		fullname=patients['patient_history__patient__First_Name']+" "+patients['patient_history__patient__Last_Name']
+		details.append({'fullname':fullname,'dob':patients['patient_history__patient__Date_Of_Birth'],'phone':patients['patient_history__patient__Telephone'],'region':patients['patient_history__patient__region__region'],'City':patients['patient_history__patient__Town'],'visit':patients['total_visit']})
+	patient_lab_report_result(get_patient_history.id)
+	patient_lab_history=view_patint_lab_history(get_patient_history.id)
+	patient_lab_request_details=view_patient_lab_details(get_patient_history.id)
+	get_patient_lab=get_patient_history_lab(get_patient_history.id)
+	user_info=get_user_hospital_details(request.user.id)
+	return render(request,'dashboard/laboratory/patient-lab-details.html',{'title':'patient lab history','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'patient_lab_history':patient_lab_history,'lab_request':patient_lab_request_details,'patient_history_id':get_patient_history.id,'patient_lab_history_record':patient_lab_record,'patient_bio':details,'get_patient_lab':get_patient_lab,'page_title':'patient labe test','path':'laboratory'})
    #view vital test to be taken
    #view patient test history
    #enter test results and relaese test results
@@ -760,7 +761,81 @@ def create_opd_charges(request):
 	return JsonResponse({'status':status,status:msg})
 @login_required(login_url="/")
 def reports(request):
-	return render(request,'dashboard/Accounts/report.html',{'title':'Reports','page_title':'Report Statememt','path':'account'})
+	daily_medical_payment=daily_payment_charges()
+	daily_opd_payments=daily_opd_charge_payment()
+	return render(request,'dashboard/Accounts/report.html',{'title':'Reports','page_title':'Report Statememt','path':'account','daily_patients_bills':daily_medical_payment,'daily_opd_payments':daily_opd_payments})
+def generate_opd_reports(request):
+    reports_dates=request.POST['opds_report'] 
+    datese=reports_dates.split('-') 
+    convert_start_date=datese[0].split('/') 
+    convert_second_date=datese[1].split('/') 
+    start_date=datetime(int(convert_start_date[2]),int(convert_start_date[0]),int(convert_start_date[1])).strftime('%Y-%m-%d')
+    end_date=datetime(int(convert_second_date[2]),int(convert_second_date[0]),int(convert_second_date[1])).strftime('%Y-%m-%d')
+    print(start_date,end_date)
+    opd_report=opdChargesReports(start_date,end_date)
+    print(opd_report)
+
+   #opd_report=opdChargesReports(datetime.strptime(datese[0],"%m/%d/%Y").strftime('%Y-%m-%d'),datetime.strptime(datese[1].replace('/','-'),'%m-%d-%Y').strftime('%Y-%m-%d'))
+   
+    return JsonResponse({'start_date':start_date,'end_date':end_date,'amount_generated':opd_report['total_amout_paid'],'total_patients':opd_report['total_patients']})     
+
+def generate_patients_bill_reports(request):
+    reports_dates=request.POST['pays_report'] 
+    datese=reports_dates.split('-') 
+    convert_start_date=datese[0].split('/') 
+    convert_second_date=datese[1].split('/') 
+    start_date=datetime(int(convert_start_date[2]),int(convert_start_date[0]),int(convert_start_date[1])).strftime('%Y-%m-%d')
+    end_date=datetime(int(convert_second_date[2]),int(convert_second_date[0]),int(convert_second_date[1])).strftime('%Y-%m-%d')
+
+    opd_report=generate_medical_diagnosis_paymem_record(start_date,end_date)
+
+
+   #opd_report=opdChargesReports(datetime.strptime(datese[0],"%m/%d/%Y").strftime('%Y-%m-%d'),datetime.strptime(datese[1].replace('/','-'),'%m-%d-%Y').strftime('%Y-%m-%d'))
+   
+    return JsonResponse({'start_date':start_date,'end_date':end_date,'amount_generated':opd_report['total_amout_paid'],'total_patients':opd_report['total_patients']})     
+
+'''
+   notification
+'''
+def notification(request):
+	user_groups=request.user.groups.filter(user=request.user.id)
+	notifys_bell=notification_box()
+
+	messge=""
+	notification_messages={}
+	for group in user_groups:
+		print(group.name)
+		
+		if group.name == "Administrator":
+			for messages in range(len(notifys_bell)):
+				print('hello ',notifys_bell[messages])
+				#{"{} {}".format(,))
+				notification_messages.update({"checked_in_patients":"{} {}".format(notifys_bell[messages]['checked_in_patients']['counts'],notifys_bell[messages]['checked_in_patients']['message']),'counts':notifys_bell[messages]['checked_in_patients']['counts']})
+				notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message']),'counts':notifys_bell[messages]['billing_checkout']['counts']})
+				notification_messages.update({"lab_request":"{} {}".format(notifys_bell[messages]['lab_request']['counts'],notifys_bell[messages]['lab_request']['message']),'counts':notifys_bell[messages]['lab_request']['counts']})
+				notification_messages.update({"lab_test_released":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
+				notification_messages.update({"dietary_supplement":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+				#notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message'])})
+				
+		elif group.name == "Accountant":
+			for messages in range(len(notifys_bell)):
+				notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message']),'counts':notifys_bell[messages]['billing_checkout']['counts']})
+		elif group.name == "Doctor":
+			for messages in range(len(notifys_bell)):
+				notification_messages.update({"checked_in_patients":"{} {}".format(notifys_bell[messages]['checked_in_patients']['counts'],notifys_bell[messages]['checked_in_patients']['message']),'counts':notifys_bell[messages]['checked_in_patients']['counts']})
+				notification_messages.update({"dietary_supplement":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+				notification_messages.update({"lab_test_released":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
+		elif group.name == "Nurse":
+			pass
+		elif group.name == "Lab Technician":
+			for messages in range(len(notifys_bell)):
+				notification_messages.update({"lab_test_released":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
+		elif group.name == "Dietary":
+		    for messages in range(len(notifys_bell)):
+			    notification_messages.update({"dietary_supplement":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+		else:
+			pass
+	return JsonResponse(notification_messages)
 
 
 '''
@@ -937,7 +1012,13 @@ def set_patient_discount(request):
 		status+="error"
 		msg+="patient discount not successfull"	
 	return JsonResponse({'status':status,status:msg})		
-	
+
+'''
+   reports
+'''
+def reports_dashboard(request):
+	return render(request,'dashboard/reports/finance/finance-dashboard.html',{'title':'Finance Report Dashboard'.title()})
+
 @login_required(login_url="/")
 def error_404(request,exception):
 	return render(request,'dashboard/error/error.html',{'title':'404 error','page_title':'404 error','path':'error'})
