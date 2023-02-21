@@ -85,12 +85,21 @@
                                                                 	
 
                                                                                <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
-                                                                               	
+                                                                                
                                                                                       {% if patient_payment_tracking_history == False %}
 
                                                                                             <form method="post" id="patients_payment">
                                                                                             	{% csrf_token %}
                                                                                                   <div class="row">
+                                                                                                           <div class="col-md-12">
+                                                                                                                  <div class="input-group mb-3">
+                                                                                                                    
+                                                                                                                           <div class="input-group-prepend">
+                                                                                                                                 <span class="input-group-text"><i class="fas fa-money-bill"></i></span>
+                                                                                                                           </div>
+                                                                                                                           <input type="text" name="total_amount" value="{{patient_total_bills}}" class="form-control form-control-lg" placeholder="enter amount" disabled>
+                                                                                                                  </div>
+                                                                                                           </div>
                                                                                                            <div class="col-md-12">
 
                                                                                                                  <div class="input-group mb-3">
@@ -202,7 +211,7 @@
                                                                                              <tbody>
                                                                                                  {% for payments in payment_history %}
                                                                                                  <tr>
-                                                                                                         <td>{{payments.date_paid}}}</td>
+                                                                                                         <td>{{payments.date_paid}}</td>
                                                                                                          <td>{{payments.patient_history.case_number}}</td>
                                                                                                          <td>{{payments.recepit}}</td>
                                                                                                          <td>{{payments.total_cost}}</td>

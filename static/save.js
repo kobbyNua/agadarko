@@ -199,7 +199,8 @@ $(document).ready(function(){
       e.preventDefault()
       //alert($('#generate_opd_reports #reservation').val())
       finance_reports_generation(this,$('#patient_bills_payment'),'/generate-patients-bill-reports')
-  })
+   })
+   $(".navbar-badge.notify").hide()
 })
 
 /*$(document).ready(function(){
@@ -561,11 +562,38 @@ notifications=()=>{
             dataType:'json',
             success:function(data){
                   var total=0
-                 
-                  for (result in data.hello){
-                        console.log(result)
+                  console.log(data)
+                  
+                  messages=""
+                  message=""
+                  for (result in data.notification_messages){
+                        
+                        if(data.notification_messages[result].counts>0){
+                              total+=data.notification_messages[result].counts
+                              message+=data.notification_messages[result].messages
+                              messages+="<div class='dropdown-divider'></div><a href='#' class='dropdown-item'>"+data.notification_messages[result].messages+"</a>"
+                              $(document).Toasts('create',{
+                                    class:'bg-success',
+                                    title:'Notifications',
+                                    position:'bottomRight',
+                                    body:messages
+                              })
+                        }
+                   
                   }
-               /*console.log(total)*/
+
+
+                  if( total > 0){
+                        $('.navbar-badge.notify').html(total).show()
+                  }
+                  else{
+                        $('.navbar-badge.notify').hide()
+                  }
+                  $("#notifications .dropdown-header.notify").html(total+" Notifications")
+                  $("#notifications .notfication-messages").html(messages)
+                  
+
+               console.log(messages)
             }
 
       })

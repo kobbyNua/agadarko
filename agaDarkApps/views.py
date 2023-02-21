@@ -6,7 +6,7 @@ from .patients import patient_search,patient_count_history,check_in_session,pati
 from .laboratory import view_lab_test_list,discount_update_status,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
 from .controlview import create_hospital_details,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
-from .account import discounts,get_all_rate,set_discounts,patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
+from .account import discounts,patient_total_bills_payment,get_all_rate,set_discounts,patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 from django.contrib.auth.decorators import login_required
 from datetime import *
 from .notifications import notification_box
@@ -699,10 +699,11 @@ def patient_payment_records_details(request,patient_history_id):
 	patient_payment_tracking_history=payment_trakings(patient_history_id)
 	payment_opd_charges_history=patient_opd_payment_charges_history(patient_history_id)
 	payment_history=patient_payment_history_details(patient_history_id)
+	patient_total_bill=patient_total_bills_payment(patient_history_id)
 	user_info=get_user_hospital_details(request.user.id)
 
 
-	return render(request,'dashboard/Accounts/patient-payment-details.html',{'title':'Patient payment Records','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'payment_history':payment_history,'patient_details':patient_payment_history,'patient_payment_tracking_history':patient_payment_tracking_history,'patient_history_id':patient_history_id,'payment_opd_charges_history':payment_opd_charges_history,'page_title':'Patient payment','path':'Accounts'})
+	return render(request,'dashboard/Accounts/patient-payment-details.html',{'title':'Patient payment Records','hospital_id':user_info['hospital_id'],'user_id':user_info['user_id'],'payment_history':payment_history,'patient_details':patient_payment_history,'patient_total_bills':patient_total_bill,'patient_payment_tracking_history':patient_payment_tracking_history,'patient_history_id':patient_history_id,'payment_opd_charges_history':payment_opd_charges_history,'page_title':'Patient payment','path':'Accounts'})
 
 @login_required(login_url="/")
 def search_patient_payment_records(request):
@@ -740,7 +741,7 @@ def payments_checked_out(request):
 		msg+='patient checked out succefully'
 	else:
 		status+="error"
-		msg+="patient couldn't checked out"
+		msg+="patient couldn't checked out! check total bill"
 	return JsonResponse({'status':status,status:msg})
 
 @login_required(login_url="/")
@@ -802,40 +803,41 @@ def notification(request):
 	notifys_bell=notification_box()
 
 	messge=""
-	notification_messages={}
+	notification_messages=[]
 	for group in user_groups:
 		print(group.name)
 		
-		if group.name == "Administrator":
+		if group.name == "Administrator" or request.user.is_superuser == True:
 			for messages in range(len(notifys_bell)):
-				print('hello ',notifys_bell[messages])
-				#{"{} {}".format(,))
-				notification_messages.update({"checked_in_patients":"{} {}".format(notifys_bell[messages]['checked_in_patients']['counts'],notifys_bell[messages]['checked_in_patients']['message']),'counts':notifys_bell[messages]['checked_in_patients']['counts']})
-				notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message']),'counts':notifys_bell[messages]['billing_checkout']['counts']})
-				notification_messages.update({"lab_request":"{} {}".format(notifys_bell[messages]['lab_request']['counts'],notifys_bell[messages]['lab_request']['message']),'counts':notifys_bell[messages]['lab_request']['counts']})
-				notification_messages.update({"lab_test_released":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
-				notification_messages.update({"dietary_supplement":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
-				#notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message'])})
 				
-		elif group.name == "Accountant":
-			for messages in range(len(notifys_bell)):
-				notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message']),'counts':notifys_bell[messages]['billing_checkout']['counts']})
-		elif group.name == "Doctor":
-			for messages in range(len(notifys_bell)):
-				notification_messages.update({"checked_in_patients":"{} {}".format(notifys_bell[messages]['checked_in_patients']['counts'],notifys_bell[messages]['checked_in_patients']['message']),'counts':notifys_bell[messages]['checked_in_patients']['counts']})
-				notification_messages.update({"dietary_supplement":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
-				notification_messages.update({"lab_test_released":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
-		elif group.name == "Nurse":
-			pass
-		elif group.name == "Lab Technician":
-			for messages in range(len(notifys_bell)):
-				notification_messages.update({"lab_test_released":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
-		elif group.name == "Dietary":
-		    for messages in range(len(notifys_bell)):
-			    notification_messages.update({"dietary_supplement":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+				#{"{} {}".format(,))
+				pass
+				'''
+				notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['checked_in_patients']['counts'],notifys_bell[messages]['checked_in_patients']['message']),'counts':notifys_bell[messages]['checked_in_patients']['counts']})
+				notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message']),'counts':notifys_bell[messages]['billing_checkout']['counts']})
+				notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['lab_request']['counts'],notifys_bell[messages]['lab_request']['message']),'counts':notifys_bell[messages]['lab_request']['counts']})
+				notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
+				notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+				#notification_messages.update({"billing_checkout":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message'])})
+				'''
 		else:
-			pass
-	return JsonResponse(notification_messages)
+			if group.name == "Accountant":
+				for messages in range(len(notifys_bell)):
+					notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['billing_checkout']['counts'],notifys_bell[messages]['billing_checkout']['message']),'counts':notifys_bell[messages]['billing_checkout']['counts']})
+			elif group.name == "Doctor":
+			    for messages in range(len(notifys_bell)):
+				    notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['checked_in_patients']['counts'],notifys_bell[messages]['checked_in_patients']['message']),'counts':notifys_bell[messages]['checked_in_patients']['counts']})
+				    notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+				    notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
+			elif group.name == "Lab Technician":
+				for messages in range(len(notifys_bell)):
+					notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['lab_request_released']['counts'],notifys_bell[messages]['lab_request_released']['message']),'counts':notifys_bell[messages]['lab_request_released']['counts']})
+			elif group.name == "Dietary":
+				for messages in range(len(notifys_bell)):
+					notification_messages.append({"messages":"{} {}".format(notifys_bell[messages]['dietary_supplement']['counts'],notifys_bell[messages]['dietary_supplement']['message']),'counts':notifys_bell[messages]['dietary_supplement']['counts']})
+			else:
+				notification_messages.append({"message-status":"{}".format("no messages")})
+	return JsonResponse({"notification_messages":notification_messages})
 
 
 '''

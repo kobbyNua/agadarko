@@ -136,8 +136,12 @@ def payment_trakings(patient_history_id):
 def patient_dietary_lab_payment(patient_history_id,amount,dietary_ref_code,user_id):
 	get_patient_lab=Patient_Laboratory.objects.get(patient_history__case_number=patient_history_id)
 	get_patient_dietary=Patient_Dietary.objects.get(patient_history__case_number=patient_history_id)
-	payments=make_patient_payment_lab_dietary_patient(patient_history_id,get_patient_lab.total_cost,get_patient_dietary.total_cost,amount,dietary_ref_code,user_id)
-	return payments
+	total_cost=float(get_patient_lab.total_cost)+float(get_patient_dietary.total_cost)
+	if total_cost == float(amount):
+		payments=make_patient_payment_lab_dietary_patient(patient_history_id,get_patient_lab.total_cost,get_patient_dietary.total_cost,amount,dietary_ref_code,user_id)
+		return payments
+	else:
+		return False
 
 
 def payment_trakings_history(patient_history_id):
@@ -152,7 +156,11 @@ def payment_trakings_history(patient_history_id):
 		for payment_history in payments_history:
 				details.append({'payment_history_recepit':payment_history.recepit,'payment_history_amount_paid':payment_history.amount_paid,'payment_history_receiver':payment_history.receiver,'payment_history_date_paid':payment_history.date_paid})
 		return details
-
+def patient_total_bills_payment(patient_history_id):
+	patient_lab_cost=Patient_Laboratory.objects.get(patient_history__case_number=patient_history_id)
+	patient_dietary_cost=Patient_Dietary.objects.get(patient_history__case_number=patient_history_id)
+	total_cost=float(patient_lab_cost.total_cost)+float(patient_dietary_cost.total_cost)
+	return total_cost
 def patient_payment_history_records(patient_history_id):
 	details=[]
 	patient_history_records=Patient_History.objects.get(case_number=patient_history_id)
@@ -163,7 +171,8 @@ def patient_payment_history_records(patient_history_id):
 		get_patient_lab=Patient_Laboratory.objects.get(patient_history__id=patient_bio['id'])
 		get_patient_dietary=Patient_Dietary.objects.get(patient_history__id=patient_bio['id'])
 		fullname=patient_bio['patient__First_Name']+' '+patient_bio['patient__Last_Name']
-		details.append({'fullname':fullname,'dob':patient_bio['patient__Date_Of_Birth'],'phone':patient_bio['patient__Telephone'],'card':patient_bio['patient__card_number'],'case':patient_bio['case_number'],'regions':patient_bio['patient__region__region'],'town':patient_bio['patient__Town'],'lab_cost':get_patient_lab.total_cost,'dietary_cost':get_patient_dietary.total_cost})
+		total_cost=float(get_patient_dietary.total_cost)+float(get_patient_lab.total_cost)
+		details.append({'fullname':fullname,'dob':patient_bio['patient__Date_Of_Birth'],'phone':patient_bio['patient__Telephone'],'card':patient_bio['patient__card_number'],'case':patient_bio['case_number'],'regions':patient_bio['patient__region__region'],'town':patient_bio['patient__Town'],'lab_cost':get_patient_lab.total_cost,'dietary_cost':get_patient_dietary.total_cost,'total_cost':total_cost})
 	return details
 
 def make_patient_payment_lab_dietary_patient(patient_history_id,lab_cost,dietary_cost,amount_paid,dietary_ref_code,user_id):
