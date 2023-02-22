@@ -63,12 +63,14 @@
                                                                 <li class="nav-item">
                                                                     <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true">Update Staff Profile</a>
                                                                 </li>
+                                                                {% if request.user.is_superuser %}
                                                                 <li class="nav-item">
                                                                       <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Staff Persmission list</a>
                                                                 </li>
                                                                 <li class="nav-item">
                                                                     <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Edit Staff Permission</a>
                                                                 </li>
+                                                                {% endif %}
 
                                                             </ul>
 

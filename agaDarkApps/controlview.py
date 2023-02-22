@@ -79,10 +79,11 @@ def create_staff(first_name,last_name,email,username,telephone,group_id,user_id)
 		return False
 
 
+def get_staff(staff_id):
+	return Hospital_Staff.objects.get(staff__id=staff_id)
 
-
-def view_all_staffs():
-	admin_id=1
+def view_all_staffs(admin_id):
+	
 	return Hospital_Staff.objects.filter(hospital__adminstrator=admin_id)
 def staff_detail(email):
 	staff=User.objects.get(email=email)
@@ -136,3 +137,5 @@ def get_user_hospital_details(user_id):
 	return details
 
 
+def hospital_details():
+	pass

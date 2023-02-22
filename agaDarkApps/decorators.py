@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from . import models
+from .models import Hospital,Hospital_Staff
+import requests
 
 '''
 login decorators
@@ -21,14 +22,21 @@ admins' will be forced to create hospital details if hospital details are not fo
 '''
 def hospital_ddetails_set_up(view_func):
 	def func_wrapper(request,*args,**kwargs):
+		
 		if request.user.is_superuser == True:
 			view_hospitals=Hospital.objects.filter(adminstrator=request.user.id)
-			if not view_hospitals.exist():
-				return redirect('./set-up-hospital')
+			if not view_hospitals.exists():
+				return redirect('company')
+			else:
+				return view_func(request,*args,**kwargs)
 		else:
 			hospital_staffs=Hospital_Staff.objects.filter(staff=request.user.id)
-			if not hospital_staffs.exist():
-				return request('./login')
+			if not hospital_staffs.exists():
+				return redirect('login')
+			else:
+				return view_func(request,*args,**kwargs)
+
+			
 	return func_wrapper
 
 '''
@@ -39,12 +47,12 @@ def allowed_user(allowed_roles=[]):
 	def decorator(view_func):
 		def func_wrapper(request,*args,**kwargs):
 			group=None
-			if request.user.group.exist():
+			if request.user.groups.exists():
 				group=request.user.groups.all()[0].name
 			if group in allowed_roles:
-				view_func(request,*args,**kwargs)
+				return view_func(request,*args,**kwargs)
 			else:
-				redirect('./dashboard')
+				return HttpResponse("not allowed here")
 		return func_wrapper
 	return decorator
 
