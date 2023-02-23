@@ -44,7 +44,7 @@ def patient_dietary_cost_details(patient_dietary_id,dietary_list):
     	
 
 def view_dietary_pending_list():
-	return Patient_Dietary.objects.filter(patient_diagonsis_history_details__dietary_report_reuqest_status=True,patient_history__checked_in=True,patient_history__checked_out=False)
+	return Patient_Dietary.objects.filter(patient_diagonsis_history_details__dietary_report_reuqest_status=True,released_status=False,patient_history__checked_in=True,patient_history__checked_out=False)
 def view_patient_dietary_status(patient_history_id):
 	get_patient=Patient_Dietary.objects.filter(patient_history__id=patient_history_id)
 	if get_patient.exists():

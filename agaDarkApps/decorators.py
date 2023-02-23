@@ -52,7 +52,7 @@ def allowed_user(allowed_roles=[]):
 			if group in allowed_roles:
 				return view_func(request,*args,**kwargs)
 			else:
-				return HttpResponse("not allowed here")
+				return redirect("/page-access")
 		return func_wrapper
 	return decorator
 

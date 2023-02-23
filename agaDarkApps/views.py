@@ -46,8 +46,13 @@ def authuser(request):
 @allowed_user(allowed_roles=['Administrator','Accountant','Nurse','Doctor','Dietary','Lab Technician'])
 #@hospital_ddetails_set_up
 def dashboard(request):
-	print(Group.objects.all())
-	return render(request,'dashboard/dashboard.html',{'title':'dashboard','page_title':'Dashboard','path':'home'})
+	if request.user.is_superuser == False:
+		staff=get_staff(request.user.id)
+	else:
+		staff=""
+	print('hello ',staff.id)
+
+	return render(request,'dashboard/dashboard.html',{'title':'dashboard','page_title':'Dashboard','path':'home','staff_Id':staff})
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
@@ -684,7 +689,7 @@ def staff_management(request):
 	return render(request,'dashboard/setting/staff-management.html',{'title':'staff management','staff_Id':staff,'user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'groups':get_groups,'staffs':all_staffs,'page_title':'staff management','path':'setting'})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator'])
+@allowed_user(allowed_roles=['Administrator','Accountant','Nurse','Doctor','Lab Technician','Dietary'])
 def staff_user_management(request,staff_id):
 	staff_details=Hospital_Staff.objects.get(pk=staff_id)
 	user_groups=request.user.groups.filter(user__id=staff_details.staff.id)
@@ -1160,12 +1165,14 @@ def reports_dashboard(request):
 
 @login_required(login_url="/")
 def error_404(request,exception):
-	return render(request,'dashboard/error/error.html',{'title':'404 error','page_title':'404 error','path':'error'})
+	return render(request,'dashboard/error/error.html',{'title':'404 error','page_title':'404 error','path':'error',"error_message":"page not found"})
 
 @login_required(login_url="/")
 def error_500(request):
-	return render(request,'dashboard/error/error.html',{'title':'500 error','page_title':'500 error','path':'error'})
-
+	return render(request,'dashboard/error/error.html',{'title':'500 error','page_title':'500 error','path':'error',"error_message":"your request couldn't be granted"})
+@login_required(login_url="/")
+def page_access(request):
+	return render(request,"dashboard/error/error.html",{'title':'Access Denied','page_title':'Page Access denied','path':'error',"error_message":"page access denied"})
 @login_required(login_url="/")
 def logout(request):
 	auth.logout(request)

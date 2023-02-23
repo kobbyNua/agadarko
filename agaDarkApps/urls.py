@@ -78,6 +78,7 @@ urlpatterns=[
    path('create-staff-details',views.create_staff_details,name='create_staff_details'),
    path('staff-update',views.staff_update,name='update_staff'),
    path('change-password',views.change_pass,name="change password"),
+   path('page-access',views.page_access,name="page_access"),
    path('logout',views.logout,name="logout"),
    #path("",views.home,name="home"),
    #path("books-list/",views.booksList,name="bookList"),
