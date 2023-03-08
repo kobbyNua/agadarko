@@ -5,7 +5,7 @@ from .models import Hospital_Staff,Patient_Diagosis_History,Patient_History
 from .patients import patient_search,patient_count_history,check_in_session,patient_waiting_state,checK_patient_history,view_patient_details_info,view_patient_diagnosis_history_details,patient_diagnosis_details,patient_history_details,patient_medical_diagnosis_records,Check_in_patient_search,patient_check_in_list,paitient_opd_visiting_history,getRegion,view_patient_details,patient,create_opd_vitals,edit_opd_vitals,opd_vitals,patinet_waiting_list,view_paitent_opd_reports,doctor_diagonsis,send_lab_request,send_dietary_request,patient_opd_history_vitals,view_patient_diagnosis_complaints,doctor_diagonsis,patient_diagonsis_history,send_lab_request,view_patient_lab_test_report,patient_lab_report_result,view_patient_lab_report_status,getPatientDiagnosisId,patient_dietary_status
 from .laboratory import view_lab_test_list,discount_update_status,get_patient_history_lab,view_patient_laboratory_history_details,patient_laboratory_records_history,lab_patient_search,multiple_lab_type_list,getLaboratory,edit_lab_test_list_details,view_patient_lab_details,patient_laboratory,create_lab_test_details_cost,input_patient_lab_request,view_lab_test_request,view_lab_test_request,view_patint_lab_history,view_patient_lab_details
 from .dietary import view_patient_deietary_details,get_patient_history_dietPatient_Dietary,view_patient_dietary_history_details,patient_dietary_history_details,all_dietary_supplement,patient_dietary_search,multiple_dietary_list,dietary_need_restock,update_dietary_details,deitary_stock_info,update_dietary_details_stock,view_dietary_list,create_dietary_supplementary_cost,view_dietary_pending_list,input_patient_dietry_request,dietary_supplement_stocking,dietary_supplement_stocking_details_history
-from .controlview import create_hospital_details,get_staff,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
+from .controlview import create_hospital_details,check_super_user_status,get_staff,get_user_hospital_details,get_user_details,view_all_staffs,create_staff,edit_staff,change_staff_password
 from .account import discounts,patient_total_bills_payment,get_all_rate,set_discounts,patient_payment_list,get_opd_charges,create_update_opd_charges,registration_payment_history,current_registration_charges,patient_payment_history_details,patient_payment_search,patient_opd_payment_charges_history,payment_trakings,payment_trakings_history,patient_payment_history_records,make_patient_payment_lab_dietary_patient,patient_dietary_lab_payment
 from django.contrib.auth.decorators import login_required
 from datetime import *
@@ -26,37 +26,45 @@ from .models import Books,Region
 def login(request):
 	return render(request,'dashboard/login.html',{'title':'login'.upper()})
 def authuser(request):
-    message=""
-    status_type=""
-    if request.method == "POST":
-        username=request.POST['username']
-        password=request.POST['password']
-        
-        user=auth.authenticate(username=username,password=password)
-        if user is not None:
-            auth.login(request, user)
-            
-            status_type+="success"
-            message+="login successful"
-        else:
-            status_type+="error"
-            message+="invalid user name and password combination"
-    return JsonResponse({'status':status_type,status_type:message})
+	message=""
+	status_type=""
+	if request.method == "POST":
+		username=request.POST['username']
+		password=request.POST['password']
+		user=auth.authenticate(username=username,password=password)
+		if user is not None:
+			auth.login(request, user)
+			if request.user.is_superuser:
+				if not request.user.groups.exists() :
+					if check_super_user_status(request.user.id) == True:
+						status_type+="success"
+						message+="login successful"
+				else:
+					status_type+="success"
+					message+="login successful"
+			else:
+				status_type+="success"
+				message+="login successful"
+
+		else:
+			status_type+="error"
+			message+="invalid user name and password combination"
+	return JsonResponse({'status':status_type,status_type:message})
 @login_required(login_url="/")
-@allowed_user(allowed_roles=['Administrator','Accountant','Nurse','Doctor','Dietary','Lab Technician'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant','Nurse','Doctor','Dietary','Lab Technician'])
 #@hospital_ddetails_set_up
 def dashboard(request):
 	if request.user.is_superuser == False:
 		staff=get_staff(request.user.id)
 	else:
 		staff=""
-	print('hello ',staff.id)
+
 
 	return render(request,'dashboard/dashboard.html',{'title':'dashboard','page_title':'Dashboard','path':'home','staff_Id':staff})
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Nurse'])
+@allowed_user(allowed_roles=['Root','Administrator','Nurse'])
 def patient_opd_panel(request):
 	'''
        present the nurse with a view to either search for a patient or register a patient
@@ -105,7 +113,7 @@ def create_patient(request):
 	return JsonResponse({'status':status_type,status_type:msg})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Nurse','Dietary'])
+@allowed_user(allowed_roles=['Root','Administrator','Nurse','Dietary'])
 def view_patient_detail(request,patient_card_id):
 	#check not done
 	print('hit ',patient_card_id)
@@ -231,7 +239,7 @@ def edit_opd_details(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Doctor'])
+@allowed_user(allowed_roles=['Root','Administrator','Doctor'])
 def waiting_patient_list(request):
 	#can only be view by admin and doctor
 	waiting_patient=patinet_waiting_list()
@@ -253,7 +261,7 @@ def patient_medical_history_search(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Doctor'])
+@allowed_user(allowed_roles=['Root','Administrator','Doctor'])
 def patient_profile(request,patient_history_id):
 	#admin will have acces but cannot create or edit
 	#doctors will have accces to write and edit
@@ -379,7 +387,7 @@ def edit_doctor_diagonsis(request):
 	return JsonResponse({'status':status_type,status_type:msg})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Doctor'])
+@allowed_user(allowed_roles=['Root','Administrator','Doctor'])
 def patient_medical_history_records(request):
 	return render(request,'dashboard/patients/patient-diagnosis-medical-history.html',{'title':'patient medical history'.upper(),'page_title':'patient medical records','path':'medical'})
 @login_required(login_url="/")
@@ -452,7 +460,7 @@ laboratory test setup
 '''
 
 @login_required(login_url="/")
-@allowed_user(allowed_roles=['Administrator','Lab Technician'])
+@allowed_user(allowed_roles=['Root','Administrator','Lab Technician'])
 def view_lab_test_types(request):
 	#only to be viewed by the lab technician and admin
 	'''
@@ -505,7 +513,7 @@ def edit_lab_test_type(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Lab Technician'])
+@allowed_user(allowed_roles=['Root','Administrator','Lab Technician'])
 def view_lab_tests_request(request):
 	'''
 	  list of all patient taking lab test
@@ -530,7 +538,7 @@ def search_patient_lab_records(request):
 	return JsonResponse({'result':data_list})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Lab Technician'])
+@allowed_user(allowed_roles=['Root','Administrator','Lab Technician'])
 def view_patient_required_lab_test(request,patient_history_id):
 	get_patient_history=Patient_History.objects.get(case_number=patient_history_id)
 	check_details=patient_history_details(get_patient_history.id)
@@ -605,7 +613,7 @@ def edit_dietary_inventory_stock(request):
 	pass
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Dietary'])
+@allowed_user(allowed_roles=['Root','Administrator','Dietary'])
 def view_patient_dietary_lists(request):
 	patient_dietary_list=view_dietary_pending_list()
 	dietary_supplement_details=all_dietary_supplement()
@@ -614,7 +622,7 @@ def view_patient_dietary_lists(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Dietary'])
+@allowed_user(allowed_roles=['Root','Administrator','Dietary'])
 def view_patient_dietary_details(request,patient_history_id):
 	get_patient_history_info=Patient_History.objects.get(case_number=patient_history_id)
 
@@ -672,7 +680,7 @@ def search_patient_dietory_records(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator'])
+@allowed_user(allowed_roles=['Administrator','Root'])
 def staff_management(request):
 	'''
          admin only
@@ -689,7 +697,7 @@ def staff_management(request):
 	return render(request,'dashboard/setting/staff-management.html',{'title':'staff management','staff_Id':staff,'user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'groups':get_groups,'staffs':all_staffs,'page_title':'staff management','path':'setting'})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant','Nurse','Doctor','Lab Technician','Dietary'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant','Nurse','Doctor','Lab Technician','Dietary'])
 def staff_user_management(request,staff_id):
 	staff_details=Hospital_Staff.objects.get(pk=staff_id)
 	user_groups=request.user.groups.filter(user__id=staff_details.staff.id)
@@ -702,7 +710,7 @@ def staff_user_management(request,staff_id):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator'])
+@allowed_user(allowed_roles=['Root','Administrator'])
 def user_management(request):
 	if request.user.is_superuser == False:
 		staff=get_staff(request.user.id)
@@ -711,7 +719,7 @@ def user_management(request):
 	return render(request,'dashboard/setting/user-management.html',{'title':'staff management','staff_Id':staff,'page_title':'staff management','path':'staffs','page_title':'user management','path':'setting'})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant','Lab Technician'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant','Lab Technician'])
 def laboratory_management(request):
 	lab_test_lists=view_lab_test_list()
 	user_info=get_user_hospital_details(request.user.id)
@@ -723,7 +731,7 @@ def laboratory_management(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant''Lab Technician'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant','Lab Technician'])
 def laboratory_test_management_details(request,lab_test_id):
 	laboratory_test=getLaboratory(lab_test_id)
 	user_info=get_user_hospital_details(request.user.id)
@@ -735,7 +743,7 @@ def laboratory_test_management_details(request,lab_test_id):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant','Dietary'])
 def dietary_stocking(request):
 	dietary_list=view_dietary_list()
 	restock_dietary=dietary_need_restock()
@@ -747,7 +755,7 @@ def dietary_stocking(request):
 	return render(request,'dashboard/setting/dietary-stock.html',{'title':'Dietary Supplement Stocking','staff_Id':staff,'user_id':user_info['user_id'],'hospital_id':user_info['hospital_id'],'dietary':dietary_list,'restock':restock_dietary,'page_title':'dietary stocking management','path':'setting'})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant','Dietary'])
 def dietary_stocking_view(request,dietary_id):
 	dietary_supplement_stock=dietary_supplement_stocking_details_history(dietary_id)
 	dietary_supplement_stock_details=deitary_stock_info(dietary_id)
@@ -760,7 +768,7 @@ def dietary_stocking_view(request,dietary_id):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator'])
+@allowed_user(allowed_roles=['Root','Administrator'])
 def company(request):
 	region=Region.objects.all()
 	if request.user.is_superuser == False:
@@ -779,7 +787,7 @@ def company(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant'])
 def patient_payment_list_records(request):
 	patient_record=patient_payment_list()
 	user_info=get_user_hospital_details(request.user.id)
@@ -791,7 +799,7 @@ def patient_payment_list_records(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant'])
 def patient_payment_records_details(request,patient_history_id):
 	patient_payment_history=patient_payment_history_records(patient_history_id)
 	patient_payment_tracking_history=payment_trakings(patient_history_id)
@@ -822,7 +830,7 @@ def search_patient_payment_records(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant'])
 def opd_charges_info(request):
 	opd_charges=current_registration_charges()
 	opd_charges_update=registration_payment_history()
@@ -871,7 +879,7 @@ def create_opd_charges(request):
 	return JsonResponse({'status':status,status:msg})
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator'])
+@allowed_user(allowed_roles=['Administrator','Root'])
 def reports(request):
 	daily_medical_payment=daily_payment_charges()
 	daily_opd_payments=daily_opd_charge_payment()
@@ -1111,7 +1119,7 @@ def multiple_lab_test_list(request):
 
 @login_required(login_url="/")
 #@hospital_ddetails_set_up
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant'])
 def view_discount(request):
 	if request.user.is_superuser == False:
 		staff=get_staff(request.user.id)
@@ -1154,7 +1162,7 @@ def set_patient_discount(request):
 '''
    reports
 '''
-@allowed_user(allowed_roles=['Administrator','Accountant'])
+@allowed_user(allowed_roles=['Root','Administrator','Accountant'])
 def reports_dashboard(request):
 	if request.user.is_superuser == False:
 		staff=get_staff(request.user.id)

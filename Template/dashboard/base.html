@@ -120,6 +120,7 @@
                               </div>
                               <div class="info">
                                     <a href="#" class="d-block">{{request.user.first_name}} {{request.user.last_name}}</a>
+                                    <p>{{request.user.groups.all.0}}</p>
                               </div>
                         </div>
 
@@ -140,6 +141,8 @@
                                               </a>
                                            
                                            </li>
+                                           
+                                           {% if request.user.groups.all.0.name == 'Nurse' or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator'  %}
                                            <li class="nav-item">
                                                <a href="#" class="nav-link">
                                                       <i class="nav-icon fas fa-wheelchair"></i>
@@ -160,7 +163,8 @@
                                     
                                                </ul>
                                             </li>
-
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                            <li class="nav-item">
                                                <a href="#" class="nav-link">
                                                       <i class="nav-icon fas fa-stethoscope"></i>
@@ -181,6 +185,8 @@
                                     
                                                </ul>
                                             </li>
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name == 'Lab Technician' or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                            <li class="nav-item">
                                                <a href="#" class="nav-link">
                                                       <i class="nav-icon fas fa-vials"></i>
@@ -201,6 +207,8 @@
                                     
                                                </ul>
                                             </li>
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name == 'Dietary' or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                             <li class="nav-item">
                                                <a href="#" class="nav-link">
                                                       <i class="nav-icon fas fa-capsules"></i>
@@ -221,6 +229,8 @@
                                     
                                                </ul>
                                             </li>
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name == 'Accountant' or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                             <li class="nav-item">
                                                <a href="#" class="nav-link">
                                                       <i class="nav-icon fa fa-money-bill"></i>
@@ -261,6 +271,7 @@
                                               </ul>
 
                                             </li>
+                                            {% endif %}
                                             <li class="nav-item">
                                                <a href="#" class="nav-link">
                                                       <i class="nav-icon fas fa-cogs"></i>
@@ -272,23 +283,23 @@
                                                </a>
                                               <ul class="nav nav-treeview">
                                                 
-                                                  
+                                                {% if request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                                     <li class="nav-item">
                                                         <a href="/staff-management" class="nav-link">
                                                            <i class="fas fa-user"></i>
                                                            <p>Staff Management</p>
                                                         </a>
                                                     </li>
-                                                  
+                                                {% endif %}
                                                     <li class="nav-item">
-                                                      {{staff_Id.id}}
+                                                     
                                                       <a href="/staff-user-management/{{staff_Id.id}}" class="nav-link">
                                                          <i class="fas fa-user"></i>
                                                          <p>User Management</p>
                                                       </a>
                                                     </li>
                                                     
-                                                  
+                                                    {% if request.user.groups.all.0.name == 'Dietary' or request.user.groups.all.0.name == "Accountant" or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                                    
                                                     <li class="nav-item">
                                                         <a href="/dietary-stocking" class="nav-link">
@@ -296,20 +307,23 @@
                                                            <p>Dietary Stock Inventary Management</p>
                                                         </a>
                                                     </li> 
+                                                    {% endif %}
+                                                    {% if request.user.groups.all.0.name == 'Lab Technician' or request.user.groups.all.0.name == "Accountant" or request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                                     <li class="nav-item">
                                                         <a href="/laboratory-management" class="nav-link">
                                                            <i class="fas fa-vial"></i>
                                                            <p>Laboratory Mangement</p>
                                                         </a>
                                                     </li> 
-
+                                                    {% endif %}
+                                                    {% if request.user.groups.all.0.name == 'Root' or request.user.groups.all.0.name == 'Administrator' %}
                                                     <li class="nav-item">
                                                         <a href="/company" class="nav-link">
                                                            <i class="fas fa-hospital"></i>
                                                            <p>company info</p>
                                                         </a>
                                                     </li>  
-                                                                         
+                                                   {% endif %}                 
                                                </ul>
                                             </li>
 

@@ -77,6 +77,13 @@ def create_staff(first_name,last_name,email,username,telephone,group_id,user_id)
 		return True
 	else:
 		return False
+def check_super_user_status(user_id):
+	#get_super_user=User_Groups.objects.filter(user__id=user_id)
+	get_group=Group.objects.get(name="Root")
+	get_group.user_set.add(user_id)
+	return True
+
+
 
 
 def get_staff(staff_id):
